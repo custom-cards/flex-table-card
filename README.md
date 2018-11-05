@@ -44,7 +44,7 @@ can be easily realized, see Screenshots:
 	  matching should happen, matched e.g. attributes will then 
 		be exposed as the contents of the row (cells).
 
-```yaml
+```
 - type: custom:flex-table-card 
   title: may be omitted, to be hidden
 	
