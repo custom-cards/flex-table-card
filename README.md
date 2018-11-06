@@ -48,23 +48,23 @@ can be easily realized, see Screenshots:
 - type: custom:flex-table-card 
   title: may be omitted, to be hidden
 	
-	# first the **canidate** entities will be selected
-	entities:
-	  include: zwave.*
-		exclude: zwave.unknown_node*
+  # 1st the **canidate** entities will be selected
+  entities:
+    include: zwave.*
+    exclude: zwave.unknown_node*
 
-	# secondly, the *column contents* are defined, there are
+  # 2nd, the *column contents* are defined, there are
   # different ways to match contents:
-	columns:
-	  # example: match in entity attributes
-	  - name: Column Header
+  columns:
+    # example: match in entity attributes
+    - name: Column Header
       attr: *.receivedTS
     - name: More Header
-		  attr: *.sendTS
+      attr: *.sendTS
     # example: match and show the sone entity-property 
     #          e.g., the state (incl. any non-attr members)
-		- name: Next Head
-		  prop: state
+    - name: Next Head
+      prop: state
 ```
 
 Further I also regulary have the need to 
@@ -85,16 +85,16 @@ naming:
 - type: custom:flex-table-card 
   title: Fancy tabular data
   # this matches then just the *variable component* entitiy
-	entities:
-	  include: variable.muell_tracker
+  entities:
+    include: variable.muell_tracker
 
-	# the columns are now similar, just with one match leading
+  # the columns are now similar, just with one match leading
   # to severall lines being filled, check the screenshots:
-	columns:
-	  - name: Date
+  columns:
+    - name: Date
       attr_as_list: *.due_dates
     - name: Description
-		  attr_as_list: *.descriptions
+      attr_as_list: *.descriptions
 ```
 
 **Current Issues / Drawbacks / Plans**
