@@ -11,20 +11,20 @@ Flex Table gives you the possibility to visualize any tabular data
 within Lovelace. Especially for overview views high data density
 can be easily realized, see Screenshots:
 
-![showing an example how appdaemon collected data might be visualized](https://github.com/daringer/image_dump/raw/master/todos_and_garbage_collection.png.small.png)
-![example showing **all** *power_consumption* entities including drain in one table](https://github.com/daringer/image_dump/raw/master/id_drain_power.png.small.png)
-![example showing **all** *power_consumption* entities including drain in one table](https://github.com/daringer/image_dump/raw/master/id_drain_power.png.small.png)
-![listing all zwave nodes and their respective last sent/received message (sorting needed :D)](https://github.com/daringer/image_dump/raw/master/zwave_last_msg_fromto.png.small.png )
+![3 columns, sorted by last sent message, best for network and node diagnosis, only 20 rows shown](https://github.com/daringer/image_dump/raw/master/tbl1.png =200 ))
+![2 (3) columns, one is hidden (see table 1) to sort with, restricted to 20 rows allows cross-table-layout-alignment](https://github.com/daringer/image_dump/raw/master/tbl2.png =200 ))
+![all power & energy reporting nodes, sorted by current power consumption, restricted to 20 rows, top consumer always directly visible](https://github.com/daringer/image_dump/raw/master/tbl3.png =200 ))
+![trash collection dates, simple example, gets updates from appdaemon](https://github.com/daringer/image_dump/raw/master/trash_tbl.png =200 ))
 
 **Options**
 
 | Name           | Type     | Default       | Description
 | ----           | ----     | -------       | -----------
 | type           | string   | **required**  | `custom:flex-table-card`
-| title          | string   | optional      | a title for the card
-| strict         | bool     | optional      | if true, each cell must have a match, or the full row will be hidden
-| sort_by        | col-attr | optional      | sort flex-table by the given column (attr), append '+' or '-' for ascending or descending
-| max_rows       | int      | optional      | restrict the number of (shown) rows to this maximum number
+| title          | string   |   optional    | a title for the card
+| strict         | bool     |   optional    | if true, each cell must have a match, or the full row will be hidden
+| sort_by        | col-attr |   optional    | sort flex-table by the given column (attr), append '+' or '-' for ascending or descending
+| max_rows       | int      |   optional    | restrict the number of (shown) rows to this maximum number
 | entities       | section  | **required**  | Section defining the entity *data sources*
 | - include      | regexp   | **required**  | Defines the initial entity data source(s)
 | - exclude      | regexp   |   optional    | Reduces the *included* data sources(s) 
@@ -34,7 +34,7 @@ can be easily realized, see Screenshots:
 | - attr         | regexp   | - required  - | matches to the first attribute found by this regex
 | - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state**
 | - attr_as_list | string   | - those 3   - | the matched attribute is expected to contain a 
-|                |          |               | list to be expanded down the table (see pic 1 + 2)
+|                |          |               | list to be expanded down the table (see table 1, 2 and 3)
 
 **Example**
 
