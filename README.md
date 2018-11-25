@@ -103,11 +103,11 @@ naming:
 **Current Issues / Drawbacks / Plans**
 
 * additional colunm *selector* for a service call maybe
-* hiding columns, to allow sorting of un-natural contents (e.g., dates)
+* -hiding columns, to allow sorting of un-natural contents (e.g., dates)-
 * (click)-able sorting of columns 
 * entity dialog box activiation on row-click
 * find out if cards are allowed to span more width, and if how?
-* introduce 'max_rows' to show only the most significant (top-ordered) ones
+* -introduce 'max_rows' to show only the most significant (top-ordered) ones-
 * some 'format' or 'filter' would also be nice to post-process data 
   (maybe bad within the frontend :/)
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the
