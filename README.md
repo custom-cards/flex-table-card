@@ -50,7 +50,7 @@ can be easily realized, see Screenshots:
 ```yaml
 - type: custom:flex-table-card 
   title: may be omitted, to be hidden
-	
+
   # 1st the **canidate** entities will be selected
   entities:
     include: zwave.*
