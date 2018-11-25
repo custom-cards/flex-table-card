@@ -3,3 +3,13 @@
 - The goal is to provide a flexible table visualization
   for Lovelace.
 
+## 0.2
+- Functionality existing as initially planned:
+- arbitrary number of columns
+- regex based matching of anything that can be accessed through the hass-object (states, attributes, any properties of entities, anything that's visible) 
+- restrictions in rows possible `max_rows`
+- sorting by chosen column available `sort_by` (ascending and descending)
+- column(s) might be hidden (to realize a hidden sorting) `hidden`
+- `strict` forces each row to be completly filled with matched content, if not the row will be dropped
+- using `attr_as_list` allows easy data visualization from external sources, like `appdaemon`
+- in "productive" use now, will shortly go in Version 1.0
