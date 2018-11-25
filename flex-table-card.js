@@ -4,6 +4,7 @@ class FlexTableCard extends HTMLElement {
     this.attachShadow({
       mode: 'open'
     });
+    this.card_height = 1;
   }
 
   _getRegEx(pat) {
@@ -27,6 +28,10 @@ class FlexTableCard extends HTMLElement {
     if (excl)
       keys = keys.filter(e_id => excl_re.some((regex) => !(e_id.match(regex))));
     return keys.map(key => hass.states[key]);
+  }
+  
+  _setCardSize(num_rows) {
+    this.card_height = parseInt(num_rows * 0.5);
   }
 
   setConfig(config) {
@@ -122,11 +127,13 @@ class FlexTableCard extends HTMLElement {
       full_tbl.filter((row) => row.every((cell) => cell.data !== null)) :
       full_tbl.map((row) => row.map((cell) => (cell.data == null) ? "n/a" : cell.data));
 
+    this._setCardSize(rows.length);
     this._updateContent(root.getElementById('flextbl'), rows);
   }
 
+
   getCardSize() {
-    return 1;
+    return this.card_height;
   }
 }
 
