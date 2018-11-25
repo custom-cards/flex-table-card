@@ -30,7 +30,7 @@ can be easily realized, see Screenshots:
 | - exclude      | regexp   |   optional    | Reduces the *included* data sources(s) 
 | columns        | section  | **required**  | section defining the number and contents for each cell
 | - name         | string   |   optional    | Column header, may be omitted
-| - name         | bool     |   optional    | set to 'true' to avoid showing the colum in the frontend (e.g., for sorting)
+| - hidden       | bool     |   optional    | set to 'true' to avoid showing the colum in the frontend (e.g., for sorting)
 | - attr         | regexp   | - required  - | matches to the first attribute found by this regex
 | - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state**
 | - attr_as_list | string   | - those 3   - | the matched attribute is expected to contain a 
