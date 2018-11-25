@@ -18,20 +18,23 @@ can be easily realized, see Screenshots:
 
 **Options**
 
-| Name           | Type    | Default       | Description
-| ----           | ----    | -------       | -----------
-| type           | string  | **required**  | `custom:flex-table-card`
-| title          | string  | optional      | a title for the card
-| strict         | bool    | optional      | if true, each cell must have a match, or the full row will be hidden
-| entities       | section | **required**  | Section defining the entity *data sources*
-| - include      | regexp  | **required**  | Defines the initial entity data source(s)
-| - exclude      | regexp  |   optional    | Reduces the *included* data sources(s) 
-| columns        | section | **required**  | section defining the number and contents for each cell
-| - name         | string  |   optional    | Column header, may be omitted
-| - attr         | regexp  | - required  - | matches to the first attribute found by this regex
-| - prop         | string  | - is any of - | matches the entities object memebers, e.g. **state**
-| - attr_as_list | string  | - those 3   - | the matched attribute is expected to contain a 
-|                |         |               | list to be expanded down the table (see pic 1 + 2)
+| Name           | Type     | Default       | Description
+| ----           | ----     | -------       | -----------
+| type           | string   | **required**  | `custom:flex-table-card`
+| title          | string   | optional      | a title for the card
+| strict         | bool     | optional      | if true, each cell must have a match, or the full row will be hidden
+| sort_by        | col-attr | optional      | sort flex-table by the given column (attr), append '+' or '-' for ascending or descending
+| max_rows       | int      | optional      | restrict the number of (shown) rows to this maximum number
+| entities       | section  | **required**  | Section defining the entity *data sources*
+| - include      | regexp   | **required**  | Defines the initial entity data source(s)
+| - exclude      | regexp   |   optional    | Reduces the *included* data sources(s) 
+| columns        | section  | **required**  | section defining the number and contents for each cell
+| - name         | string   |   optional    | Column header, may be omitted
+| - name         | bool     |   optional    | set to 'true' to avoid showing the colum in the frontend (e.g., for sorting)
+| - attr         | regexp   | - required  - | matches to the first attribute found by this regex
+| - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state**
+| - attr_as_list | string   | - those 3   - | the matched attribute is expected to contain a 
+|                |          |               | list to be expanded down the table (see pic 1 + 2)
 
 **Example**
 
