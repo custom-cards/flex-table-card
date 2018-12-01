@@ -112,7 +112,21 @@ class FlexTableCard extends HTMLElement {
               entity.attributes[col.attr] : null)
           }];
         } else if ("prop" in col) {
-          return [{"data": ((col.prop in entity) ? entity[col.prop] : null) }];
+	  // 'object_id' and 'name' not working -> make them work:
+	  if (col.prop == "object_id")
+	      return [{"data": entity.entity_id.split(".").slice(1).join(".")}];
+	  else if (col.prop == "name")
+	      if ("friendly_name" in entity.attributes)
+                  return [{"data": entity.attributes.friendly_name}];
+	      else if ("name" in entity)
+		  return [{"data": entity.name}];
+	      else if ("name" in entity.attributes)
+		  return [{"data": entity.attributes.name}];
+	      else
+		  return [{"data": entity.entity_id}];
+	  // other state properties seem to work as expected...
+          else
+              return [{"data": ((col.prop in entity) ? entity[col.prop] : null) }];
 
         } else if ("attr_as_list" in col) {
           return entity.attributes[col.attr_as_list].map(
