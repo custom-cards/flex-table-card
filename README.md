@@ -32,7 +32,7 @@ can be easily realized, see Screenshots:
 | - name         | string   |   optional    | Column header, may be omitted
 | - hidden       | bool     |   optional    | set to 'true' to avoid showing the colum in the frontend (e.g., for sorting)
 | - attr         | regexp   | - required  - | matches to the first attribute found by this regex
-| - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state**
+| - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state** (any from here: [here](https://www.home-assistant.io/docs/configuration/state_object/) )
 | - attr_as_list | string   | - those 3   - | the matched attribute is expected to contain a 
 |                |          |               | list to be expanded down the table (see table 1, 2 and 3)
 
