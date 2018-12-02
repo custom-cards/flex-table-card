@@ -102,40 +102,54 @@ class FlexTableCard extends HTMLElement {
     // construct table structure, ..,
     var full_tbl = [];
 
+    function apply_eval(all_x, cmd_string) {
+      return all_x.map((x) => eval(cmd_string));
+    }
+
     // @todo: pythonic way to do this, js best-practice is how?
     var zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
     entities.forEach(entity => {
       zip(config.columns.map((col) => {
+	var out_data = null;
         if ("attr" in col) {
-          return [{
-            "data": ((col.attr in entity.attributes) ?
-              entity.attributes[col.attr] : null)
-          }];
+            out_data = [((col.attr in entity.attributes) ?
+              entity.attributes[col.attr] : null)];
         } else if ("prop" in col) {
 	  // 'object_id' and 'name' not working -> make them work:
-	  if (col.prop == "object_id")
-	      return [{"data": entity.entity_id.split(".").slice(1).join(".")}];
-	  else if (col.prop == "name")
+	  if (col.prop == "object_id") {
+	      out_data = [entity.entity_id.split(".").slice(1).join(".")];
+
+	  // 'name' automagically resolves to most verbose name
+          } else if (col.prop == "name") {
 	      if ("friendly_name" in entity.attributes)
-                  return [{"data": entity.attributes.friendly_name}];
+                  out_data = [entity.attributes.friendly_name];
 	      else if ("name" in entity)
-		  return [{"data": entity.name}];
+		  out_data = [entity.name];
 	      else if ("name" in entity.attributes)
-		  return [{"data": entity.attributes.name}];
+		  out_data = [entity.attributes.name];
 	      else
-		  return [{"data": entity.entity_id}];
+		  out_data = [entity.entity_id];
 	  // other state properties seem to work as expected...
-          else
-              return [{"data": ((col.prop in entity) ? entity[col.prop] : null) }];
+	  } else
+              out_data = [((col.prop in entity) ? entity[col.prop] : null)];
 
         } else if ("attr_as_list" in col) {
-          return entity.attributes[col.attr_as_list].map(
-		(x) => Object({ data: x }));
+          /*return entity.attributes[col.attr_as_list].map(
+		(x) => Object({ data: x }));*/
+	  out_data = entity.attributes[col.attr_as_list];
 
         } else {
           console.log("this 'should' not happen...");
-          return [{ "data": null }];
+	
+          //return [{ "data": null }];
         }
+	// apply passed "modify" configuration setting by using eval()
+	// assuming the data is available inside the function as "x"
+	if (typeof col.modify != "undefined")
+	    out_data = out_data.map((x) => eval(col.modify));
+            //out_data = apply_eval(out_data, col.modify);
+	return out_data.map((d) => new Object({data: d}));
+
       // do the *transpose*, to allow row-wise output
       })).forEach(row => full_tbl.push(row));
     });

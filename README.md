@@ -31,6 +31,7 @@ can be easily realized, see Screenshots:
 | columns        | section  | **required**  | section defining the number and contents for each cell
 | - name         | string   |   optional    | Column header, may be omitted
 | - hidden       | bool     |   optional    | set to 'true' to avoid showing the colum in the frontend (e.g., for sorting)
+| - modify       | string   |   optional    | apply given java-script code to data, `x` is data, i.e., `(x) => eval(<modfiy>)`
 | - attr         | regexp   | - required  - | matches to the first attribute found by this regex
 | - prop         | string   | - is any of - | matches the entities object memebers, e.g. **state** (any from here: [here](https://www.home-assistant.io/docs/configuration/state_object/) )
 | - attr_as_list | string   | - those 3   - | the matched attribute is expected to contain a 
