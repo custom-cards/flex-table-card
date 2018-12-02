@@ -38,7 +38,7 @@ can be easily realized, see Screenshots:
 | Column contents | Type     | Description
 | --------------- | ----     | -----------
 | attr            | regexp   | matches to the first attribute matching this regexp
-| prop            | string   | matches the entity's state members, e.g. **state** (any from here: [here](https://www.home-assistant.io/docs/configuration/state_object/) )
+| prop            | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
 | attr_as_list    | string   | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
  
 
