@@ -32,7 +32,7 @@ can be easily realized, see Screenshots:
 | - name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
 | - hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | - modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-| - &lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
+| -&nbsp;&lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
 
 
 | Column contents | Type     | Description
