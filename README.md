@@ -103,9 +103,9 @@ naming:
   # to severall lines being filled, check the screenshots:
   columns:
     - name: Date
-      attr_as_list: *.due_dates
+      attr_as_list: due_dates
     - name: Description
-      attr_as_list: *.descriptions
+      attr_as_list: descriptions
 ```
 
 **Current Issues / Drawbacks / Plans**
@@ -114,6 +114,5 @@ naming:
 * (click)-able sorting of columns 
 * entity dialog box activiation on row-click
 * find out if cards are allowed to span more width, and if how?
-* some 'format' or 'filter' would also be nice to post-process data (maybe bad within the frontend :/)
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
 * history / recorder access realization to match for historical data ...
