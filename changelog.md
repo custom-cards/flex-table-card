@@ -13,3 +13,8 @@
 - `strict` forces each row to be completly filled with matched content, if not the row will be dropped
 - using `attr_as_list` allows easy data visualization from external sources, like `appdaemon`
 - in "productive" use now, will shortly go in Version 1.0
+
+## 0.3
+- added 'modify' to change cell/col contents using javascript's: eval()
+- for 'prop' column contents 'object_id' and 'name' are made available to match: https://www.home-assistant.io/docs/configuration/state_object/
+
