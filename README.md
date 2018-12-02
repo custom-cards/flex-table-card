@@ -67,9 +67,11 @@ can be easily realized, see Screenshots:
   columns:
     # example: match in entity attributes
     - name: Column Header
-      attr: *.receivedTS
+      attr: receivedTS
+      # extract only date from string
+      modify: x.split("T")[0]
     - name: More Header
-      attr: *.sendTS
+      attr: sendTS
     # example: match and show the sone entity-property 
     #          e.g., the state (incl. any non-attr members)
     - name: Next Head
