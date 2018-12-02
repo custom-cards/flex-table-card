@@ -183,6 +183,8 @@ class FlexTableCard extends HTMLElement {
 	// if applicable sort according to config
 	if (sort_idx > -1)
 	    rows.sort((x, y) => sort_dir * cmp(x[sort_idx], y[sort_idx]));
+	else
+	    console.log(`ERROR: config.sort_by: ${config.sort_by}, but column not found!`);
     }
     // truncate shown rows to 'max rows', if configured
     if ("max_rows" in config && config.max_rows > -1)
