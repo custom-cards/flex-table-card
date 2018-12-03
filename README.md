@@ -15,7 +15,7 @@ can be easily realized, see Screenshots:
 ![2 (3) columns, one is hidden (see table 1) to sort with, restricted to 20 rows allows cross-table-layout-alignment](https://github.com/daringer/image_dump/raw/master/tbl2.png)
 ![all power & energy reporting nodes, sorted by current power consumption, restricted to 20 rows, top consumer always directly visible](https://github.com/daringer/image_dump/raw/master/tbl3.png)
 ![trash collection dates, simple example, gets updates from appdaemon](https://github.com/daringer/image_dump/raw/master/trash_tbl.png)
-
+![column with `modify` to calculated time passed and afterwards sorted](https://github.com/daringer/image_dump/raw/master/tbl4.png)
 **Options**
 
 | Name            | Type     | Default       | Description
