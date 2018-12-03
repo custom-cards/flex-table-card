@@ -18,3 +18,5 @@
 - added 'modify' to change cell/col contents using javascript's: eval()
 - for 'prop' column contents 'object_id' and 'name' are made available to match: https://www.home-assistant.io/docs/configuration/state_object/
 
+## 0.3.1
+- flex-table-card now part of 'custom-cards' organization
