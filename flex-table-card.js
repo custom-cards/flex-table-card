@@ -148,7 +148,12 @@ class FlexTableCard extends HTMLElement {
 	if (typeof col.modify != "undefined")
 	    out_data = out_data.map((x) => eval(col.modify));
             //out_data = apply_eval(out_data, col.modify);
-	return out_data.map((d) => new Object({data: d}));
+
+	if (typeof out_map == "undefined")
+	    return []
+	else
+	    return out_data.map((d) => new Object({data: d}));
+
 
       // do the *transpose*, to allow row-wise output
       })).forEach(row => full_tbl.push(row));
@@ -156,7 +161,8 @@ class FlexTableCard extends HTMLElement {
 
     // care for 'strict' configuration option
     var rows = (config.strict) ?
-      full_tbl.filter((row) => row.every((cell) => cell.data !== null)) :
+      full_tbl.filter((row) => row.every((cell) => cell.data !== null)).map(
+	      (x) => x.map((y) => y.data)) :
       full_tbl.map((row) => row.map(
 	      (cell) => (cell.data == null) ? "n/a" : cell.data));
 
