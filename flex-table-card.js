@@ -149,8 +149,8 @@ class FlexTableCard extends HTMLElement {
 	    out_data = out_data.map((x) => eval(col.modify));
             //out_data = apply_eval(out_data, col.modify);
 
-	if (typeof out_map == "undefined")
-	    return []
+	if (typeof out_data == "undefined")
+	    return [];
 	else
 	    return out_data.map((d) => new Object({data: d}));
 
