@@ -1,5 +1,22 @@
 # Flex Table
 
+## Installation (quick & "dirty")
+
+* Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
+* Change into `~/.homeassistant/www`
+* `$ wget https://raw.githubusercontent.com/custom-cards/flex-table-card/master/flex-table-card.js` will download the `.js` file directly where it should be
+* Finally, add the following on top of your UI Lovelace configuration (means either via Config UI or .yaml)
+```
+resources:
+  - type: js
+    url: /local/flex-table-card.js
+```
+* Verify that it works with one of the examples below.
+
+
+*"Dirty" here is simply the face that directly `wget` is used instead of checking out the repository with `git` as it best practice.*
+
+## Configuration
 Flex table aims for more flexibility for tabular-ish visuallization
 needs, by realizing:
 
