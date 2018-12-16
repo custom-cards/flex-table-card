@@ -112,7 +112,7 @@ naming:
 
 * additional colunm *selector* for a service call maybe
 * (click)-able sorting of columns 
-* entity dialog box activiation on row-click
+* entity dialog box activiation on row-click (will be next!)
 * find out if cards are allowed to span more width, and if how?
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
 * history / recorder access realization to match for historical data ...
