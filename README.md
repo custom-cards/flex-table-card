@@ -66,12 +66,12 @@ can be easily realized, see Screenshots:
 | name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
 | hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-|&nbsp;&lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
+|&nbsp;&lt;content&gt; |        | **required**  | see in `column contents` below, one of these must exist!
 
 
 ***3rd-level options: column (cell) content definition***
 
-| `&lt;content&gt;` | Type     | Description
+| `column contents` | Type     | Description
 | ---------------   | ----     | -----------
 | attr              | regexp   | matches to the first attribute matching this regexp
 | prop              | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
@@ -101,14 +101,14 @@ can be easily realized, see Screenshots:
   # 2nd, the *column contents* are defined, there are
   # different ways to match contents:
   columns:
-    # example: match in entity attributes
+    # example: match entity's attribute(s)
     - name: Column Header
       attr: receivedTS
       # extract only date from string
       modify: x.split("T")[0]
     - name: More Header
       attr: sendTS
-    # example: match and show the sone entity-property 
+    # example: match and show the given entity-property 
     #          e.g., the state (incl. any non-attr members)
     - name: Next Head
       prop: state
@@ -124,7 +124,7 @@ into from *appdaemon's* side via the set_variable() service.
 
 To keep data ordered, passing a full (py-)list to the
 service, leads to proper jsonification. But now we've done 
-a reshape for the input data but luckily no problem. Nothin
+a reshape for the input data but luckily no problem. Nothing
 more to adjust than to add a single keyword, with an obvious
 naming:
 
@@ -147,8 +147,8 @@ naming:
 **Current Issues / Drawbacks / Plans**
 
 * additional colunm *selector* for a service call maybe
+* history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns 
 * entity dialog box activiation on row-click (will be next!)
 * find out if cards are allowed to span more width, and if how?
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
-* history / recorder access realization to match for historical data ...
