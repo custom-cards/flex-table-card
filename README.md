@@ -36,6 +36,7 @@ can be easily realized, see Screenshots:
 **Options**
 
 ***Top-level options***
+
 | Name            | Type     | Default       | Description
 | ----            | ----     | -------       | -----------
 | type            | string   | **required**  | `custom:flex-table-card`
@@ -48,6 +49,7 @@ can be easily realized, see Screenshots:
 
 
 ***2nd-level options: entity selection / querying / filtering***
+
 | `entities`    | Type     | Default       | Description
 | ----          | ----     | -------       | -----------
 | include       | regexp   | **required**  | Defines the initial entity data source(s)
@@ -55,6 +57,7 @@ can be easily realized, see Screenshots:
 
 
 ***2nd-level options: columns definition, each list-item defines a column***
+
 | `columns`     | Type     | Default       | Description
 | ----          | ----     | -------       | -----------
 | name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
@@ -64,6 +67,7 @@ can be easily realized, see Screenshots:
 
 
 ***3rd-level options: column (cell) content definition***
+
 | `&lt;content&gt;` | Type     | Description
 | ---------------   | ----     | -----------
 | attr              | regexp   | matches to the first attribute matching this regexp
