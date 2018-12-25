@@ -35,6 +35,7 @@ can be easily realized, see Screenshots:
 ![column with `modify` to calculated time passed and afterwards sorted](https://github.com/daringer/image_dump/raw/master/tbl4.png)
 **Options**
 
+***Top-level options***
 | Name            | Type     | Default       | Description
 | ----            | ----     | -------       | -----------
 | type            | string   | **required**  | `custom:flex-table-card`
@@ -45,12 +46,15 @@ can be easily realized, see Screenshots:
 | entities        | section  | **required**  | Section defining the entity *data sources* (see below)
 | columns         | section  | **required**  | Section defining the column(s) (see below)
 
+
+***2nd-level options: entity selection / querying / filtering***
 | `entities`    | Type     | Default       | Description
 | ----          | ----     | -------       | -----------
 | include       | regexp   | **required**  | Defines the initial entity data source(s)
 | exclude       | regexp   |   optional    | Reduces the *included* data sources(s) 
 
 
+***2nd-level options: columns definition, each list-item defines a column***
 | `columns`     | Type     | Default       | Description
 | ----          | ----     | -------       | -----------
 | name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
@@ -59,11 +63,12 @@ can be easily realized, see Screenshots:
 |&nbsp;&lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
 
 
-| `column`'s contents | Type     | Description
-| --------------- | ----     | -----------
-| attr            | regexp   | matches to the first attribute matching this regexp
-| prop            | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
-| attr_as_list    | string   | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
+***3rd-level options: column (cell) content definition***
+| `&lt;content&gt;` | Type     | Description
+| ---------------   | ----     | -----------
+| attr              | regexp   | matches to the first attribute matching this regexp
+| prop              | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
+| attr_as_list      | string   | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
  
 
 **Example**
