@@ -42,17 +42,24 @@ can be easily realized, see Screenshots:
 | strict          | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
 | sort_by         | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
 | max_rows        | int      |   optional    | Restrict the number of (shown) rows to this maximum number
-| entities        | section  | **required**  | Section defining the entity *data sources*
-| - include       | regexp   | **required**  | Defines the initial entity data source(s)
-| - exclude       | regexp   |   optional    | Reduces the *included* data sources(s) 
-| columns         | section  | **required**  | Section defining the column(s) 
-| - name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
-| - hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
-| - modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-| -&nbsp;&lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
+| entities        | section  | **required**  | Section defining the entity *data sources* (see below)
+| columns         | section  | **required**  | Section defining the column(s) (see below)
+
+| `entities`    | Type     | Default       | Description
+| ----          | ----     | -------       | -----------
+| include       | regexp   | **required**  | Defines the initial entity data source(s)
+| exclude       | regexp   |   optional    | Reduces the *included* data sources(s) 
 
 
-| Column contents | Type     | Description
+| `columns`     | Type     | Default       | Description
+| ----          | ----     | -------       | -----------
+| name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
+| hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
+| modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+|&nbsp;&lt;content&gt; |        | **required**  | see in 'Column contents' below, one of these must exist!
+
+
+| `column`'s contents | Type     | Description
 | --------------- | ----     | -----------
 | attr            | regexp   | matches to the first attribute matching this regexp
 | prop            | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
