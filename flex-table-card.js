@@ -8,12 +8,12 @@ class FlexTableCard extends HTMLElement {
   }
 
   _getRegEx(pat) {
-		// compile and convert wildcardish-regex to real regex
+    // compile and convert wildcardish-regex to real regex
     return new RegExp(`^${pat.replace(/\*/g, '.*')}$`, 'i');
   }
 
   _listify(obj) {
-		// if obj is an Array() -> ok, else return obj inside an Array
+    // if obj is an Array() -> ok, else return obj inside an Array
     return (obj instanceof Array) ? obj : [obj];
   }
 
@@ -29,16 +29,15 @@ class FlexTableCard extends HTMLElement {
       keys = keys.filter(e_id => excl_re.some((regex) => !(e_id.match(regex))));
     return keys.map(key => hass.states[key]);
   }
-  
 
   setConfig(config) {
-	// keep hass-config
+    // keep hass-config
     const root = this.shadowRoot;
     if (root.lastChild) root.removeChild(root.lastChild);
 
     const cardConfig = Object.assign({}, config);
 
-	// assemble html 
+    // assemble html 
     const card = document.createElement('ha-card');
     card.header = config.title;
     const content = document.createElement('div');
@@ -78,17 +77,42 @@ class FlexTableCard extends HTMLElement {
     card.appendChild(style);
     card.appendChild(content);
     root.appendChild(card)
+    
+
     // DOM ready to be injected....
-    this._config = cardConfig;
+    this._config = Object.create(cardConfig);
   }
 
   _updateContent(element, rows) {
-    // callback for updating the cell-contents
-    element.innerHTML = rows.map((row) => {
-      return "<tr>" +
-        `${row.map((cell) => `<td>${cell}</td>`).join("")}` +
-        "</tr>";
-    }).join("");
+
+     const clickable = this._config.clickable;
+
+     // fill table row-wise now
+     rows.map((row, idx) => {
+	// keep entity_id, drop config 
+	const e_id = row.pop();
+
+	// assemble html
+        const row_elem = document.createElement("tr");
+	row.forEach((cell) => {
+	  const elem = document.createElement("td");
+	  elem.innerHTML = cell;
+	  row_elem.append(elem);
+	});
+	
+	// bind click()-handler to row (if configured)
+	row_elem.onclick = (clickable) ? (function(clk_ev) {
+	    // construct and fire 'details-view' signal
+            let ev = new Event("hass-more-info", {
+              bubbles: true, cancelable: false, composed: true });
+            ev.detail = { entityId: e_id };
+            this.dispatchEvent(ev);
+	}) : null;
+
+	// html element ,,,
+        return row_elem;
+    // appended to table-body
+    }).forEach((el) => element.append(el));
   }
 
   set hass(hass) {
@@ -98,7 +122,7 @@ class FlexTableCard extends HTMLElement {
     // get "data sources"
     let entities = this._getEntities(hass, 
     	config.entities.include, config.entities.exclude);
-		
+
     // construct table structure, ..,
     var full_tbl = [];
 
@@ -108,6 +132,7 @@ class FlexTableCard extends HTMLElement {
 
     // @todo: pythonic way to do this, js best-practice is how?
     var zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
+
     entities.forEach(entity => {
       zip(config.columns.map((col) => {
 	var out_data = null;
@@ -134,29 +159,28 @@ class FlexTableCard extends HTMLElement {
               out_data = [((col.prop in entity) ? entity[col.prop] : null)];
 
         } else if ("attr_as_list" in col) {
-          /*return entity.attributes[col.attr_as_list].map(
-		(x) => Object({ data: x }));*/
-	  out_data = entity.attributes[col.attr_as_list];
+	    out_data = entity.attributes[col.attr_as_list];
 
         } else {
-          console.log("this 'should' not happen...");
-	
-          //return [{ "data": null }];
+            console.log("this 'should' not happen...");
         }
 	// apply passed "modify" configuration setting by using eval()
 	// assuming the data is available inside the function as "x"
 	if (typeof col.modify != "undefined")
 	    out_data = out_data.map((x) => eval(col.modify));
-            //out_data = apply_eval(out_data, col.modify);
 
 	if (typeof out_data == "undefined")
 	    return [];
 	else
 	    return out_data.map((d) => new Object({data: d}));
 
-
       // do the *transpose*, to allow row-wise output
       })).forEach(row => full_tbl.push(row));
+    });
+
+    full_tbl = full_tbl.map((row, idx) => {
+      row.push(entities[idx].entity_id);
+      return row;
     });
 
     // care for 'strict' configuration option
@@ -190,13 +214,13 @@ class FlexTableCard extends HTMLElement {
 	if (sort_idx > -1)
 	    rows.sort((x, y) => sort_dir * cmp(x[sort_idx], y[sort_idx]));
 	else
-	    console.log(`ERROR: config.sort_by: ${config.sort_by}, but column not found!`);
+	    console.log(`ERROR: config.sort_by: ${config.sort_by}, but col not found!`);
     }
     // truncate shown rows to 'max rows', if configured
     if ("max_rows" in config && config.max_rows > -1)
       rows = rows.slice(0, config.max_rows);
 
-    // hide cols, if requested by config (for hidden sorting)
+    // hide cols, if requested by config (for e.g., hidden sorting)
     var hidecols = config.columns.map(
 	(col, idx) => (col.hidden && idx)).filter((idx) => idx);	
     rows = rows.map(
@@ -204,7 +228,11 @@ class FlexTableCard extends HTMLElement {
 
     // finally set card height and insert card
     this._setCardSize(rows.length);
-    this._updateContent(root.getElementById('flextbl'), rows);
+
+    // empty and re-fill tbl
+    const tbl = root.getElementById("flextbl");
+    tbl.innerHTML = "";
+    this._updateContent(tbl, rows);
   }
 
   _setCardSize(num_rows) {
@@ -216,4 +244,4 @@ class FlexTableCard extends HTMLElement {
   }
 }
 
-customElements.define('flex-table-card', FlexTableCard);
+customElements.define("flex-table-card", FlexTableCard);
