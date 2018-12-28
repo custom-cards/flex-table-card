@@ -46,7 +46,6 @@ can be easily realized, see Screenshots:
 | title           | string   |   optional    | A title for the card
 | strict          | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
 | sort_by         | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
-| clickable       | bool     |   optional    | Whether the row shall open the entity more info dialog. (default: false)
 | max_rows        | int      |   optional    | Restrict the number of (shown) rows to this maximum number
 | entities        | section  | **required**  | Section defining the entity *data sources* (see below)
 | columns         | section  | **required**  | Section defining the column(s) (see below)

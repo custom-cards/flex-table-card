@@ -20,8 +20,3 @@
 
 ## 0.3.1
 - flex-table-card now part of 'custom-cards' organization
-
-## 0.4.0
-- by setting "clickable: true", each row will open the more-info dialog for the 
-  relevant entity_id and shows more details
-- quite some bugfixes
