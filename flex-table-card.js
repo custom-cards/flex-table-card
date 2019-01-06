@@ -176,7 +176,11 @@ class FlexTableCard extends HTMLElement {
                 sort_dir = ((config.sort_by.slice(-1)) == "-") ? -1 : +1;
             }
         }
-        var sort_idx = config.columns.findIndex((col) => col.attr == sort_col);
+        var sort_idx = config.columns.findIndex((col) => {
+          if (col.attr == sort_col) return true
+          if (col.hasOwnProperty('prop') && col.prop == sort_col) return true
+          return false;
+        });
 	// special comparision handling for string, omg this is dissapointing JS
 	var cmp = function(a, b) {
 	   if (typeof a == "string")
