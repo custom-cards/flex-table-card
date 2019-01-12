@@ -3,30 +3,24 @@
 ## Installation (quick & "dirty")
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
-* Change into `~/.homeassistant/www`
-* `$ wget https://raw.githubusercontent.com/custom-cards/flex-table-card/master/flex-table-card.js` will download the `.js` file directly where it should be
+* Change into `~/.homeassistant/www` (create the `www` directory, if it is not existing, you then might have to restart HA)
+* `$ wget https://raw.githubusercontent.com/custom-cards/flex-table-card/master/flex-table-card.js` downloads the `.js` file directly where it should reside
 * Finally, add the following on top of your UI Lovelace configuration (means either via Config UI or .yaml)
 ```
 resources:
   - type: js
     url: /local/flex-table-card.js
 ```
-* Verify that it works with one of the examples below.
-
-
-*"Dirty" here is simply the face that directly `wget` is used instead of checking out the repository with `git` as it best practice.*
+* Verify that it works with one of the examples below
 
 ## Configuration
-Flex table aims for more flexibility for tabular-ish visuallization
-needs, by realizing:
+The `flex-table-card` aims for more flexibility for tabular-ish visuallization needs, by realizing:
 
 - unlimited columns / rows 
 - various different data-sources may be used in a single table
-- higher level of abstraction for content selection
+- lots of possibilities for configuration: entity selection (include, exclude), (hidden-)column-sorting, js-based content manipulation, row limiting and more...
 
-Flex Table gives you the possibility to visualize any tabular data
-within Lovelace. Especially for overview views high data density
-can be easily realized, see Screenshots:
+Flex Table gives you the possibility to visualize any tabular data within Lovelace. Especially overviews with high data densities can be easily realized. Some screenshots:
 
 ![3 columns, sorted by last sent message, best for network and node diagnosis, only 20 rows shown](https://github.com/daringer/image_dump/raw/master/tbl1.png)
 ![2 (3) columns, one is hidden (see table 1) to sort with, restricted to 20 rows allows cross-table-layout-alignment](https://github.com/daringer/image_dump/raw/master/tbl2.png)
@@ -66,7 +60,7 @@ can be easily realized, see Screenshots:
 | name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
 | hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-|&nbsp;&lt;content&gt; |        | **required**  | see in `column contents` below, one of these must exist!
+|&nbsp;&lt;content&gt; |        | **required**  | see in `column contents` below, one of those must exist!
 
 
 ***3rd-level options: column (cell) content definition***
@@ -78,16 +72,16 @@ can be easily realized, see Screenshots:
 | attr_as_list      | string   | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
  
 
-**Example**
+**Examples**
 
 - configuration of the contents is done by a two step approach
  
   - first the candidate **rows** have to be *queried* using 
-	  wildcarding/regular expressions, leading to a set of 
-		entities (candidates)
-  - eventually for each column a rule has to be given how the
-	  matching should happen, matched e.g. attributes will then 
-		be exposed as the contents of the row (cells).
+    wildcarding/regular expressions, leading to a set of 
+    entities (candidates)
+  - eventually for each column a rule has to be given how 
+    the matching should happen, matched e.g. attributes will 
+    then be exposed as the contents of the row (cells)
 
 ```yaml
 - type: custom:flex-table-card 
