@@ -48,37 +48,31 @@ class FlexTableCard extends HTMLElement {
         const content = document.createElement('div');
         const style = document.createElement('style');
 
-        // most ugly, simply copy&paste from below: @TODO, @FIXME
-        var hidecols = cardConfig.columns.map(
+        // hide columns, if requested
+        const hidecols = cardConfig.columns.map(
             (col, idx) => (col.hidden && idx)).filter((idx) => idx);    
-        var head_cols = cardConfig.columns.filter((col, idx) => (!hidecols.includes(idx)));
+        const head_cols = cardConfig.columns.filter((col, idx) => (!hidecols.includes(idx)));
 
         style.textContent = `
-      table {
-    width: 100%;
-    padding: 16px;
-      }
-      thead th {
-    text-align: left;
-      }
-      tbody tr:nth-child(odd) {
-    background-color: var(--paper-card-background-color);
-      }
-      tbody tr:nth-child(even) {
-    background-color: var(--secondary-background-color);
-      }
-    `;
+            table {
+                width: 100%;
+                padding: 16px;
+            }
+            thead th { text-align: left; }
+            tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
+            tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
+        `;
         content.innerHTML = `
-      <table>
-    <thead>
-      <tr>` +
-            `${head_cols.map((col) => `<th>${col.name || col.attr}</th>`).join("")}` +
-            `</tr>
-    </thead>
-    <tbody id='flextbl'>
-    </tbody>
-      </table>
-      `;
+            <table>
+                <thead>
+                    <tr>
+                        ${head_cols.map((col) => `<th>${col.name || col.attr}</th>`).join("")} 
+                    </tr>
+                </thead>
+                <tbody id='flextbl'></tbody>
+          </table>
+        `;
+
         card.appendChild(style);
         card.appendChild(content);
         root.appendChild(card)
@@ -89,9 +83,7 @@ class FlexTableCard extends HTMLElement {
     _updateContent(element, rows) {
         // callback for updating the cell-contents
         element.innerHTML = rows.map((row) => {
-            return "<tr>" +
-                `${row.map((cell) => `<td>${cell}</td>`).join("")}` +
-                "</tr>";
+            return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
         }).join("");
     }
 
