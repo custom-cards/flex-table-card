@@ -20,3 +20,9 @@
 
 ## 0.3.1
 - flex-table-card now part of 'custom-cards' organization
+
+## 0.3.2
+- exluding mulitple items fixed
+- sort_by works now also with 'props' columns thx @andreassolberg
+- regular expressions now concated and applied instead on after another
+- lots of cleanups
