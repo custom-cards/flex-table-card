@@ -1,7 +1,7 @@
 # Flex Table
 
 [![Version](https://img.shields.io/badge/version-0.3.3-green.svg?style=plastic)](#)
-[![stability-mature](https://img.shields.io/badge/stability-mature-green.svg?style=plastic)](#)
+[![stability-stable-1.0-release-pending](https://img.shields.io/badge/stability-stable_1.0_release_incoming-green.svg?style=plastic)](#)
 [![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
 
 
