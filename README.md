@@ -6,7 +6,7 @@
 * Change into `~/.homeassistant/www` (create the `www` directory, if it is not existing, you then might have to restart HA)
 * `$ wget https://raw.githubusercontent.com/custom-cards/flex-table-card/master/flex-table-card.js` downloads the `.js` file directly where it should reside
 * Finally, add the following on top of your UI Lovelace configuration (means either via Config UI or .yaml)
-```
+``` yaml
 resources:
   - type: js
     url: /local/flex-table-card.js
@@ -30,8 +30,8 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 ***Top-level options***
 
-| Name            | Type     | Default       | Description
-| ----            | ----     | -------       | -----------
+| Name            | Type     | Required?     | Description
+| ----            | ----     | ------------- | -----------
 | type            | string   | **required**  | `custom:flex-table-card`
 | title           | string   |   optional    | A title for the card
 | strict          | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
@@ -43,23 +43,23 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 ***2nd-level options: entity selection / querying / filtering***
 
-| `entities`    | Type     | Default       | Description
-| ----          | ----     | -------       | -----------
+| `entities`    | Type     | Required?     | Description
+| ----          | ----     | ------------- | -----------
 | include       | regexp   | **required**  | Defines the initial entity data source(s)
 | exclude       | regexp   |   optional    | Reduces the *included* data sources(s) 
 
 
 ***2nd-level options: columns definition, each list-item defines a column***
 
-| `columns`     | Type     | Default       | Description
-| ----          | ----     | -------       | -----------
+| `columns`     | Type     | Required?     | Description
+| ----          | ----     | ------------- | -----------
 | name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
 | hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
 |&nbsp;&lt;content&gt; |        | **required**  | see in `column contents` below, one of those must exist!
 
 
-***3rd-level options: column (cell) content definition***
+***3rd-level options: column (cell) content definition, one required and mutually exclusive***
 
 | `column contents` | Type     | Description
 | ---------------   | ----     | -----------
@@ -79,29 +79,75 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
     the matching should happen, matched e.g. attributes will 
     then be exposed as the contents of the row (cells)
 
-```yaml
-- type: custom:flex-table-card 
-  title: may be omitted, to be hidden
+``` yaml
+type: custom:flex-table-card 
+title: may be omitted, to be hidden
 
-  # 1st the **canidate** entities will be selected
-  entities:
-    include: zwave.*
-    exclude: zwave.unknown_node*
+# 1st the **canidate** entities will be selected
+entities:
+  include: zwave.*
+  exclude: zwave.unknown_node*
 
-  # 2nd, the *column contents* are defined, there are
-  # different ways to match contents:
-  columns:
-    # example: match entity's attribute(s)
-    - name: Column Header
-      attr: receivedTS
-      # extract only date from string
-      modify: x.split("T")[0]
-    - name: More Header
-      attr: sendTS
-    # example: match and show the given entity-property 
-    #          e.g., the state (incl. any non-attr members)
-    - name: Next Head
-      prop: state
+# 2nd, the *column contents* are defined, there are
+# different ways to match contents:
+columns:
+  # example: match entity's attribute(s)
+  - name: Column Header
+    attr: receivedTS
+    # extract only date from string
+    modify: x.split("T")[0]
+  - name: More Header
+    attr: sendTS
+  # example: match and show the given entity-property 
+  #          e.g., the state (incl. any non-attr members)
+  - name: Next Head
+    prop: state
+```
+
+An extremly useful `flex-table-card` config: List all battery powered devices and list them ascending by their battery level, so the next batteries to be replaced are always visible within the first row(s):
+
+``` yaml
+type: 'custom:flex-table-card'
+sort_by: battery_level+
+strict: true
+title: Battery Levels
+entities:
+  exclude:
+    - unknown_device
+  include: zwave.*
+columns:
+  - attr: node_id
+    name: NodeID
+  - name: Name
+    prop: name
+  - attr: battery_level
+    name: Reported Battery Level (%)
+```
+
+Monitoring and identifying nodes, which are not communicating anymore with the Z-Wave controller, can be extracted and also sorted according to their last sent/received message with the following config:
+
+``` yaml
+type: 'custom:flex-table-card'
+max_rows: 25
+#sort_by: sentTS- <--- for last sent msg-based sorting
+sort_by: receivedTS-
+title: Durations Since Last Message (recv. & sent by node)
+columns:
+  - attr: node_id
+    name: NodeID
+  - name: Name
+    prop: name
+  - attr: receivedTS
+    modify: Math.round((Date.now() - Date.parse(x)) / 36000.) / 100.
+    name: Recv. Age (h)
+  - attr: sentTS
+    modify: Math.round((Date.now() - Date.parse(x)) / 36000.) / 100.
+    name: Sent Age (h)
+entities:
+  exclude:
+    - zwave.unknown_device_*
+    - zstick_gen5
+  include: zwave.*
 ```
 
 Further I also regulary have the need to 
@@ -117,21 +163,21 @@ service, leads to proper jsonification. But now we've done
 a reshape for the input data but luckily no problem. Nothing
 more to adjust than to add a single keyword, with an obvious
 naming:
+  
+``` yaml
+type: custom:flex-table-card 
+title: Fancy tabular data
+# this matches then just the *variable component* entitiy
+entities:
+  include: variable.muell_tracker
 
-```yaml
-- type: custom:flex-table-card 
-  title: Fancy tabular data
-  # this matches then just the *variable component* entitiy
-  entities:
-    include: variable.muell_tracker
-
-  # the columns are now similar, just with one match leading
-  # to severall lines being filled, check the screenshots:
-  columns:
-    - name: Date
-      attr_as_list: due_dates
-    - name: Description
-      attr_as_list: descriptions
+# the columns are now similar, just with one match leading
+# to severall lines being filled, check the screenshots:
+columns:
+  - name: Date
+    attr_as_list: due_dates
+  - name: Description
+    attr_as_list: descriptions
 ```
 
 **Current Issues / Drawbacks / Plans**
