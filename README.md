@@ -22,11 +22,7 @@ The `flex-table-card` aims for more flexibility for tabular-ish visuallization n
 
 Flex Table gives you the possibility to visualize any tabular data within Lovelace. Especially overviews with high data densities can be easily realized. Some screenshots:
 
-![3 columns, sorted by last sent message, best for network and node diagnosis, only 20 rows shown](https://github.com/daringer/image_dump/raw/master/tbl1.png)
-![2 (3) columns, one is hidden (see table 1) to sort with, restricted to 20 rows allows cross-table-layout-alignment](https://github.com/daringer/image_dump/raw/master/tbl2.png)
-![all power & energy reporting nodes, sorted by current power consumption, restricted to 20 rows, top consumer always directly visible](https://github.com/daringer/image_dump/raw/master/tbl3.png)
-![trash collection dates, simple example, gets updates from appdaemon](https://github.com/daringer/image_dump/raw/master/trash_tbl.png)
-![column with `modify` to calculated time passed and afterwards sorted](https://github.com/daringer/image_dump/raw/master/tbl4.png)
+<img src="https://github.com/daringer/image_dump/raw/master/tbl1.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl2.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl3.png" width=20% /><span><img src="https://github.com/daringer/image_dump/raw/master/trash_tbl.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl4.png" width=20% /></span>
 
 
 **Options**
