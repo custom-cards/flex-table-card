@@ -1,5 +1,10 @@
 # Flex Table
 
+[![Version](https://img.shields.io/badge/version-0.3.3-green.svg?style=plastic)](#)
+[![stability-mature](https://img.shields.io/badge/stability-mature-green.svg?style=plastic)](#)
+[![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
+
+
 ## Installation (quick & "dirty")
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
