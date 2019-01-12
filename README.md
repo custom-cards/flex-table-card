@@ -104,7 +104,7 @@ columns:
     prop: state
 ```
 
-An extremly useful `flex-table-card` config: List all battery powered devices and list them ascending by their battery level, so the next batteries to be replaced are always visible within the first row(s):
+An extremly useful `flex-table-card` config: **List and sort all battery powered devices** and list them ascending by their battery level, so the next batteries to be replaced are always visible within the first row(s):
 
 ``` yaml
 type: 'custom:flex-table-card'
@@ -124,7 +124,7 @@ columns:
     name: Reported Battery Level (%)
 ```
 
-Monitoring and identifying nodes, which are not communicating anymore with the Z-Wave controller, can be extracted and also sorted according to their last sent/received message with the following config:
+**Monitoring and identifying nodes, which are not communicating anymore** with the Z-Wave controller, can be extracted and also sorted according to their last sent/received message with the following config:
 
 ``` yaml
 type: 'custom:flex-table-card'
