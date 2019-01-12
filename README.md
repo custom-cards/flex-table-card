@@ -1,6 +1,6 @@
 # Flex Table
 
-[![Version](https://img.shields.io/badge/version-0.3.3-green.svg?style=plastic)](#)
+[![Version](https://img.shields.io/badge/version-0.4.0-green.svg?style=plastic)](#)
 [![stability-stable-1.0-release-pending](https://img.shields.io/badge/stability-stable_1.0_release_incoming-green.svg?style=plastic)](#)
 [![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
 
@@ -30,7 +30,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 <img src="https://github.com/daringer/image_dump/raw/master/tbl1.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl2.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl3.png" width=20% /><span><img src="https://github.com/daringer/image_dump/raw/master/trash_tbl.png" width=20% /><img src="https://github.com/daringer/image_dump/raw/master/tbl4.png" width=20% /></span>
 
 
-**Options**
+**Configuration Options**
 
 
 ***Top-level options***
@@ -42,6 +42,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | strict          | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
 | sort_by         | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
 | max_rows        | int      |   optional    | Restrict the number of (shown) rows to this maximum number
+| clickable       | bool     |   optional    | Activates the entities' on-click popup dialog
 | entities        | section  | **required**  | Section defining the entity *data sources* (see below)
 | columns         | section  | **required**  | Section defining the column(s) (see below)
 
@@ -134,9 +135,10 @@ columns:
 ``` yaml
 type: 'custom:flex-table-card'
 max_rows: 25
-#sort_by: sentTS- <--- for last sent msg-based sorting
+#sort_by: sentTS- # <--- for last sent msg-based sorting
 sort_by: receivedTS-
 title: Durations Since Last Message (recv. & sent by node)
+clickable: true   # <--- allows to click on row to show entity-popup for more information
 columns:
   - attr: node_id
     name: NodeID
@@ -190,6 +192,5 @@ columns:
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns 
-* entity dialog box activiation on row-click (will be next!)
 * find out if cards are allowed to span more width, and if how?
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?

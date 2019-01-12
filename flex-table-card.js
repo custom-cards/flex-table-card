@@ -1,213 +1,276 @@
+
+/** some helper functions, mmmh, am I the only one needing those? Am I doing something wrong? */
+// typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
+transpose = m => m[0].map((x, i) => m.map(x => x[i]));
+
+// single items -> Array with item with length == 1
+listify = obj => ((obj instanceof Array) ? obj : [obj]);
+
+// simply return the args, which were passed, mmh not needed anymore here...
+//pipe = (...args) => args
+
+// a map function, which splits args to multiple vars, python-like
+//mmap = 
+
+// omg, js is still very broken, trouble comparing strings? 80s? plain-C? wtf!
+var compare = function(a, b) {
+	if (typeof a == "string")
+		return a.localeCompare(b);
+	else if (typeof b == "string")
+		return -1 * b.localeCompare(a);
+	else
+		return a - b;
+}
+
+/** flex-table data representation and keeper */
+class DataTable {
+	constructor(cfg) {
+		this.cols = cfg.columns;
+		this.cfg = cfg;
+
+		this.col_ids = this.cols.map(col => col.prop || col.attr || col.attr_as_list);
+		this.headers = this.cols.filter(col => !col.hidden).map(col => col.name || this.cols_idx[idx]);
+
+		this.rows = [];
+	}
+
+	add(...rows) {
+		this.rows.push(...rows.map(row => row.render_data(this.cols)));
+	}
+
+	clear_rows() {
+		this.rows = [];
+  }
+
+	get_rows() {
+		// sorting is allowed asc/desc for one column
+		if (this.cfg.sort_by) {
+			let sort_col = this.cfg.sort_by;
+			let sort_dir = 1;
+			if (sort_col) {
+				if (["-", "+"].includes(sort_col.slice(-1))) {
+          // "-" => descending, "+" => ascending
+					sort_dir = ((sort_col.slice(-1)) == "-") ? -1 : +1;
+					sort_col = sort_col.slice(0, -1);
+				}
+			}
+      
+      // determine col-by-idx to be sorted with...
+			var sort_idx = this.cols.findIndex((col) => 
+				["attr", "prop", "attr_as_list"].some(attr => 
+					attr in col && sort_col == col[attr]));
+
+			// if applicable sort according to config
+			if (sort_idx > -1)
+				this.rows.sort((x, y) => sort_dir * compare(x.data[sort_idx], y.data[sort_idx]));
+			else
+				console.error(`config.sort_by: ${this.cfg.sort_by}, but column not found!`);
+		}
+    // mark rows to be hidden due to 'strict' property
+		this.rows = this.rows.filter(row => !row.hidden);
+
+		// truncate shown rows to 'max rows', if configured
+		if ("max_rows" in this.cfg && this.cfg.max_rows > -1)
+			this.rows = this.rows.slice(0, this.cfg.max_rows);
+
+		return this.rows;
+	}
+}
+
+/** One level down, data representation for each row (including all cells) */
+class DataRow { 
+	constructor(entity, strict, raw_data=null) {
+		this.entity = entity;
+		this.hidden = false;
+		this.strict = strict;
+		this.raw_data = raw_data;
+		this.data = null;
+		this.has_multiple = false;
+	} 
+
+	get_raw_data(col_cfgs) {
+		this.raw_data = col_cfgs.map((col) => {			
+			if ("attr" in col) {
+				return ((col.attr in this.entity.attributes) ?
+					this.entity.attributes[col.attr] : null);
+
+			} else if ("prop" in col) {
+				// 'object_id' and 'name' not working -> make them work:
+				if (col.prop == "object_id") {
+					return this.entity.entity_id.split(".").slice(1).join(".");
+
+				// 'name' automagically resolves to most verbose name
+				} else if (col.prop == "name") {
+					if ("friendly_name" in this.entity.attributes)
+						return this.entity.attributes.friendly_name;
+					else if ("name" in this.entity)
+						return this.entity.name;
+					else if ("name" in this.entity.attributes)
+						return this.entity.attributes.name;
+					else
+						return this.entity.entity_id;
+
+				// other state properties seem to work as expected...
+				} else
+					return ((col.prop in this.entity) ? this.entity[col.prop] : null);
+
+			} else if ("attr_as_list" in col) {
+				this.has_multiple = true;
+				return this.entity.attributes[col.attr_as_list];
+
+			} else 
+				console.error(`no selector found for col: ${col.name} - skipping...`);
+			return null;
+		});
+	}
+
+	render_data(col_cfgs) {
+		// apply passed "modify" configuration setting by using eval()
+		// assuming the data is available inside the function as "x"
+		this.data = this.raw_data.map((raw, idx) => {
+			if (raw === "undefined" || typeof raw === "undefined" || raw === null) 
+				return ((this.strict) ? null : "n/a");
+			let x = raw;
+			return (col_cfgs[idx].modify) ? eval(col_cfgs[idx].modify) : x;
+		});
+
+		this.hidden = this.data.some(data => (data === null));
+    return this;
+	}
+}
+
+
+/** The HTMLElement, which is used as a base for the Lovelace custom card */
 class FlexTableCard extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({
-            mode: 'open'
+	constructor() {
+		super();
+		this.attachShadow({
+			mode: 'open'
+		});
+		this.card_height = 1;
+		this.tbl = null;
+	}
+
+	_getRegEx(pats, invert=false) {
+		// compile and convert wildcardish-regex to real RegExp
+		const real_pats = pats.map((pat) => pat.replace(/\*/g, '.*'));
+		const merged = real_pats.map((pat) => `(${pat})`).join("|");
+		if (invert)
+			return new RegExp(`^(?:(?!${merged}).)*$`, 'gi');
+		else 
+			return new RegExp(`^${merged}$`, 'gi');
+	}
+
+	_getEntities(hass, incl, excl) {
+		// apply inclusion regex
+		const incl_re = this._getRegEx(listify(incl));
+		let keys = Object.keys(hass.states).filter(e_id => e_id.match(incl_re));
+		if (excl) {
+			// apply exclusion, if applicable
+			const excl_re = this._getRegEx(listify(excl), true);
+			keys = keys.filter(e_id => e_id.match(excl_re));
+		}
+		return keys.map(key => hass.states[key]);
+	}
+
+	setConfig(config) {
+		// get & keep card-config and hass-interface
+		const root = this.shadowRoot;
+		if (root.lastChild) 
+      root.removeChild(root.lastChild);
+
+		const cfg = Object.assign({}, config);
+
+		// assemble html 
+		const card = document.createElement('ha-card');
+		card.header = cfg.title;
+		const content = document.createElement('div');
+		const style = document.createElement('style');
+
+		this.tbl = new DataTable(cfg);
+
+    // some css style
+		style.textContent = `
+						table {
+								width: 100%;
+								padding: 16px;
+						}
+						thead th { text-align: left; }
+						tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
+						tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
+				`;
+    // table skeleton, body identified with: 'flextbl'
+		content.innerHTML = `
+				<table>
+					<thead>
+						<tr>${this.tbl.headers.map((name) => `<th>${name}</th>`).join("")}</tr>
+					</thead>
+					<tbody id='flextbl'></tbody>
+				</table>
+				`;
+		card.appendChild(style);
+		card.appendChild(content);
+		root.appendChild(card)
+		this._config = cfg;
+	}
+
+	_updateContent(element, rows) {
+		// callback for updating the cell-contents
+		element.innerHTML = rows.map((row) => 
+			`<tr id="entity_row_${row.entity.entity_id}">${row.data.map((cell) => 
+				`<td>${cell}</td>`).join("")}</tr>`).join("");
+
+    // if configured, set clickable row to show entity popup-dialog
+		rows.forEach(row => {
+      const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}`);
+  	  // bind click()-handler to row (if configured)
+		  elem.onclick = (this.tbl.cfg.clickable) ? (function(clk_ev) {
+  		  // create and fire 'details-view' signal
+        let ev = new Event("hass-more-info", {
+      	  bubbles: true, cancelable: false, composed: true 
         });
-        this.card_height = 1;
-    }
+        ev.detail = { entityId: row.entity.entity_id };
+        this.dispatchEvent(ev);
+	  	}) : null;
+		});
+	}
 
-    _getRegEx(pats, invert=false) {
-        // compile and convert wildcardish-regex to real RegExp
-        const real_pats = pats.map((pat) => pat.replace(/\*/g, '.*'));
-        const merged = real_pats.map((pat) => `(${pat})`).join("|");
-        if (invert)
-            return new RegExp(`^(?:(?!${merged}).)*$`, 'gi');
-        else 
-            return new RegExp(`^${merged}$`, 'gi');
-    }
+  set hass(hass) {
+    const config = this._config;
+    const root = this.shadowRoot;
 
+    // get "data sources / origins" i.e, entities
+    let entities = this._getEntities(hass, config.entities.include, config.entities.exclude);
 
-    _listify(obj) {
-        // if obj is an Array() -> ok, else return obj inside an Array
-        return (obj instanceof Array) ? obj : [obj];
-    }
+    // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
+    // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
+    // to---if applicable---spawn new DataRow objects for these accordingly
+    let raw_rows = entities.map(e => new DataRow(e, config.strict, config.sort_by));
+    raw_rows.forEach(e => e.get_raw_data(config.columns))
 
-    _getEntities(hass, incl, excl) {
-        // apply inclusion regex
-        const incl_re = this._getRegEx(this._listify(incl));
-        let keys = Object.keys(hass.states).filter(e_id => e_id.match(incl_re));
-        if (excl) {
-            // apply exclusion, if applicable
-            const excl_re = this._getRegEx(this._listify(excl), true);
-            keys = keys.filter(e_id => e_id.match(excl_re));
-        }
-        return keys.map(key => hass.states[key]);
-    }
+    // now add() the raw_data rows to the DataTable
+    this.tbl.clear_rows();
+    raw_rows.forEach(row_obj => {
+      if (!row_obj.has_multiple)
+        this.tbl.add(row_obj);
+      else
+        this.tbl.add(...transpose(row_obj.raw_data).map(new_raw_data => 
+          new DataRow(row_obj.entity, row_obj.strict, new_raw_data)));
+    });
 
-    setConfig(config) {
-        // keep hass-config
-        const root = this.shadowRoot;
-        if (root.lastChild) root.removeChild(root.lastChild);
+    // finally set card height and insert card
+    this._setCardSize(this.tbl.rows.length);
+    // all preprocessing / rendering will be done here inside DataTable::get_rows()
+    this._updateContent(root.getElementById('flextbl'), this.tbl.get_rows());
+  }
 
-        const cardConfig = Object.assign({}, config);
+	_setCardSize(num_rows) {
+		this.card_height = parseInt(num_rows * 0.5);
+	}
 
-        // assemble html 
-        const card = document.createElement('ha-card');
-        card.header = config.title;
-        const content = document.createElement('div');
-        const style = document.createElement('style');
-
-        // hide columns, if requested
-        const hidecols = cardConfig.columns.map(
-            (col, idx) => (col.hidden && idx)).filter((idx) => idx);    
-        const head_cols = cardConfig.columns.filter((col, idx) => (!hidecols.includes(idx)));
-
-        style.textContent = `
-            table {
-                width: 100%;
-                padding: 16px;
-            }
-            thead th { text-align: left; }
-            tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
-            tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
-        `;
-        content.innerHTML = `
-            <table>
-                <thead>
-                    <tr>
-                        ${head_cols.map((col) => `<th>${col.name || col.attr}</th>`).join("")} 
-                    </tr>
-                </thead>
-                <tbody id='flextbl'></tbody>
-          </table>
-        `;
-
-        card.appendChild(style);
-        card.appendChild(content);
-        root.appendChild(card)
-        // DOM ready to be injected....
-        this._config = cardConfig;
-    }
-
-    _updateContent(element, rows) {
-        // callback for updating the cell-contents
-        element.innerHTML = rows.map((row) => {
-            return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
-        }).join("");
-    }
-
-    set hass(hass) {
-        const config = this._config;
-        const root = this.shadowRoot;
-
-        // get "data sources"
-        let entities = this._getEntities(hass, 
-            config.entities.include, config.entities.exclude);
-
-        // construct table structure, ..,
-        var full_tbl = [];
-
-        function apply_eval(all_x, cmd_string) {
-            return all_x.map((x) => eval(cmd_string));
-        }
-
-        // @todo: pythonic way to do this, js best-practice is how?
-        var zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
-        entities.forEach(entity => {
-            zip(config.columns.map((col) => {
-                var out_data = null;
-                if ("attr" in col) {
-                    out_data = [((col.attr in entity.attributes) ?
-                        entity.attributes[col.attr] : null)];
-                } else if ("prop" in col) {
-                    // 'object_id' and 'name' not working -> make them work:
-                    if (col.prop == "object_id") {
-                        out_data = [entity.entity_id.split(".").slice(1).join(".")];
-
-                    // 'name' automagically resolves to most verbose name
-                    } else if (col.prop == "name") {
-                        if ("friendly_name" in entity.attributes)
-                            out_data = [entity.attributes.friendly_name];
-                        else if ("name" in entity)
-                            out_data = [entity.name];
-                        else if ("name" in entity.attributes)
-                            out_data = [entity.attributes.name];
-                        else
-                            out_data = [entity.entity_id];
-                    // other state properties seem to work as expected...
-                    } else
-                        out_data = [((col.prop in entity) ? entity[col.prop] : null)];
-
-                } else if ("attr_as_list" in col) {
-                    out_data = entity.attributes[col.attr_as_list];
-
-                } else 
-                    console.error(`no selector found for col: ${col.name} - skipping...`);
-                
-                // apply passed "modify" configuration setting by using eval()
-                // assuming the data is available inside the function as "x"
-                if (typeof col.modify != "undefined")
-                    out_data = out_data.map((x) => eval(col.modify));
-
-                if (typeof out_data == "undefined")
-                    return [];
-                else
-                    return out_data.map((d) => new Object({data: d}));
-
-            // do the *transpose*, to allow row-wise output
-            })).forEach(row => full_tbl.push(row));
-        });
-
-        // care for 'strict' configuration option
-        var rows = (config.strict) ?
-            full_tbl.filter((row) => row.every((cell) => cell.data !== null)).map(
-                (x) => x.map((y) => y.data)) :
-            full_tbl.map((row) => row.map(
-                (cell) => (cell.data == null) ? "n/a" : cell.data));
-
-        // sorting is allowed asc/desc for one column
-        if (config.sort_by !== undefined) {
-            var sort_col = config.sort_by;
-            var sort_dir = 1;
-            if (config.sort_by !== undefined) {
-                if (["-", "+"].includes(config.sort_by.slice(-1))) {
-                    sort_col = config.sort_by.slice(0, -1);
-                    sort_dir = ((config.sort_by.slice(-1)) == "-") ? -1 : +1;
-                }
-            }
-            var sort_idx = config.columns.findIndex((col) => {
-                if (col.attr == sort_col) return true
-                if (col.hasOwnProperty('prop') && col.prop == sort_col) return true
-                return false;
-            });
-            // special comparision handling for string, omg this is dissapointing JS
-            var cmp = function(a, b) {
-                if (typeof a == "string")
-                    return a.localeCompare(b);
-                else if (typeof b == "string")
-                    return -1 * b.localeCompare(a);
-                else
-                    return a - b;
-            }
-            // if applicable sort according to config
-            if (sort_idx > -1)
-                rows.sort((x, y) => sort_dir * cmp(x[sort_idx], y[sort_idx]));
-            else
-                console.error(`config.sort_by: ${config.sort_by}, but column not found!`);
-        }
-        // truncate shown rows to 'max rows', if configured
-        if ("max_rows" in config && config.max_rows > -1)
-            rows = rows.slice(0, config.max_rows);
-
-        // hide cols, if requested by config (for hidden sorting)
-        var hidecols = config.columns.map(
-            (col, idx) => (col.hidden && idx)).filter((idx) => idx);    
-        rows = rows.map(
-            (row) => row.filter((col, idx) => (!hidecols.includes(idx))));
-
-        // finally set card height and insert card
-        this._setCardSize(rows.length);
-        this._updateContent(root.getElementById('flextbl'), rows);
-    }
-
-    _setCardSize(num_rows) {
-        this.card_height = parseInt(num_rows * 0.5);
-    }
-
-    getCardSize() {
-        return this.card_height;
-    }
+	getCardSize() {
+		return this.card_height;
+	}
 }
 
 customElements.define('flex-table-card', FlexTableCard);

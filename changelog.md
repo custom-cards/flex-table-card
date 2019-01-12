@@ -29,3 +29,8 @@
 
 ## 0.3.3
 - minor improvements, code tidyness, changes for clickable rows started
+
+## 0.4.0
+- now with 'clickable' rows to show the entity_id's popup dialog for further information
+- more or less full re-write introducing DataTable and DataRow as data representation objects
+
