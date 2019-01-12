@@ -26,3 +26,6 @@
 - sort_by works now also with 'props' columns thx @andreassolberg
 - regular expressions now concated and applied instead on after another
 - lots of cleanups
+
+## 0.3.3
+- minor improvements, code tidyness, changes for clickable rows started
