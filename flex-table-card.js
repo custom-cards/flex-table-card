@@ -163,10 +163,14 @@ class FlexTableCard extends HTMLElement {
 
 	_getEntities(hass, incl, excl) {
 		// apply inclusion regex
-		const incl_re = this._getRegEx(listify(incl));
-		let keys = Object.keys(hass.states).filter(e_id => e_id.match(incl_re));
+		const incl_re = listify(incl).map(pat => this._getRegEx([pat])); 
+        // make sure to respect the incl-implied order: no (incl-)regex-stiching, collect 
+        // results for each include and finally reduce to a single list of state-keys
+        let keys = incl_re.map((regex) => 
+            Object.keys(hass.states).filter(e_id => e_id.match(regex))).
+                reduce((out, item) => out.concat(item), []);
 		if (excl) {
-			// apply exclusion, if applicable
+			// apply exclusion, if applicable (here order is not affecting the output(s))
 			const excl_re = this._getRegEx(listify(excl), true);
 			keys = keys.filter(e_id => e_id.match(excl_re));
 		}
@@ -245,7 +249,7 @@ class FlexTableCard extends HTMLElement {
     // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
     // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
     // to---if applicable---spawn new DataRow objects for these accordingly
-    let raw_rows = entities.map(e => new DataRow(e, config.strict, config.sort_by));
+    let raw_rows = entities.map(e => new DataRow(e, config.strict));
     raw_rows.forEach(e => e.get_raw_data(config.columns))
 
     // now add() the raw_data rows to the DataTable
