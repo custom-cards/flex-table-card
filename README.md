@@ -191,6 +191,5 @@ columns:
 
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
-* (click)-able sorting of columns 
-* find out if cards are allowed to span more width, and if how?
+* (click)-able sorting of columns   
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
