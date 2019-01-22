@@ -29,10 +29,8 @@ class DataTable {
         this.cfg = cfg;
 
         this.col_ids = this.cols.map(col => col.prop || col.attr || col.attr_as_list);
-        //headers this.cols.filter(col => !col.hidden).map(col => col.name || this.cols_idx[idx]);
-        //headers = this.cols.filter(col => !col.hidden).map(col => col.name || this.cols_idx[idx]);  ^
         this.headers = this.cols.filter(col => !col.hidden).map((col, idx) =>
-            col.name || this.cols_idx[idx]);
+            col.name || this.col_ids[idx]);
 
         this.rows = [];
     }
