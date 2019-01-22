@@ -189,6 +189,7 @@ columns:
 
 **Current Issues / Drawbacks / Plans**
 
+* cell alignment to be configured for each column
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns   
