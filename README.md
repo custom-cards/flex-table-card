@@ -190,6 +190,8 @@ columns:
 **Current Issues / Drawbacks / Plans**
 
 * cell alignment to be configured for each column
+* allow "prefix" and "suffix" for each column to add units or similar stuff,
+  means a simplifyed version of "modify"
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns   
