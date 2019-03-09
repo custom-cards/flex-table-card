@@ -62,8 +62,13 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | name                 | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
 | id                   | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
 | hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
-| modify               | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+| modify               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+| align                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
+| prefix               | string   |   optional    | to be applied _before_ all cell contents 
+| suffix               | string   |   optional    | to be appended _after_ all cell contents
 |&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist!
+
+*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, thus imposes the inherent safety risks. Especially avoid showing any third party APIs with flex-tables using the `modify` parameter, only apply this parameter, if you are 100% sure about the contents you visualize.
 
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
@@ -226,15 +231,39 @@ columns:
     id: rating
 ```
 
+Finally, an example for the newest `align`, `prefix`, `suffix` parameters:
+```
+title: Power Consumption (Top 20)
+clickable: true
+type: 'custom:flex-table-card'
+max_rows: 30
+sort_by: power_consumption-
+columns:
+  - attr: node_id
+    name: NodeID
+  - attr: power_consumption
+    name: Power (W)
+    suffix: u
+    prefix: '>> '
+    align: right
+    modify: parseFloat(x)
+  - name: Energy (kWh)
+    prop: state
+    modify: parseFloat(x).toFixed(1)
+    align: center
+entities:
+  include: 'sensor.*_energy(_[0-9]+)?'
+```
+As usually the formatting and string manipulation parameters can be combined with all other already known ones, even with `modify`. Here it is important to know that `modify` will actually change the real contents of the cell, whilst `prefix` or `suffix` are applyied at the very end, so neither `prefix` nor `suffix` are taken into account for sorting. In contrast `modify` will alter the cell contents and will be applied before the sort takes place. 
+
+Furthermore one can now set a text-alignment for each column, which also impacts the header, currently `left`, `center`, `right` can be set to obtain the expected results, if more is needed feel free to open an issue or discuss directly with me via discord or other channels.
+
 **Current Issues / Drawbacks / Plans**
 
-* cell alignment to be configured for each column
-* allow "prefix" and "suffix" for each column to add units or similar stuff,
-  means a simplifyed version of "modify"
 * add `json` column param that simply treats whatever is found as json data and will
 	extract the given member(s), also a "modify" abstraction
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns   
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
-
+* there is need for a seperate examples directory/examples.rd or similar...
