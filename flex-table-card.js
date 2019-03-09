@@ -58,7 +58,7 @@ class DataTable {
 
             // determine col-by-idx to be sorted with...
             var sort_idx = this.cols.findIndex((col) => 
-                ["attr", "prop", "attr_as_list"].some(attr => 
+                ["id", "attr", "prop", "attr_as_list"].some(attr => 
                     attr in col && sort_col == col[attr]));
 
             // if applicable sort according to config
@@ -100,7 +100,7 @@ class DataRow {
                 if (col.prop == "object_id") {
                     return this.entity.entity_id.split(".").slice(1).join(".");
 
-                    // 'name' automagically resolves to most verbose name
+                // 'name' automagically resolves to most verbose name
                 } else if (col.prop == "name") {
                     if ("friendly_name" in this.entity.attributes)
                         return this.entity.attributes.friendly_name;
@@ -111,7 +111,7 @@ class DataRow {
                     else
                         return this.entity.entity_id;
 
-                    // other state properties seem to work as expected...
+                // other state properties seem to work as expected...
                 } else
                     return ((col.prop in this.entity) ? this.entity[col.prop] : null);
 
@@ -196,14 +196,14 @@ class FlexTableCard extends HTMLElement {
 
         // some css style
         style.textContent = `
-                        table {
-                                width: 100%;
-                                padding: 16px;
-                        }
-                        thead th { text-align: left; }
-                        tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
-                        tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
-                `;
+              table {
+                      width: 100%;
+                      padding: 16px;
+              }
+              thead th { text-align: left; }
+              tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
+              tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
+        `;
         // table skeleton, body identified with: 'flextbl'
         content.innerHTML = `
                 <table>
@@ -213,9 +213,11 @@ class FlexTableCard extends HTMLElement {
                     <tbody id='flextbl'></tbody>
                 </table>
                 `;
+        // push css-style & table as content into the card's DOM tree
         card.appendChild(style);
         card.appendChild(content);
-        root.appendChild(card)
+        // append card to _root_ node...
+        root.appendChild(card);
         this._config = cfg;
     }
 

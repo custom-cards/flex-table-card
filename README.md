@@ -35,34 +35,35 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 ***Top-level options***
 
-| Name            | Type     | Required?     | Description
-| ----            | ----     | ------------- | -----------
-| type            | string   | **required**  | `custom:flex-table-card`
-| title           | string   |   optional    | A title for the card
-| strict          | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
-| sort_by         | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
-| max_rows        | int      |   optional    | Restrict the number of (shown) rows to this maximum number
-| clickable       | bool     |   optional    | Activates the entities' on-click popup dialog
-| entities        | section  | **required**  | Section defining the entity *data sources* (see below)
-| columns         | section  | **required**  | Section defining the column(s) (see below)
-
-
+| Name                 | Type     | Required?     | Description
+| ----                 | ----     | ------------- | -----------
+| type                 | string   | **required**  | `custom:flex-table-card`
+| title                | string   |   optional    | A title for the card
+| strict               | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
+| sort_by              | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
+| max_rows             | int      |   optional    | Restrict the number of (shown) rows to this maximum number
+| clickable            | bool     |   optional    | Activates the entities' on-click popup dialog
+| entities             | section  | **required**  | Section defining the entity *data sources* (see below)
+| columns              | section  | **required**  | Section defining the column(s) (see below)
+                      
+                      
 ***2nd-level options: entity selection / querying / filtering***
 
-| `entities`    | Type     | Required?     | Description
-| ----          | ----     | ------------- | -----------
-| include       | regexp   | **required**  | Defines the initial entity data source(s)
-| exclude       | regexp   |   optional    | Reduces the *included* data sources(s) 
-
+| `entities`           | Type     | Required?     | Description
+| ----                 | ----     | ------------- | -----------
+| include              | regexp   | **required**  | Defines the initial entity data source(s)
+| exclude              | regexp   |   optional    | Reduces the *included* data sources(s) 
+                    
 
 ***2nd-level options: columns definition, each list-item defines a column***
 
-| `columns`     | Type     | Required?     | Description
-| ----          | ----     | ------------- | -----------
-| name          | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
-| hidden        | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
-| modify        | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-|&nbsp;&lt;content&gt; |        | **required**  | see in `column contents` below, one of those must exist!
+| `columns`            | Type     | Required?     | Description
+| ----                 | ----     | ------------- | -----------
+| name                 | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
+| id                   | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
+| hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
+| modify               | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist!
 
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
@@ -187,12 +188,53 @@ columns:
     attr_as_list: descriptions
 ```
 
+A recuring pattern is a list of dicts (e.g., json objects). Using 
+`attr_as_list` together with `modify`, one can select specifc 
+json members, which then leads to multiple columns with the same 
+`attr_as_list` param, just `modify` differs. The latter might be
+unwanted if combined with `sort_by`, multiple columns would match
+thus `sort_by` will simply not deliver expected behavior. Therefore
+a column can additionally also have the `id` param which serves as
+the unique (and overruling) identifier for any column reference. The
+following example show-cases these concepts:
+
+``` yaml
+type: custom:flex-table-card 
+title: List of json data nicely visualized
+# the list shall be sorted by 'rating', a json member
+sort_by: rating-
+entities:
+  # matching entity contains a list of json objects (dicts)
+  include: sensor.items_with_details   
+
+columns:
+  - name: Name
+    attr_as_list: details
+		modify: x.name
+  - name: Description
+    attr_as_list: details
+		modify: x.desc
+  - name: Price
+    attr_as_list: details
+		modify: x.price
+  - name: Rating
+    attr_as_list: details
+		# let's assume rating is just calculated from other members
+		modify: 'x.price * x.available_pieces'
+	  # without adding `id` here the result would be not as expected 
+		# (random? all sorted? nothing?)
+		id: rating
+```
+
 **Current Issues / Drawbacks / Plans**
 
 * cell alignment to be configured for each column
 * allow "prefix" and "suffix" for each column to add units or similar stuff,
   means a simplifyed version of "modify"
+* add `json` column param that simply treats whatever is found as json data and will
+	extract the given member(s), also a "modify" abstraction
 * additional colunm *selector* for a service call maybe
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns   
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
+
