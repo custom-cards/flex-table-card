@@ -233,7 +233,7 @@ columns:
 ```
 
 Finally, an example for the newest `align`, `prefix`, `suffix` parameters:
-```
+``` yaml
 title: Power Consumption (Top 20)
 clickable: true
 type: 'custom:flex-table-card'
