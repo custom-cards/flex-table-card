@@ -210,20 +210,20 @@ entities:
 columns:
   - name: Name
     attr_as_list: details
-		modify: x.name
+    modify: x.name
   - name: Description
     attr_as_list: details
-		modify: x.desc
+    modify: x.desc
   - name: Price
     attr_as_list: details
-		modify: x.price
+    modify: x.price
   - name: Rating
     attr_as_list: details
-		# let's assume rating is just calculated from other members
-		modify: 'x.price * x.available_pieces'
-	  # without adding `id` here the result would be not as expected 
-		# (random? all sorted? nothing?)
-		id: rating
+    # let's assume rating is just calculated from other members
+    modify: 'x.price * x.available_pieces'
+    # without adding `id` here the result would be not as expected 
+    # (random? all sorted? nothing?)
+    id: rating
 ```
 
 **Current Issues / Drawbacks / Plans**
