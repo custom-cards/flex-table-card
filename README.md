@@ -68,7 +68,8 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | suffix               | string   |   optional    | to be appended _after_ all cell contents
 |&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist!
 
-*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, thus imposes the inherent safety risks. Especially avoid showing any third party APIs with flex-tables using the `modify` parameter, only apply this parameter, if you are 100% sure about the contents you visualize.
+
+*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.*
 
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
