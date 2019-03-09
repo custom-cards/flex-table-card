@@ -34,3 +34,10 @@
 - now with 'clickable' rows to show the entity_id's popup dialog for further information
 - more or less full re-write introducing DataTable and DataRow as data representation objects
 
+## 0.5.0
+- allow sorting for multiple `attr_as_list` columns by using an `id`
+- added `align` param to set text-alignment within a column including the header
+- added `suffix` to add units or similar static after the actualy contents 
+- added `prefix` which does what the name implies ;)
+- smaller bugfixes like keeping the entity order consistent if no sorting is applied
+
