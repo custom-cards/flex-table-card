@@ -143,7 +143,8 @@ class DataRow {
                 content: (cfg.modify) ? eval(cfg.modify) : x,
                 pre: cfg.prefix || "", 
                 suf: cfg.suffix || "",
-                css: cfg.align || "left"
+                css: cfg.align || "left",
+                hide: cfg.hidden
             });
         });
         this.hidden = this.data.some(data => (data === null));
@@ -239,7 +240,8 @@ class FlexTableCard extends HTMLElement {
         // callback for updating the cell-contents
         element.innerHTML = rows.map((row) => 
             `<tr id="entity_row_${row.entity.entity_id}">${row.data.map(
-                (cell) => `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>`
+                (cell) => ((!cell.hide) ? 
+                    `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
 
         // if configured, set clickable row to show entity popup-dialog
