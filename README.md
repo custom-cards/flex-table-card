@@ -1,6 +1,6 @@
 # Flex Table
 
-[![Version](https://img.shields.io/badge/version-0.4.0-green.svg?style=plastic)](#)
+[![Version](https://img.shields.io/badge/version-0.5.0-green.svg?style=plastic)](#)
 [![stability-stable-1.0-release-pending](https://img.shields.io/badge/stability-stable_1.0_release_incoming-green.svg?style=plastic)](#)
 [![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
 
