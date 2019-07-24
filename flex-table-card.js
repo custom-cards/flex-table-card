@@ -133,14 +133,16 @@ class DataRow {
         // apply passed "modify" configuration setting by using eval()
         // assuming the data is available inside the function as "x"
         this.data = this.raw_data.map((raw, idx) => {
-            if (raw === "undefined" || typeof raw === "undefined" || raw === null) 
-                return ((this.strict) ? null : "n/a");
-
-            // finally, put it all together
             let x = raw;
             let cfg = col_cfgs[idx];
+            let content = (cfg.modify) ? eval(cfg.modify) : x;
+
+            // check for undefined/null values and omit if strict set
+            if (content === "undefined" || typeof content === "undefined" || content === null)
+                return ((this.strict) ? null : "n/a");
+
             return new Object({
-                content: (cfg.modify) ? eval(cfg.modify) : x,
+                content: content,
                 pre: cfg.prefix || "", 
                 suf: cfg.suffix || "",
                 css: cfg.align || "left",
