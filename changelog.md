@@ -41,3 +41,5 @@
 - added `prefix` which does what the name implies ;)
 - smaller bugfixes like keeping the entity order consistent if no sorting is applied
 
+## 0.5.1
+- added `css` configuration parameter to allow arbitrary modifications of the used CSS styles.
