@@ -43,6 +43,10 @@ class DataTable {
         this.rows = [];
     }
 
+    is_empty() {
+      return (this.rows.length == 0);
+    }
+
     get_rows() {
         // sorting is allowed asc/desc for one column
         if (this.cfg.sort_by) {
@@ -89,6 +93,7 @@ class DataRow {
         this.raw_data = raw_data;
         this.data = null;
         this.has_multiple = false;
+        this.colspan = null;
     } 
 
     get_raw_data(col_cfgs) {
@@ -208,17 +213,40 @@ class FlexTableCard extends HTMLElement {
 
         this.tbl = new DataTable(cfg);
 
-        // some css style
-        style.textContent = `
-              table        { width: 100%;         padding: 16px;        }
-              thead th     { text-align: left;                          }
-              tr td, th    { padding-left: 0.5em; padding-right: 0.5em; } 
-              tr td.left,   th.left   { text-align: left;               }
-              tr td.center, th.center { text-align: center;             }
-              tr td.right,  th.right  { text-align: right;              } 
-              tbody tr:nth-child(odd)  { background-color: var(--paper-card-background-color); }
-              tbody tr:nth-child(even) { background-color: var(--secondary-background-color);  }
-        `;
+        // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
+        var css_styles = {
+            "table":                    "width: 100%; padding: 16px; ",
+            "thead th":                 "text-align: left; ",
+            "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; ",
+            "th":                       "padding-left: 0.5em; padding-right: 0.5em; ",
+            "tr td.left":               "text-align: left; ",
+            "th.left":                  "text-align: left; ",
+            "tr td.center":             "text-align: center; ",
+            "th.center":                "text-align: center; ",
+            "tr td.right":              "text-align: right; ",
+            "th.right":                 "text-align: right; ",
+            "tbody tr:nth-child(odd)":  "background-color: var(--paper-card-background-color); ",
+            "tbody tr:nth-child(even)": "background-color: var(--secondary-background-color); "
+        }
+        // apply CSS-styles from configuration 
+        // ("+" suffix to key means "append" instead of replace)
+        if ("css" in cfg) {
+            for(var key in cfg.css) {
+                var is_append = (key.slice(-1) == "+");
+                var css_key = (is_append) ? key.slice(0, -1) : key;
+                if(is_append && css_key in css_styles)
+                    css_styles[css_key] += cfg.css[key];
+                else
+                    css_styles[css_key] = cfg.css[key];
+            }
+        }
+
+        // assemble final CSS style data, every item within `css_styles` will be translated to:
+        // <key> { <any-string-value> }
+        style.textContent = "";
+        for(var key in css_styles)
+            style.textContent += key + " { " + css_styles[key] + " } \n";
+
         // table skeleton, body identified with: 'flextbl'
         content.innerHTML = `
                 <table>
