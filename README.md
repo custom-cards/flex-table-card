@@ -42,6 +42,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | strict               | bool     |   optional    | If `true`, each cell must have a match, or row will be hidden
 | sort_by              | col-id   |   optional    | Sort by column (see &lt;content&gt;), append '+' (ascending) or '-' (descending)
 | max_rows             | int      |   optional    | Restrict the number of (shown) rows to this maximum number
+| css                  | section  |   optional    | Adapt, extend the CSS-style of this flex-table instance
 | clickable            | bool     |   optional    | Activates the entities' on-click popup dialog
 | entities             | section  | **required**  | Section defining the entity *data sources* (see below)
 | columns              | section  | **required**  | Section defining the column(s) (see below)
@@ -68,8 +69,16 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | suffix               | string   |   optional    | to be appended _after_ all cell contents
 |&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist!
 
-
 *Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.*
+
+***2nd-level options: css adaptations***
+
+| `css`                | Type     | Required?     | Description
+| ----                 | ----     | ------------- | -----------
+| &lt;css_selector&gt;       | string   |   optional    | the original &lt;css_selector&gt; will be replaced with the this json value
+| &lt;css_selector&gt;+      | string   |   optional    | &lt;css_selector&gt;'s contents are appended to the existing &lt;css_selector&gt;
+
+`css` can contain arbitrary items, there is no checking or safety mechanism, means you can mess up your CSS-styles (of this specific flex-table card only). Providing a "+" at the end of the key translates to __appending__ the provided json-value to the (not necessarily) existing &lt;css_selector&gt;, omitting the "+" will always __replace__ the css-selector's contents. The current stock CSS style can be found here: [line 216](https://github.com/custom-cards/flex-table-card/blob/a5db6ee51c54240b64a304a33b452d87dc43e87f/flex-table-card.js#L216). The curly brackets are omitted, thus a &lt;css-selector&gt; and its assigned &lt;json-value&gt; always translate to: `<css-selector>: { <json-value> }`.
 
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
