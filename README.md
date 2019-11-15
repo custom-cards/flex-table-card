@@ -5,8 +5,6 @@
 [![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
 <a href="https://www.buymeacoffee.com/daringer" target="_blank"> <img src="https://cdn.buymeacoffee.com/buttons/lato-green.png" alt="Buy Me A Coffee Or Beer" height=18></a>
 
->>>>>>> added 'icon' configuration issue #16
-
 ## Installation (quick & "dirty")
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
