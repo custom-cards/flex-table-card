@@ -61,7 +61,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `columns`            | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
 | name                 | string   |   optional    | column header (if not set, &lt;content&gt; is used)
-| icon                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://img.shields    .io/badge/version-0.5.0-green.svg?style=plastic))
+| icon                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://img.shields.io/badge/version-0.5.0-green.svg?style=plastic))
 | id                   | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
 | hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | modify               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
