@@ -80,7 +80,15 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | &lt;css_selector&gt;+      | string   |   optional    | &lt;css_selector&gt;'s contents are appended to the existing &lt;css_selector&gt;
 
 `css` can contain arbitrary items, there is no checking or safety mechanism, means you can mess up your CSS-styles (of this specific flex-table card only). Providing a "+" at the end of the key translates to __appending__ the provided json-value to the (not necessarily) existing &lt;css_selector&gt;, omitting the "+" will always __replace__ the css-selector's contents. The current stock CSS style can be found here: [line 222](https://github.com/custom-cards/flex-table-card/blob/a5db6ee51c54240b64a304a33b452d87dc43e87f/flex-table-card.js#L222). The curly brackets are omitted, thus a &lt;css-selector&gt; and its assigned &lt;json-value&gt; always translate to: `<css-selector>: { <json-value> }`.
-
+``` yaml
+css: 
+  /* remove borders from table (by appending 'border:0;' to its CSS */
+  table+: "border: 0;"
+  /* remove borders from table (but replace any other CSS statement for this selector (table) */
+  table: "border:0;"
+  /* complex selectors also work, as long as the json-key is in quotes */
+  'tbody tr:nth-child(even)': 'background-color: #a2542f6;'
+```
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
 
