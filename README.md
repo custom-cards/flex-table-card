@@ -2,7 +2,10 @@
 
 [![Version](https://img.shields.io/badge/version-0.5.0-green.svg?style=plastic)](#)
 [![stability-stable-1.0-release-pending](https://img.shields.io/badge/stability-stable_1.0_release_incoming-green.svg?style=plastic)](#) 
+[![maintained](https://img.shields.io/maintenance/yes/2019.svg?style=plastic)](#)
 <a href="https://www.buymeacoffee.com/daringer" target="_blank"> <img src="https://cdn.buymeacoffee.com/buttons/lato-green.png" alt="Buy Me A Coffee Or Beer" height=18></a>
+
+>>>>>>> added 'icon' configuration issue #16
 
 ## Installation (quick & "dirty")
 
@@ -59,7 +62,8 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 | `columns`            | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
-| name                 | string   |   optional    | Column header (if not set, &lt;content&gt; is used)
+| name                 | string   |   optional    | column header (if not set, &lt;content&gt; is used)
+| icon                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://img.shields    .io/badge/version-0.5.0-green.svg?style=plastic))
 | id                   | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
 | hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | modify               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
@@ -72,12 +76,12 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 ***2nd-level options: css adaptations***
 
-| `css`                | Type     | Required?     | Description
-| ----                 | ----     | ------------- | -----------
+| `css`                      | Type     | Required?     | Description
+| ----                       | ----     | ------------- | -----------
 | &lt;css_selector&gt;       | string   |   optional    | the original &lt;css_selector&gt; will be replaced with the this json value
 | &lt;css_selector&gt;+      | string   |   optional    | &lt;css_selector&gt;'s contents are appended to the existing &lt;css_selector&gt;
 
-`css` can contain arbitrary items, there is no checking or safety mechanism, means you can mess up your CSS-styles (of this specific flex-table card only). Providing a "+" at the end of the key translates to __appending__ the provided json-value to the (not necessarily) existing &lt;css_selector&gt;, omitting the "+" will always __replace__ the css-selector's contents. The current stock CSS style can be found here: [line 216](https://github.com/custom-cards/flex-table-card/blob/a5db6ee51c54240b64a304a33b452d87dc43e87f/flex-table-card.js#L216). The curly brackets are omitted, thus a &lt;css-selector&gt; and its assigned &lt;json-value&gt; always translate to: `<css-selector>: { <json-value> }`.
+`css` can contain arbitrary items, there is no checking or safety mechanism, means you can mess up your CSS-styles (of this specific flex-table card only). Providing a "+" at the end of the key translates to __appending__ the provided json-value to the (not necessarily) existing &lt;css_selector&gt;, omitting the "+" will always __replace__ the css-selector's contents. The current stock CSS style can be found here: [line 222](https://github.com/custom-cards/flex-table-card/blob/a5db6ee51c54240b64a304a33b452d87dc43e87f/flex-table-card.js#L222). The curly brackets are omitted, thus a &lt;css-selector&gt; and its assigned &lt;json-value&gt; always translate to: `<css-selector>: { <json-value> }`.
 
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***

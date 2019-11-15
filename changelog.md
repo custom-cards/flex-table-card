@@ -43,3 +43,6 @@
 
 ## 0.5.1
 - added `css` configuration parameter to allow arbitrary modifications of the used CSS styles.
+
+## 0.5.2
+- added `icon` configuration for adding an icon to column headers

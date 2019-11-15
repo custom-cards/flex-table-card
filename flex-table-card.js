@@ -29,8 +29,13 @@ class DataTable {
         this.cfg = cfg;
 
         this.col_ids = this.cols.map(col => col.prop || col.attr || col.attr_as_list);
-        this.headers = this.cols.filter(col => !col.hidden).map((col, idx) =>
-            col.name || this.col_ids[idx]);
+
+        this.headers = this.cols.filter(col => !col.hidden).map(
+            (col, idx) => new Object({
+                // if no 'col.name' use 'col_ids[idx]' only if there is no col.icon set!
+                name: col.name || ((!col.icon) ? this.col_ids[idx] : ""),
+                icon: col.icon || null
+            }));
 
         this.rows = [];
     }
@@ -216,7 +221,7 @@ class FlexTableCard extends HTMLElement {
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
         var css_styles = {
             "table":                    "width: 100%; padding: 16px; ",
-            "thead th":                 "text-align: left; ",
+            "thead th":                 "text-align: left; height: 1em;",
             "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; ",
             "th":                       "padding-left: 0.5em; padding-right: 0.5em; ",
             "tr td.left":               "text-align: left; ",
@@ -226,7 +231,8 @@ class FlexTableCard extends HTMLElement {
             "tr td.right":              "text-align: right; ",
             "th.right":                 "text-align: right; ",
             "tbody tr:nth-child(odd)":  "background-color: var(--paper-card-background-color); ",
-            "tbody tr:nth-child(even)": "background-color: var(--secondary-background-color); "
+            "tbody tr:nth-child(even)": "background-color: var(--secondary-background-color); ",
+            "th ha-icon":               "height: 1em; vertical-align: top; "
         }
         // apply CSS-styles from configuration 
         // ("+" suffix to key means "append" instead of replace)
@@ -247,13 +253,22 @@ class FlexTableCard extends HTMLElement {
         for(var key in css_styles)
             style.textContent += key + " { " + css_styles[key] + " } \n";
 
+        // temporary for generated header html stuff
+        let my_headers = this.tbl.headers.map((obj, idx) => new Object({
+            th_html_begin: `<th class="${cfg.columns[idx].align || 'left'}">`,
+            th_html_end: `${obj.name}</th>`,
+            icon_html: ((obj.icon) ? `<ha-icon id='icon' icon='${obj.icon}'></ha-icon>` : "")
+        }));
+
+
         // table skeleton, body identified with: 'flextbl'
         content.innerHTML = `
                 <table>
                     <thead>
-                        <tr>${this.tbl.headers.map(
-                          (name, idx) => `<th class="${cfg.columns[idx].align || 'left'}">${name}</th>`)
-                          .join("")}</tr>
+                        <tr>
+                            ${my_headers.map((obj, idx) =>
+                                `${obj.th_html_begin}${obj.icon_html}${obj.th_html_end}`).join("")}
+                        </tr>
                     </thead>
                     <tbody id='flextbl'></tbody>
                 </table>
