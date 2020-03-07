@@ -47,4 +47,14 @@
 ## 0.5.2
 - added `icon` configuration for adding an icon to column headers
 
+## 0.6
+- added `multi` instead of `attr` or `prop` for column/cell contents
+  - `multi` consists of list of string-pairs e.g., ["attr", "node_id"]
+	- allows multiple attributes or properties, whatever to be put into a 
+	  single cell 
+	- together with `modify:` and `css:` enables content-conditioned 
+	  styling, like a cell changing cell-color depending on any state/attr/whatever
+	- 'multi_delimiter' further allows to descide how the multiple items within
+	  one cell get concatenated, i.e., which delimiter is to be found between the 
+		chunks
 
