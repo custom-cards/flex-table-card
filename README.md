@@ -1,7 +1,7 @@
 # Flex Table
 
-[![Version](https://img.shields.io/badge/version-0.5.2-green.svg?style=plastic)](#)
-[![interface-stable-release-0.6](https://img.shields.io/badge/stable-release_0.6-green.svg?style=plastic)](#) 
+[![Version](https://img.shields.io/badge/version-0.6-green.svg?style=plastic)](#)
+[![stable-release-0.6](https://img.shields.io/badge/stable-release_0.6-green.svg?style=plastic)](#) 
 [![maintained](https://img.shields.io/maintenance/yes/2020.svg?style=plastic)](#)
 <a href="https://www.buymeacoffee.com/daringer" target="_blank"> <img src="https://cdn.buymeacoffee.com/buttons/lato-green.png" alt="Buy Me A Coffee Or Beer" height=18></a>
 
