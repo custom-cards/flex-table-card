@@ -12,7 +12,7 @@ listify = obj => ((obj instanceof Array) ? obj : [obj]);
 // a map function, which splits args to multiple vars, python-like
 //mmap = 
 
-// omg, js is still very broken, trouble comparing strings? 80s? plain-C? wtf!
+// omg, js is still very inconvinient...
 var compare = function(a, b) {
     if (typeof a == "string")
         return a.localeCompare(b);
