@@ -46,3 +46,5 @@
 
 ## 0.5.2
 - added `icon` configuration for adding an icon to column headers
+
+

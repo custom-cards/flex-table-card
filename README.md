@@ -92,12 +92,14 @@ css:
 
 ***3rd-level options: column (cell) content definition, one required and mutually exclusive***
 
-| `column contents` | Type     | Description
-| ---------------   | ----     | -----------
-| attr              | regexp   | matches to the first attribute matching this regexp
-| prop              | string   | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
-| attr_as_list      | string   | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
- 
+| `column contents` | Type              | Description
+| ---------------   | ----              | -----------
+| attr              | regexp            | matches to the first attribute matching this regexp
+| prop              | string            | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
+| attr_as_list      | string            | matched attribute is expected to contain a list to be expanded down the table (see table 1, 2 and 3)
+| multi             | list-of-2-strings | matches as the three above, but allows to select multiple different matches being concated using `multi_delimiter` see #19 for an example 
+|                   |                   | on how to write yaml for this...
+| multi_delimiter   | string            | defaults to ' ', which means `multi` will be concated together delimiting with a whitespace, change this to modify this behavior
 
 **Examples**
 
@@ -285,4 +287,7 @@ Furthermore one can now set a text-alignment for each column, which also impacts
 * history / recorder access realization to match for historical data ...
 * (click)-able sorting of columns   
 * generally 'functions' might be a thing, a sum/avg/min/max ? but is the frontend the right spot for a micro-excel?
-* there is need for a seperate examples directory/examples.rd or similar...
+* there is **extreme need** for a seperate examples directory/examples.rd or similar... 
+
+  * `multi` & `multi_delimiter` example is missing
+
