@@ -7,11 +7,11 @@
 
 ## Installation using HACS ([Home Assistant Community Store](https://hacs.xyz/docs/installation/manual))
 
-* quicker, better, faster, easier!
+* quicker, better, faster, easier - use HACS inside your frontend, if unavailable [here is how to install HACS](https://hacs.xyz/docs/installation/manual)
 * either search for `flex` or visit `/hacs/repository/156292058` relative to your home-assistant web base-url
 * hit `install` and it's done, only thing remaining is adding the appropriate url + type to your *lovelace ui config* (please scroll down to see the HACS generated url to be used)
 
-## Installation (quick & "dirty")
+## Installation (as quick, only manual updates, better for devs)
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
 * Change into `~/.homeassistant/www` (create the `www` directory, if it is not existing, you then might have to restart HA)
