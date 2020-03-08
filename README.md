@@ -5,6 +5,12 @@
 [![maintained](https://img.shields.io/maintenance/yes/2020.svg?style=plastic)](#)
 <a href="https://www.buymeacoffee.com/daringer" target="_blank"> <img src="https://cdn.buymeacoffee.com/buttons/lato-green.png" alt="Buy Me A Coffee Or Beer" height=18></a>
 
+## Installation using HACS ([Home Assistant Community Store](https://hacs.xyz/docs/installation/manual))
+
+* quicker, better, faster, easier!
+* either search for `flex` or visit `/hacs/repository/156292058` relative to your home-assistant web base-url
+* hit `install` and it's done, only thing remaining is adding the appropriate url + type to your *lovelace ui config* (please scroll down to see the HACS generated url to be used)
+
 ## Installation (quick & "dirty")
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
