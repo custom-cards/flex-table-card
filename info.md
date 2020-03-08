@@ -1,4 +1,5 @@
-# Flex Table Card - Flex Table - Highly customizable, Data visualization for [Home Assistant](https://github.com/home-assistant/home-assistant) Lovelace UI
+# Flex Table Custom Card for [Home Assistant](https://github.com/home-assistant/home-assistant) Lovelace UI
+**Highly customizable, data visualization with wide data-selection & modification options**
 
 ## Usage Examples
 
@@ -8,11 +9,9 @@
 * any tabular data can be visualized, formatted & modified
 
   * calendar data, shopping-lists, train arrivals, ... 
+  * visit [github](https://github.com/daringer/flex-table-card/) for more!
 
-*example images pending, [check github until then](https://github.com/daringer/flex-table-card/)*
-
-
-## Configuration
+## Quick-Start: Examples & Configurations
 
 Flex Table Card comes with a vast amount of configurability, please visit the
 [github page](https://github.com/daringer/flex-table-card/) for many more details, examples and
