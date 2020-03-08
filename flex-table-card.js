@@ -174,7 +174,7 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content === "undefined" || typeof content === "undefined" || content === null)
+            if (content === "undefined" || typeof content === "undefined" || content === null || content == "null")
                 return ((this.strict) ? null : "n/a");
 
             return new Object({
