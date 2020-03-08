@@ -153,14 +153,18 @@ class DataRow {
 
                 } else if (col_type == "attr_as_list") {
                     this.has_multiple = true;
-                    return this.entity.attributes[col_key];
+                    raw_content.push(this.entity.attributes[col_key]);
 
                 } else 
                     console.error(`no selector found for col: ${col.name} - skipping...`);
             }
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
             let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
-            return raw_content.map((item) => String(item)).join(delim);
+            if ("multi" in col && col.multi.size > 1)
+                raw_content = raw_content.join(delim);
+            else
+                raw_content = raw_content[0];
+            return raw_content;
         });
         return null;
     }
