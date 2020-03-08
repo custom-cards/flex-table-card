@@ -13,19 +13,15 @@
 
 ## Quick-Start: Examples & Configurations
 
-Flex Table Card comes with a vast amount of configurability, please visit the
-[github page](https://github.com/daringer/flex-table-card/) for many more details, examples and
-documentation.
-
-Before we directly quick-start with a more complex table, here is a very basic configuration 
-showing battery states, if available:
+Flex Table Card comes with a vast amount of configurability, please visit the [github page](https://github.com/daringer/flex-table-card/) for many more details, examples and documentation. We directly dive-in with a very basic configuration
+showing (sorted) battery levels, if applicable:
 
 ```yaml
 type: 'custom:flex-table-card'
-title: Battery Levels		 /* title (optionally) shown, if set                    */
+title: Battery Levels            /* title (optionally) shown, if set                    */
 entities:
   include: zwave.*               /* simply try all entity_ids starting with 'zwave.*'   */
-sort_by: battery_level+	         /* the ones without a battery will be automatically be */
+sort_by: battery_level+          /* the ones without a battery will be automatically be */
 strict: true                     /* be removed (`strict`)                               */
 clickable: true                  /* on row-click show entity pop-up with details        */
 
@@ -40,11 +36,11 @@ columns:                         /* start with (cell)content definition         
 
 
 The following more advanced listing is to show all your devices with an attribute named `power_consumption`, 
-sorted descending, just the top 10 power consumers, including various details (see more on [github](https://github.com/daringer/flex-table-card/)):
+sorted descending, just the top 10 power consumers, including various details (the [github](https://github.com/daringer/flex-table-card/) provides more details & docs):
 
 ```yaml
 type: 'custom:flex-table-card'
-entities:	                       /* 1st filter all entity_ids (+attributes) by                */
+entities:                              /* 1st filter all entity_ids (+attributes) by                */
   include: 'sensor.*_energy(_[0-9]+)?' /* this (*)-regex, each match represents a row in flex-table */
 
 title: Power Consumption (Top 20)      /* set header/title (skip to hide)                           */
@@ -71,5 +67,3 @@ columns:                               /* now the column(s) configuration follow
     align: right                        
     suffix: ' kWh'
 ```
-
-* * *
