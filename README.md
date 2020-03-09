@@ -19,7 +19,7 @@
 * Finally, add the following on top of your UI Lovelace configuration (means either via Config UI or .yaml)
 ``` yaml
 resources:
-  - type: js
+  - type: module
     url: /local/flex-table-card.js
 ```
 * Verify that it works with one of the examples below
