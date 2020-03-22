@@ -154,7 +154,6 @@ class DataRow {
                 } else if (col_type == "attr_as_list") {
                     this.has_multiple = true;
                     raw_content.push(this.entity.attributes[col_key]);
-
                 } else 
                     console.error(`no selector found for col: ${col.name} - skipping...`);
             }
@@ -165,7 +164,9 @@ class DataRow {
                 raw_content = raw_content.map((obj) => String(obj)).join(delim);
             else
                 raw_content = raw_content[0];
-            return raw_content;
+
+            return (raw_content) ? raw_content : new Array();
+            
         });
         return null;
     }
