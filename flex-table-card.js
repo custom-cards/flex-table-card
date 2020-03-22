@@ -262,8 +262,8 @@ class FlexTableCard extends HTMLElement {
             "th.center":                "text-align: center; ",
             "tr td.right":              "text-align: right; ",
             "th.right":                 "text-align: right; ",
-            "tbody tr:nth-child(odd)":  "background-color: var(--paper-card-background-color); ",
-            "tbody tr:nth-child(even)": "background-color: var(--secondary-background-color); ",
+            "tbody tr:nth-child(odd)":  "background-color: var(--table-row-background-color); ",
+            "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
             "th ha-icon":               "height: 1em; vertical-align: top; "
         }
         // apply CSS-styles from configuration 
