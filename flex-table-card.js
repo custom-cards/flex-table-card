@@ -226,7 +226,7 @@ class FlexTableCard extends HTMLElement {
             return e;
         }
 
-        if (!incl && ! excl && entities) {
+        if (!incl && !excl && entities) {
                        entities = entities.map(format_entities);
             return entities.map(e => hass.states[e.entity]);
         }
