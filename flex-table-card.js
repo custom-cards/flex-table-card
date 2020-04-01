@@ -218,7 +218,19 @@ class FlexTableCard extends HTMLElement {
             return new RegExp(`^${merged}$`, 'gi');
     }
 
-    _getEntities(hass, incl, excl) {
+    _getEntities(hass, entities, incl, excl) {
+        const format_entities = (e) => {
+            if(!e) return null;
+            if(typeof(e) === "string")
+                return {entity: e.trim()}
+            return e;
+        }
+
+        if (!incl && !excl && entities) {
+                       entities = entities.map(format_entities);
+            return entities.map(e => hass.states[e.entity]);
+        }
+
         // apply inclusion regex
         const incl_re = listify(incl).map(pat => this._getRegEx([pat])); 
         // make sure to respect the incl-implied order: no (incl-)regex-stiching, collect 
@@ -341,7 +353,7 @@ class FlexTableCard extends HTMLElement {
         const root = this.shadowRoot;
 
         // get "data sources / origins" i.e, entities
-        let entities = this._getEntities(hass, config.entities.include, config.entities.exclude);
+        let entities = this._getEntities(hass, config.entities, config.entities.include, config.entities.exclude);
 
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
@@ -375,3 +387,4 @@ class FlexTableCard extends HTMLElement {
 }
 
 customElements.define('flex-table-card', FlexTableCard);
+
