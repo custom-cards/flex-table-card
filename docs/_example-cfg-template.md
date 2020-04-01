@@ -17,7 +17,7 @@ The following steps are to be done to add a new example:
 <!-- [listing section] -->
 
 <!-- [example image section] -->
-<!-- use issue #123 for dumping images and link them here -->
+<!-- use issue #29 for dumping images and link them here -->
 ![image description](http://url/to/img.png)
 
 [Return to main README.md](../README.md)
