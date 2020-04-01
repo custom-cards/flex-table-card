@@ -37,3 +37,4 @@ resources:
   * [Advanced Cell Formatting](docs/example-cfg-basics.md)
   * [Formatting with CSS](docs/example-cfg-css.md)
   * [Column Multi-Data Matching](docs/example-cfg-column-multi.md)
+  * [Auto Entities](docs/example-cfg-autoentities.md)
