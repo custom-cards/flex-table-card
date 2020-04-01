@@ -22,7 +22,7 @@ resources:
   - type: module
     url: /local/flex-table-card.js
 ```
-* Verify that it works with one of the examples below
+* Verify that it works with one of the examples linked below
 
 ## Documentation - Table of Contents
 
