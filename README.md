@@ -28,7 +28,7 @@ resources:
 
 * [Configuration Reference](docs/config-ref.md)
 * [How to Contribute](docs/contribute.md)
-* **(Configuration) Examples**
+* [(Configuration) Examples](docs/)
   * [Basics](docs/example-cfg-basics.md)
   * [Formatting](docs/example-cfg-simple-cell-formatting.md)
   * [Sorting & Strict](docs/example-cfg-sorting-strict.md)
