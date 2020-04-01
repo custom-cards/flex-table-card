@@ -11,7 +11,7 @@
 * either search for `flex` or visit `/hacs/repository/156292058` relative to your home-assistant web base-url
 * hit `install` and it's done, only thing remaining is adding the appropriate url + type to your *lovelace ui config* (please scroll down to see the HACS generated url to be used)
 
-## Installation (as quick, only manual updates, better for devs)
+## Installation (as quick, only manual updates, better for developers)
 
 * Find your homeassistent directory containing your configuration (let's say `~/.homeassistant/`)
 * Change into `~/.homeassistant/www` (create the `www` directory, if it is not existing, you then might have to restart HA)
@@ -24,12 +24,11 @@ resources:
 ```
 * Verify that it works with one of the examples below
 
-**Documentation - Table of Contents**
+## Documentation - Table of Contents
 
 * [Configuration Reference](docs/config-ref.md)
 * [How to Contribute](docs/contribute.md)
-* (Configuration) Examples
- 
+* **(Configuration) Examples**
   * [Basics](docs/example-cfg-basics.md)
   * [Formatting](docs/example-cfg-simple-cell-formatting.md)
   * [Sorting & Strict](docs/example-cfg-sorting-strict.md)
