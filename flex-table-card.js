@@ -10,7 +10,7 @@ var listify = obj => ((obj instanceof Array) ? obj : [obj]);
 //pipe = (...args) => args
 
 // a map function, which splits args to multiple vars, python-like
-//mmap = 
+//mmap =
 
 // omg, js is still very inconvinient...
 var compare = function(a, b) {
@@ -66,14 +66,14 @@ class DataTable {
             }
 
             // determine col-by-idx to be sorted with...
-            var sort_idx = this.cols.findIndex((col) => 
-                ["id", "attr", "prop", "attr_as_list"].some(attr => 
+            var sort_idx = this.cols.findIndex((col) =>
+                ["id", "attr", "prop", "attr_as_list"].some(attr =>
                     attr in col && sort_col == col[attr]));
 
             // if applicable sort according to config
             if (sort_idx > -1)
                 this.rows.sort((x, y) => sort_dir * compare(
-                    x.data[sort_idx] && x.data[sort_idx].content, 
+                    x.data[sort_idx] && x.data[sort_idx].content,
                     y.data[sort_idx] && y.data[sort_idx].content));
             else
                 console.error(`config.sort_by: ${this.cfg.sort_by}, but column not found!`);
@@ -90,7 +90,7 @@ class DataTable {
 }
 
 /** One level down, data representation for each row (including all cells) */
-class DataRow { 
+class DataRow {
     constructor(entity, strict, raw_data=null) {
         this.entity = entity;
         this.hidden = false;
@@ -99,11 +99,11 @@ class DataRow {
         this.data = null;
         this.has_multiple = false;
         this.colspan = null;
-    } 
+    }
 
     get_raw_data(col_cfgs) {
-        this.raw_data = col_cfgs.map((col) => {			
-         
+        this.raw_data = col_cfgs.map((col) => {
+
             /* collect pairs of 'column_type' and 'column_key' */
             let col_getter = new Array();
             if ("multi" in col) {
@@ -154,7 +154,7 @@ class DataRow {
                 } else if (col_type == "attr_as_list") {
                     this.has_multiple = true;
                     raw_content.push(this.entity.attributes[col_key]);
-                } else 
+                } else
                     console.error(`no selector found for col: ${col.name} - skipping...`);
             }
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
@@ -165,7 +165,7 @@ class DataRow {
                 raw_content = raw_content[0];
 
             return (raw_content) ? raw_content : new Array();
-            
+
         });
         return null;
     }
@@ -179,13 +179,13 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content === "undefined" || typeof content === "undefined" || content === null || 
+            if (content === "undefined" || typeof content === "undefined" || content === null ||
                     content == "null" || (Array.isArray(content) && content.length == 0))
                 return ((this.strict) ? null : "n/a");
 
             return new Object({
                 content: content,
-                pre: cfg.prefix || "", 
+                pre: cfg.prefix || "",
                 suf: cfg.suffix || "",
                 css: cfg.align || "left",
                 hide: cfg.hidden
@@ -214,7 +214,7 @@ class FlexTableCard extends HTMLElement {
         const merged = real_pats.map((pat) => `(${pat})`).join("|");
         if (invert)
             return new RegExp(`^(?:(?!${merged}).)*$`, 'gi');
-        else 
+        else
             return new RegExp(`^${merged}$`, 'gi');
     }
 
@@ -232,10 +232,10 @@ class FlexTableCard extends HTMLElement {
         }
 
         // apply inclusion regex
-        const incl_re = listify(incl).map(pat => this._getRegEx([pat])); 
-        // make sure to respect the incl-implied order: no (incl-)regex-stiching, collect 
+        const incl_re = listify(incl).map(pat => this._getRegEx([pat]));
+        // make sure to respect the incl-implied order: no (incl-)regex-stiching, collect
         // results for each include and finally reduce to a single list of state-keys
-        let keys = incl_re.map((regex) => 
+        let keys = incl_re.map((regex) =>
             Object.keys(hass.states).filter(e_id => e_id.match(regex))).
                 reduce((out, item) => out.concat(item), []);
         if (excl) {
@@ -249,12 +249,12 @@ class FlexTableCard extends HTMLElement {
     setConfig(config) {
         // get & keep card-config and hass-interface
         const root = this.shadowRoot;
-        if (root.lastChild) 
+        if (root.lastChild)
             root.removeChild(root.lastChild);
 
         const cfg = Object.assign({}, config);
 
-        // assemble html 
+        // assemble html
         const card = document.createElement('ha-card');
         card.header = cfg.title;
         const content = document.createElement('div');
@@ -278,7 +278,7 @@ class FlexTableCard extends HTMLElement {
             "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
             "th ha-icon":               "height: 1em; vertical-align: top; "
         }
-        // apply CSS-styles from configuration 
+        // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
         if ("css" in cfg) {
             for(var key in cfg.css) {
@@ -327,9 +327,9 @@ class FlexTableCard extends HTMLElement {
 
     _updateContent(element, rows) {
         // callback for updating the cell-contents
-        element.innerHTML = rows.map((row) => 
+        element.innerHTML = rows.map((row) =>
             `<tr id="entity_row_${row.entity.entity_id}">${row.data.map(
-                (cell) => ((!cell.hide) ? 
+                (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
 
@@ -340,7 +340,7 @@ class FlexTableCard extends HTMLElement {
             elem.onclick = (this.tbl.cfg.clickable) ? (function(clk_ev) {
                 // create and fire 'details-view' signal
                 let ev = new Event("hass-more-info", {
-                    bubbles: true, cancelable: false, composed: true 
+                    bubbles: true, cancelable: false, composed: true
                 });
                 ev.detail = { entityId: row.entity.entity_id };
                 this.dispatchEvent(ev);
@@ -367,7 +367,7 @@ class FlexTableCard extends HTMLElement {
             if (!row_obj.has_multiple)
                 this.tbl.add(row_obj);
             else
-                this.tbl.add(...transpose(row_obj.raw_data).map(new_raw_data => 
+                this.tbl.add(...transpose(row_obj.raw_data).map(new_raw_data =>
                     new DataRow(row_obj.entity, row_obj.strict, new_raw_data)));
         });
 
