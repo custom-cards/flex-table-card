@@ -160,7 +160,6 @@ class DataRow {
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
             let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
             if ("multi" in col && col.multi.length > 1)
-                // @todo: here somehow avoid that a 'null' is string-converted
                 raw_content = raw_content.map((obj) => String(obj)).join(delim);
             else
                 raw_content = raw_content[0];
@@ -180,7 +179,8 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content === "undefined" || typeof content === "undefined" || content === null || content == "null")
+            if (content === "undefined" || typeof content === "undefined" || content === null || 
+                    content == "null" || (Array.isArray(content) && content.length == 0))
                 return ((this.strict) ? null : "n/a");
 
             return new Object({
