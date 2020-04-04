@@ -58,3 +58,13 @@
 	  one cell get concatenated, i.e., which delimiter is to be found between the 
 		chunks
 
+## 0.6.1
+- fixed #28 and #23, which mainly occured due to #24, which changed the "empty"
+  behavior output of 'get_raw_data()' away from not-iterable 'null' to an empty Array
+- fixed #26: use correct CSS variables to be compliant with theming 
+- cleaned front-page README.md and introduced the 'docs' directory to keep all
+  documentation there, included template for new doc generation
+- added necessary files (info.md + hacs.yaml) for HACS
+- fixed #22: using now proper 'strict' JavaScript 
+- fixed #25 with PR #27: introduced auto-entities support, thanks @SBado
+
