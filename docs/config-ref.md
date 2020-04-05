@@ -15,32 +15,34 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | ----                   | ----            | ------------- | -----------
 | `type`                 | string          | **required**  | `custom:flex-table-card`
 | `title`                | string          |   optional    | A title for the card
-| `strict`               | boolean         |   optional    | If `true`, each cell must have a match, or row will be hidden
-| `sort_by[-\|+]`        | col-id          |   optional    | Sort by given column identifier, append '+' (ascending) or '-' (descending)
+| `strict`               | boolean         |   optional    | If `true`, each cell must have a match, or row will be hidden [example](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-sorting-strict.md)
+| `sort_by[-\|+]`        | col-id          |   optional    | Sort by given column, '+' (ascending) or '-' (descending) [example](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-sorting-strict.md)
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
-| `css`                  | section         |   optional    | Adapt, extend the CSS-style of this flex-table instance (see below)
-| `- ...`                | section item(s) |   optional    | 
+| `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
+| `- ...`                | item(s)         |   optional    | 
 | `entities`             | section         | **required**  | Section defining the entities, i.e., *data sources* (see below)
-| `- ...`                | section item(s) | **required**  | 
+| `- ...`                | item(s)         | **required**  | 
 | `columns`              | section         | **required**  | Section defining the column(s) and its contents (see below)
-| `- ...`                | section item(s) | **required**  | 
+| `- ...`                | item(s)         | **required**  | 
                       
                       
 ***`entities` options (2nd level): selection / querying / filtering***
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
-| include              | regexp   | **required**  | Defines the initial entity data source(s)
+| include              | regexp   | **required**  | Defines the initial entity data source(s) [basics](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-basics.md)
 | exclude              | regexp   |   optional    | Reduces the *included* data sources(s) 
  
-***`css` options (2nd level): css adaptations***
+[auto-entities](https://github.com/thomasloven/lovelace-auto-entities) are also supported, see the 
+[examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-autoentities.md).
+ 
+***`css` options (2nd level): [css adaptations](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)***
 
 | option                     | Type     | Required?     | Description
 | ----                       | ----     | ------------- | -----------
 | &lt;css_selector&gt;       | string   |   optional    | the original &lt;css_selector&gt; will be replaced with option's value
 | &lt;css_selector&gt;+      | string   |   optional    | &lt;css_selector&gt;'s contents are appended to the existing &lt;css_selector&gt;
-
 
 ***`columns` options (2nd level): header definition, column identifcation***
 
@@ -51,9 +53,10 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 If neither `name` nor `id` is set the identifier for the column will be derived from the content
 definition. Apart from `sort_by` no other option requires referencing of this identifier, for easy referencing by
-`sort_by` it is considered best practice to set `id` and use it for `sort_by`. 
+`sort_by` it is considered best practice to set `id` and use it for `sort_by`. [More details and examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-headers.md)
 
-***`columns` options (2nd level): visibility, formatting, content manipulation***
+
+***`columns` options (2nd level): visibility, [cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-simple-cell-formatting.md), [content manipulation](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md)***
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
@@ -66,7 +69,8 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
-*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.*
+*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.* 
+Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
 ***`columns` (content) options (2nd level): column (cell) content definition, one required and mutually exclusive***
 
@@ -74,9 +78,11 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | ---------------   | ----              | -----------
 | attr              | regexp            | matches to the first attribute matching this regexp
 | prop              | string            | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
-| attr_as_list      | string            | matched attribute is expected to contain a list, each expanded to a row
+| attr_as_list      | string            | [matched attribute is expected to contain a list](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-attr-as-list.md), each expanded to a row
 
-***`columns` (content) options (2nd level): allows multiple content definitions for a single cell***
+Find many examples within the [docs](https://github.com/custom-cards/flex-table-card/tree/master/docs) directory. 
+
+***`columns` (content) options (2nd level): allows [multiple content definitions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-column-multi.md) for a single cell***
 | option            | Type              | Description
 | ---------------   | ----              | -----------
 | multi             | list-of-2-strings | matches each pair within list as above: select multiple matches, concat all using `multi_delimiter` see [#19](https://github.com/custom-cards/flex-table-card/issues/19) for an example.
