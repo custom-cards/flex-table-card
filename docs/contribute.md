@@ -12,7 +12,7 @@ contributions to avoid unnecessary efforts:
 * is there already a similar idea/feature/bug reported as an issues?
 
 Overall, don't forget this is not an human-safety relevant compontent. No people
-will be harmed if things go wrong or some bug is introduced. :nerdface:
+will be harmed if things go wrong or some bug is introduced.
 
 ### How to write an issue
 
