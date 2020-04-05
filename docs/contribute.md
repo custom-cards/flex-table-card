@@ -1,4 +1,4 @@
-## Examples - [my fancy option]
+## How to Contribute
 
 Contributions are highly welcome for `flex-table-card`!
 
