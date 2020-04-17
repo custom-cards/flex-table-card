@@ -164,7 +164,7 @@ class DataRow {
             else
                 raw_content = raw_content[0];
 
-            return (raw_content) ? raw_content : new Array();
+            return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
 
         });
         return null;
