@@ -1,18 +1,11 @@
 
-/** some helper functions, mmmh, am I the only one needing those? Am I doing something wrong? */
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
 
 // single items -> Array with item with length == 1
 var listify = obj => ((obj instanceof Array) ? obj : [obj]);
 
-// simply return the args, which were passed, mmh not needed anymore here...
-//pipe = (...args) => args
-
-// a map function, which splits args to multiple vars, python-like
-//mmap =
-
-// omg, js is still very inconvinient...
+// omg, js is still very inconvinient... or is this just me?
 var compare = function(a, b) {
     if (typeof a == "string")
         return a.localeCompare(b);
