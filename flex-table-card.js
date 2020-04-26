@@ -1,3 +1,7 @@
+"use strict";
+
+// VERSION info
+var VERSION = "0.6.1";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -13,6 +17,30 @@ var compare = function(a, b) {
         return -1 * b.localeCompare(a);
     else
         return a - b;
+}
+
+// version(string) compare
+function compareVersion(vers1, vers2) {
+    // only accept strings as versions
+    if (typeof vers1 !== "string")
+        return false;
+    if (typeof vers2 !== "string")
+        return false;
+    vers1 = vers1.split(".");
+    vers2 = vers2.split(".");
+    // iterate in parallel from left-most (major version part) to right-most (minor version part)
+    for (let i=0; i<Math.min(vers1.length, vers2.length); ++i) {
+        vers1[i] = parseInt(vers1[i], 10);
+        vers2[i] = parseInt(vers2[i], 10);
+        if (vers1[i] > vers2[i])
+            return 1;
+        if (vers1[i] < vers2[i])
+            return -1;
+        // else (both are equal, continue to next minor-er version token)
+    }
+    // if this point is reached, return 0 (equal) if lengths are equal, otherwise the one with
+    // more minor version numbers is considered 'newer'
+    return (vers1.length == vers2.length) ? 0 : (vers1.length < vers2.length ? -1 : 1);
 }
 
 /** flex-table data representation and keeper */
@@ -58,9 +86,10 @@ class DataTable {
                 }
             }
 
+            // DEPRECATION CHANGES ALSO TO BE DONE HERE:
             // determine col-by-idx to be sorted with...
             var sort_idx = this.cols.findIndex((col) =>
-                ["id", "attr", "prop", "attr_as_list"].some(attr =>
+                ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
                     attr in col && sort_col == col[attr]));
 
             // if applicable sort according to config
@@ -82,6 +111,22 @@ class DataTable {
     }
 }
 
+/** just for the deprecation warning (spam avoidance) */
+var show_deprecation = true;
+function show_deprecation_message() {
+        if (!show_deprecation)
+            return;
+        // console.log(), console.warn(), console.error(), alert()
+        console.log("DEPRECATION WARNING: 'multi', 'attr', 'attr_as_list', 'prop' as column " +
+          "data source selector is deprecated, use 'data' instead! You can simply replace all " +
+          "occurences of the above with 'data' and it will work _and_ this message will vanish! " +
+          "THIS IS THE FIRST DEPRECATION WARNING, more severe will follow before removal! " +
+          "For more details: https://github.com/custom-cards/flex-table-card");
+        show_deprecation = false;
+}
+
+
+
 /** One level down, data representation for each row (including all cells) */
 class DataRow {
     constructor(entity, strict, raw_data=null) {
@@ -91,27 +136,59 @@ class DataRow {
         this.raw_data = raw_data;
         this.data = null;
         this.has_multiple = false;
-        this.colspan = null;
+        //this.colspan = null;
     }
+
 
     get_raw_data(col_cfgs) {
         this.raw_data = col_cfgs.map((col) => {
 
             /* collect pairs of 'column_type' and 'column_key' */
             let col_getter = new Array();
-            if ("multi" in col) {
+
+            // newest and soon to be the only way to reference data sources!
+            // effectively a merge of all the 'classic' selectors, including 'multi'
+            // -> 'prop' will be used, if one of 'name', 'object_id' or 'key in this.entity'
+            // -> otherwise 'attr' will be assumed
+            // -> expansion from a list (as 'attr_as_list') will be automatically applied
+            //    (by testing for Array.isArray(this.entity.attributes[col.data]))
+            // -> 'multi' can be done by simply separating each data-src with ","
+            // THIS WILL BE BREAKING OLD STUFF, INTRODUCE DEPRECATION WARNINGS!!!!!
+            if ("data" in col) {
+                for (let tok of col.data.split(","))
+                    //let data_src = "auto";
+                    col_getter.push(["auto", tok]);
+                //console.log(col_getter.join(", "));
+                    // DECIDE if "data_src" should remain, or can we avoid it?!
+                    // -> best case we don't need it, thus fully remove it (also no list of pairs)
+                    // magic "@" to enforce behavior, avoid this (or is it ok?)
+                    /*if (tok.indexOf("@") > -1) {
+                        let subtoks = tok.split("@");
+                        data_src = subtoks[1];
+                        tok = subtoks[0];
+                    }*/
+
+            // OLD data source selection: CALL DEPRECATION WARNING HERE!!!
+            // start with console.log(), continue with console.warn(), console.error()
+            //            and final phase: alert()
+            } else if ("multi" in col) {
+                show_deprecation_message();
+
                 for(let item of col.multi)
                     col_getter.push([item[0], item[1]]);
-            } else {
+
+            } else if ("attr" in col || "prop" in col || "attr_as_list" in col ) {
+                show_deprecation_message();
+
                 if ("attr" in col)
                     col_getter.push(["attr", col.attr]);
                 else if ("prop" in col)
                     col_getter.push(["prop", col.prop]);
                 else if ("attr_as_list" in col)
                     col_getter.push(["attr_as_list", col.attr_as_list]);
-                else
-                    console.error(`no selector found for col: ${col.name} - skipping...`);
-            }
+
+            } else
+                    console.error(`no 'data' found for col: ${col.name} - skipping...`);
 
             /* fill each result for 'col_[type,key]' pair into 'raw_content' */
             var raw_content = new Array();
@@ -119,8 +196,34 @@ class DataRow {
                 let col_type = item[0];
                 let col_key = item[1];
 
+                // newest stuff, automatically dispatch to correct data source
+                if (col_type == "auto") {
+                    if (col_key == "name") {
+                        if ("friendly_name" in this.entity.attributes)
+                            raw_content.push(this.entity.attributes.friendly_name);
+                        else if ("name" in this.entity)
+                            raw_content.push(this.entity.name);
+                        else if ("name" in this.entity.attributes)
+                            raw_content.push(this.entity.attributes.name);
+                        else
+                            raw_content.push(this.entity.entity_id);
+                    } else if (col_key == "object_id") {
+                        raw_content.push(this.entity.entity_id.split(".").slice(1).join("."));
+                    } else if (col_key in this.entity) {
+                        raw_content.push(this.entity[col_key]);
+                    } else {
+                        raw_content.push(((col_key in this.entity.attributes) ?
+                            this.entity.attributes[col_key] : null));
+                    }
+
+                    // technically all of the above might be handled as list
+                    this.has_multiple = Array.isArray(raw_content.slice(-1)[0]);
+
+
+                ////////// ALL OF THE FOLLOWING TO BE REMOVED ONCE DEPRECATION IS REALIZED....
+                //
                 // collect the "raw" data from the requested source(s)
-                if(col_type == "attr") {
+                } else if(col_type == "attr") {
                     raw_content.push(((col_key in this.entity.attributes) ?
                         this.entity.attributes[col_key] : null));
 
@@ -147,12 +250,20 @@ class DataRow {
                 } else if (col_type == "attr_as_list") {
                     this.has_multiple = true;
                     raw_content.push(this.entity.attributes[col_key]);
+                //
+                ////////// ... REMOVAL UNTIL THIS POINT HERE (DUE TO DEPRECATION)
+
                 } else
                     console.error(`no selector found for col: ${col.name} - skipping...`);
             }
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
             let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
+
+            ////////// REMOVE ON DEPRECATION:
             if ("multi" in col && col.multi.length > 1)
+                raw_content = raw_content.map((obj) => String(obj)).join(delim);
+            // new approach, KEEP AFTER DEPRECATION: (maybe without 'else' working anyways?!)
+            else if ("data" in col && raw_content.length > 1)
                 raw_content = raw_content.map((obj) => String(obj)).join(delim);
             else
                 raw_content = raw_content[0];
