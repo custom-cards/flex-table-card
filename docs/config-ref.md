@@ -67,6 +67,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | align                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
 | prefix               | string   |   optional    | to be applied _before_ all cell contents 
 | suffix               | string   |   optional    | to be appended _after_ all cell contents
+| multi_delimiter      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
@@ -89,7 +90,6 @@ Find many examples within the [docs](https://github.com/custom-cards/flex-table-
 | option            | Type              | Description
 | ---------------   | ----              | -----------
 | multi             | list-of-2-strings | matches each pair within list as above: select multiple matches, concat all using `multi_delimiter` see [#19](https://github.com/custom-cards/flex-table-card/issues/19) for an example.
-| multi_delimiter   | string            | defaults to ' ', thus concat `multi`-items using a whitespace
 
 
 [Return to main README.md](../README.md)
