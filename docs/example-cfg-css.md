@@ -37,9 +37,9 @@ entities:
 
 columns:
   - name: NodeID
-    attr: node_id
+    data: node_id
   - name: Temperature
-    attr: temperature
+    data: temperature
 
 css:
   # remove borders from table (by appending 'border:0;' to its value)

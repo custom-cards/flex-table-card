@@ -25,12 +25,12 @@ entities:
   include: zwave.*
 
 columns:
-  - attr: node_id
-    name: NodeID
+  - name: NodeID
+    data: node_id
   - name: Name
-    prop: name
-  - attr: battery_level
-    name: Reported Battery Level (%)
+    data: name
+  - name: Reported Battery Level (%)
+    data: battery_level
 ```
 
 [Return to main README.md](../README.md)

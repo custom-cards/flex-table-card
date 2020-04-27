@@ -1,4 +1,7 @@
-## Examples - Multi-Content Selection
+## Examples - DEPRECATED - Multi-Content Selection
+
+**deprecated: no need to use `multi` anymore, just comma-separate the selectors in `data` as 
+[shown here](example-cfg-data.md)**
 
 <!-- [full text section] -->
 To have multiple attributes or generally data items within the cells of a given
@@ -16,12 +19,12 @@ title: Power Consumption (Top 10)
 entities:
   include: 'sensor.*_energy(_[0-9]+)?'
 columns:
-  - attr: node_id
+  - data: node_id
     name: NodeID
-  - attr: power_consumption
+  - data: power_consumption
     name: Power
-  - name: Energy
-    prop: state
+  - data: state
+    name: Energy
 
   - name: My Multi-Item-Field
     # the default 'multi_delimiter' is a whitespace: ' '

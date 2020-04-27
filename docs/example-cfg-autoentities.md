@@ -18,9 +18,9 @@ card:
   title: Auto Entities Example
   clickable: true
   columns:
-    - attr: friendly_name              
+    - data: friendly_name              
       name: Friendly Name
-    - prop: state           
+    - data: state           
       name: State 
   css:
     table+: 'padding-top: 5px;'

@@ -8,7 +8,7 @@ be conducted.
 
 * explicitly set header: `columns::name` 
 * identifier: `columns::id`
-* content matcher string: `columns::attr`, `columns::prop` or `columns::attr_as_list`
+* content matcher string: `columns::data`
 
 Removing the header(s) is currently not supported, but you can empty the contents
 simply by setting `name` to an empty string: "".
@@ -31,28 +31,28 @@ entities:
 columns:
   # add explicit column header: 'Aha Column'
   - name: Aha Column
-    attr: node_id
+    data: node_id
   # derived from 'id' option within 'columns'
   - id: my-col-id
-    attr: node_id
-  # derived from (attr) cell content matcher name, here: 'node_id'
-  - attr: node_id
+    data: node_id
+  # derived from (data) cell content matcher name, here: 'node_id'
+  - data: node_id
   # fancier header using explicit text, icon, data-conversion. right text alignment
   - name: NodeID
-    attr: node_id
+    data: node_id
     icon: mdi:z-wave
     align: right
 
   # add another column using header: 'More Header'
   - name: More Header
     # match entity's attr(ibute) using (regex) 'sendTS'
-    attr: sendTS
+    data: sendTS
 
   # one more column, header: 'Next Head'
   - name: Next Head
     # use entity's 'state' as content 
-    # (entity states are accessed via (prop)erties)
-    prop: state
+    # entity states are accessed via data (even if not within attributes)
+    data: state
 ```
 
 <!-- [example image section] -->

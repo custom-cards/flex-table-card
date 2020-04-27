@@ -34,19 +34,19 @@ entities:
 columns:
   # add column using header: 'Column Header'
   - name: Column Header
-    # match entity's attr(ibute) using (regex) 'receivedTS' 
-    attr: receivedTS
+    # match entity's attribute using 'receivedTS' 
+    data: receivedTS
 
   # add another column using header: 'More Header'
   - name: More Header
-    # match entity's attr(ibute) using (regex) 'sendTS'
-    attr: sendTS
+    # match entity's attribute using 'sendTS'
+    data: sendTS
 
   # one more column, header: 'Next Head'
   - name: Next Head
     # use entity's 'state' as content 
-    # (entity states are accessed via (prop)erties)
-    prop: state
+    # (entity states are accessed also via data (even if not directly within its attributes))
+    data: state
 ```
 
 This configuration will lead to a 3 column wide table with the rows being 

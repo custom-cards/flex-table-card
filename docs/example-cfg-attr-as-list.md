@@ -1,4 +1,8 @@
-## Examples - Attribute as List (`attr_as_list`)
+## Examples - DEPRECATED - Attribute as List (`attr_as_list`) 
+
+**deprecation: no need to use `attr_as_list` anymore, just use `data` instead and `flex-table-card`
+will determine automatically if the contents shall be treated as a list**
+
 
 I regulary have the need to transport, store and visualize non-trivial data
 to the frontend, provided by appdaemon or other sources not represented 

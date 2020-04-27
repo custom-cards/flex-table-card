@@ -14,10 +14,10 @@ entities:
   include: 'sensor.*_energy(_[0-9]+)?'
 
 columns:
-  - attr: node_id
+  - data: node_id
     name: NodeID
 
-  - attr: power_consumption
+  - data: power_consumption
     name: Power
     # append suffix' value to all cells ('W' as unit)
     suffix: W
@@ -30,11 +30,10 @@ columns:
     modify: parseFloat(x)
 
   - name: Energy (kWh)
-    prop: state
+    data: state
     # more advanced data parsing to a float using a fixed number of decimals
     modify: parseFloat(x).toFixed(1)
     align: center
-
 ```
 
 The formatting and string manipulation options can be combined with any other
@@ -44,7 +43,6 @@ or `strict`.  Whilst 'modify' *will* actually alter the cell contents
 **before** `sort_by` or `strict` are processed.
 
 Another detail worth mentioning is that `align` does *also* affect the column's
-header and not only the contents, if your needs differ, please use `css` in 
-addition of instead.
+header and not only the contents, if your needs differ, please use `css` instead.
 
 [Return to main README.md](../README.md)

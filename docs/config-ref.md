@@ -60,6 +60,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
+| data                 | string   | **required**  | selector for data to be shown, see [column data examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-data.md)
 | hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | icon                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://cdn.materialdesignicons.com/4.5.95/))
 | modify               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
@@ -72,6 +73,8 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 *Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.* 
 Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
+
+*** DEPRECATED, SOON TO BE REMOVED (simply use `data` instead):***
 ***`columns` (content) options (2nd level): column (cell) content definition, one required and mutually exclusive***
 
 | option            | Type              | Description
