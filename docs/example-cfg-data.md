@@ -56,7 +56,7 @@ columns:
   - data: state
     name: Energy
   - data: node_id,power_consumption,node_id
-   	name: My Multi-Item-Field
+    name: My Multi-Item-Field
     # the default 'multi_delimiter' is a whitespace: ' '
     multi_delimiter: ','
 ```
