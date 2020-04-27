@@ -41,9 +41,8 @@ shall now be written as:
 ```yaml
 data: node_id,power_consumption
 ```
-
-
 <!-- [listing section] -->
+### Full example
 ```yaml
 type: 'custom:flex-table-card'
 title: Power Consumption (Top 10)
