@@ -74,7 +74,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
 
-*** DEPRECATED, SOON TO BE REMOVED (simply use `data` instead):***
+### DEPRECATED, SOON TO BE REMOVED (simply use `data` instead):
 ***`columns` (content) options (2nd level): column (cell) content definition, one required and mutually exclusive***
 
 | option            | Type              | Description
