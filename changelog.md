@@ -68,3 +68,7 @@
 - fixed #22: using now proper 'strict' JavaScript 
 - fixed #25 with PR #27: introduced auto-entities support, thanks @SBado
 
+## 0.7
+- BACKWARD COMPATIBILITY / DEPRECATION WARNING: 'data' is replacing **all** other `column` selectors
+  i.e., 'attr_as_list', 'prop', 'multi', 'attr' shall **not be used anymore**. Initially only a
+	console.log() warning will be shown, soon this will change to console.warn(), then console.error()
