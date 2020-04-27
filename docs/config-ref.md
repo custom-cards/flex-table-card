@@ -74,22 +74,4 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 *Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.* 
 Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
-
-### DEPRECATED, SOON TO BE REMOVED (simply use `data` instead):
-***`columns` (content) options (2nd level): column (cell) content definition, one required and mutually exclusive***
-
-| option            | Type              | Description
-| ---------------   | ----              | -----------
-| attr              | regexp            | matches to the first attribute matching this regexp
-| prop              | string            | matches the entity's state members, e.g. **state** (any from [here](https://www.home-assistant.io/docs/configuration/state_object/) )
-| attr_as_list      | string            | [matched attribute is expected to contain a list](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-attr-as-list.md), each expanded to a row
-
-Find many examples within the [docs](https://github.com/custom-cards/flex-table-card/tree/master/docs) directory. 
-
-***`columns` (content) options (2nd level): allows [multiple content definitions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-column-multi.md) for a single cell***
-| option            | Type              | Description
-| ---------------   | ----              | -----------
-| multi             | list-of-2-strings | matches each pair within list as above: select multiple matches, concat all using `multi_delimiter` see [#19](https://github.com/custom-cards/flex-table-card/issues/19) for an example.
-
-
 [Return to main README.md](../README.md)
