@@ -30,10 +30,10 @@ comma delimited list instead. So e.g.,
 
 ```yaml
 multi:
-	- - attr
-	  - node_id
-	- - attr
-	  - power_consumption
+  - - attr
+    - node_id
+  - - attr
+    - power_consumption
 ```
 
 shall now be written as:
