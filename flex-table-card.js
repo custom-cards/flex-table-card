@@ -43,6 +43,36 @@ function compareVersion(vers1, vers2) {
     return (vers1.length == vers2.length) ? 0 : (vers1.length < vers2.length ? -1 : 1);
 }
 
+class CellFormatters {
+    constructor(data) { 
+        this.data = data;
+    }
+    number() {
+        return parseFloat(this.data) || null;
+    }
+    full_datetime() {
+        return Math.round((Date.now() - Date.parse(this.data)) / 36000.) / 1000;
+    }
+    hours_passed() {
+        return Math.round((Date.now() - Date.parse(this.data)) / 36000.) / 1000;
+    }
+    hours_mins_passed() {
+        if (!Date.parse(this.data))
+            return null;
+        const hourDiff = (Date.now() - Date.parse(this.data));
+        //const secDiff = hourDiff / 1000;
+        const minDiff = hourDiff / 60 / 1000;
+        const hDiff = hourDiff / 3600 / 1000;
+        const hours = Math.floor(hDiff);
+        const minutes = minDiff - 60 * hours;
+        const minr = Math.floor(minutes);
+        return hours + " hours " + minr + " minutes";
+    }
+    
+
+}
+
+
 /** flex-table data representation and keeper */
 class DataTable {
     constructor(cfg) {
@@ -156,17 +186,7 @@ class DataRow {
             // THIS WILL BE BREAKING OLD STUFF, INTRODUCE DEPRECATION WARNINGS!!!!!
             if ("data" in col) {
                 for (let tok of col.data.split(","))
-                    //let data_src = "auto";
                     col_getter.push(["auto", tok]);
-                //console.log(col_getter.join(", "));
-                    // DECIDE if "data_src" should remain, or can we avoid it?!
-                    // -> best case we don't need it, thus fully remove it (also no list of pairs)
-                    // magic "@" to enforce behavior, avoid this (or is it ok?)
-                    /*if (tok.indexOf("@") > -1) {
-                        let subtoks = tok.split("@");
-                        data_src = subtoks[1];
-                        tok = subtoks[0];
-                    }*/
 
             // OLD data source selection: CALL DEPRECATION WARNING HERE!!!
             // start with console.log(), continue with console.warn(), console.error()
@@ -268,6 +288,11 @@ class DataRow {
             else
                 raw_content = raw_content[0];
 
+            if (col.fmt) {
+                let fmt = new CellFormatters(raw_content);
+                if ([null, undefined].every(x => raw_content !== x))
+                    raw_content = fmt[col.fmt]();
+            }
             return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
 
         });
