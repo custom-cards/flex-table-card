@@ -44,29 +44,27 @@ function compareVersion(vers1, vers2) {
 }
 
 class CellFormatters {
-    constructor(data) { 
-        this.data = data;
+    constructor() {
+        this.failed = false;
     }
-    number() {
-        return parseFloat(this.data) || null;
+    number(data) {
+        return parseFloat(data) || null;
     }
-    full_datetime() {
-        return Math.round((Date.now() - Date.parse(this.data)) / 36000.) / 1000;
+    full_datetime(data) {
+        return Date.parse(data);
     }
-    hours_passed() {
-        return Math.round((Date.now() - Date.parse(this.data)) / 36000.) / 1000;
+    hours_passed(data) {
+        return Math.round((Date.now() - Date.parse(data)) / 36000.) / 100;
     }
-    hours_mins_passed() {
-        if (!Date.parse(this.data))
-            return null;
-        const hourDiff = (Date.now() - Date.parse(this.data));
+    hours_mins_passed(data) {
+        const hourDiff = (Date.now() - Date.parse(data));
         //const secDiff = hourDiff / 1000;
         const minDiff = hourDiff / 60 / 1000;
         const hDiff = hourDiff / 3600 / 1000;
         const hours = Math.floor(hDiff);
         const minutes = minDiff - 60 * hours;
         const minr = Math.floor(minutes);
-        return hours + " hours " + minr + " minutes";
+        return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
     
 
@@ -288,13 +286,13 @@ class DataRow {
             else
                 raw_content = raw_content[0];
 
+            let fmt = new CellFormatters();
             if (col.fmt) {
-                let fmt = new CellFormatters(raw_content);
-                if ([null, undefined].every(x => raw_content !== x))
-                    raw_content = fmt[col.fmt]();
+                raw_content = fmt[col.fmt](raw_content);
+                if (fmt.failed)
+                    raw_content = null;
             }
             return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
-
         });
         return null;
     }
