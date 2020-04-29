@@ -26,9 +26,9 @@ strict: true                     /* be removed (`strict`)                       
 clickable: true                  /* on row-click show entity pop-up with details        */
 
 columns:                         /* start with (cell)content definition                 */
-  - attr: node_id
+  - data: node_id
     name: NodeID                 /* we show two columns: "NodeID" and "Battery Level"   */
-  - attr: battery_level          /* 'suffix' is automatically appended as formatting    */
+  - data: battery_level          /* 'suffix' is automatically appended as formatting    */
     name: Battery Level
     suffix: ' %'
 ```
@@ -50,18 +50,18 @@ strict: true                           /* any column not containing any data (or
 max_rows: 20                           /* show a maximum of 20 rows                                 */
 
 columns:                               /* now the column(s) configuration follows:                  */
-  - attr: node_id                      /* any of 'attr', 'prop', 'attr_as_list' or 'multi' defines  */
+  - data: node_id                      /* any of 'attr', 'prop', 'attr_as_list' or 'multi' defines  */
     name: NodeID                       /* the _contents_ for this cell                              */
     align: center                      /* cell content alignment (defaults to 'left')               */
     icon: 'mdi:z-wave'                 /* include icon in header next to 'name'                     */
 
-  - attr: power_consumption            /* as above an attribute is extracted from the row-entity    */
+  - data: power_consumption            /* as above an attribute is extracted from the row-entity    */
     name: Power
     align: right                        
     modify: parseFloat(x)              /* modify the cell-contents using js, number conversion for  */
     suffix: ' W'                       /* better (right-justified) formatting
 
-  - prop: state                        /* pure entity-properties can also be referenced             */
+  - data: state                        /* pure entity-properties can also be referenced             */
     name: Energy                        
     modify: parseFloat(x).toFixed(1)   /* ensure consistent and professional look & format          */
     align: right                        
