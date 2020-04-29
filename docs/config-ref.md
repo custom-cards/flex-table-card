@@ -31,25 +31,25 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
-| include              | regexp   | **required**  | Defines the initial entity data source(s) [basics](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-basics.md)
-| exclude              | regexp   |   optional    | Reduces the *included* data sources(s) 
+| `include`            | regexp   | **required**  | Defines the initial entity data source(s) [basics](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-basics.md)
+| `exclude`            | regexp   |   optional    | Reduces the *included* data sources(s) 
  
 [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) are also supported, see the 
 [examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-autoentities.md).
  
 ***`css` options (2nd level): [css adaptations](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)***
 
-| option                     | Type     | Required?     | Description
-| ----                       | ----     | ------------- | -----------
-| &lt;css_selector&gt;       | string   |   optional    | the original &lt;css_selector&gt; will be replaced with option's value
-| &lt;css_selector&gt;+      | string   |   optional    | &lt;css_selector&gt;'s contents are appended to the existing &lt;css_selector&gt;
+| option                 | Type     | Required?     | Description
+| ----                   | ----     | ------------- | -----------
+| `<css_selector>`       | string   |   optional    | the original &lt;css_selector&gt; will be replaced with option's value
+| `<css_selector>+`      | string   |   optional    | `<css_selector>`'s contents are appended to the existing `<css_selector>`;
 
 ***`columns` options (2nd level): header definition, column identifcation***
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
-| name                 | string   |   optional    | column header
-| id                   | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
+| `name`               | string   |   optional    | column header
+| `id`                 | string   |   optional    | unique identifier e.g., to sort one of multiple equally referencing cells
 
 If neither `name` nor `id` is set the identifier for the column will be derived from the content
 definition. Apart from `sort_by` no other option requires referencing of this identifier, for easy referencing by
@@ -58,16 +58,16 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 
 ***`columns` options (2nd level): visibility, [cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-simple-cell-formatting.md), [content manipulation](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md)***
 
-| option               | Type     | Required?     | Description
-| ----                 | ----     | ------------- | -----------
-| data                 | string   | **required**  | selector for data to be shown, see [column data examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-data.md)
-| hidden               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
-| icon                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://cdn.materialdesignicons.com/4.5.95/))
-| modify               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
-| align                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
-| prefix               | string   |   optional    | to be applied _before_ all cell contents 
-| suffix               | string   |   optional    | to be appended _after_ all cell contents
-| multi_delimiter      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
+| option                 | Type     | Required?     | Description
+| ----                   | ----     | ------------- | -----------
+| `data`                 | string   | **required**  | selector for data to be shown, see [column data examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-data.md)
+| `hidden`               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
+| `icon`                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://cdn.materialdesignicons.com/4.5.95/))
+| `modify`               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+| `align`                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
+| `prefix`               | string   |   optional    | to be applied _before_ all cell contents 
+| `suffix`               | string   |   optional    | to be appended _after_ all cell contents
+| `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
