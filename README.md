@@ -31,7 +31,7 @@ resources:
   * [Formatting](docs/example-cfg-simple-cell-formatting.md)
   * [Sorting & Strict](docs/example-cfg-sorting-strict.md)
   * [Headers](docs/example-cfg-headers.md)
-  * [Advanced Cell Formatting](docs/example-cfg-basics.md)
+  * [Advanced Cell Formatting](docs/example-cfg-advanced-cell-formatting.md)
   * [Formatting with CSS](docs/example-cfg-css.md)
   * [Auto Entities](docs/example-cfg-autoentities.md)
 * [Configuration Reference](docs/config-ref.md)
