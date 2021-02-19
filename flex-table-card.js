@@ -9,14 +9,21 @@ var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
 // single items -> Array with item with length == 1
 var listify = obj => ((obj instanceof Array) ? obj : [obj]);
 
-// omg, js is still very inconvinient... or is this just me?
+// mk - added sorting for numbers and IP addresses
 var compare = function(a, b) {
-    if (typeof a == "string")
+    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(a)){
+		var a1 = a.split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
+		if (b === null)
+			var b1 = 0
+		else
+			var b1 = b.split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
+        return (a1 - b1);
+	}   else if (isNaN(a))
         return a.localeCompare(b);
-    else if (typeof b == "string")
+    else if (isNaN(b))
         return -1 * b.localeCompare(a);
-    else
-        return a - b;
+	else
+        return parseFloat(a) - parseFloat(b);
 }
 
 // version(string) compare
