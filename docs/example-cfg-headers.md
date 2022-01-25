@@ -24,7 +24,7 @@ Furthermore an icon can be added. This is simply done by setting the option:
 ```yaml
 
 type: custom:flex-table-card 
-max-rows: 10
+max_rows: 10
 entities:
   include: zwave.*
 
