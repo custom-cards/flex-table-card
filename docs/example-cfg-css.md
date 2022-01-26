@@ -31,7 +31,7 @@ A complete example:
 type: custom:flex-table-card 
 title: Fancy tabular temperature data
 strict: true
-max-rows: 10
+max_rows: 10
 entities:
   include: sensor.*
 
