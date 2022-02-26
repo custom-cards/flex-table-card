@@ -50,8 +50,24 @@ columns:
 ```
 
 This configuration will lead to a 3 column wide table with the rows being 
-equal to all entities matched within the `entities` section. This might look 
-like this one:
+equal to all entities matched within the `entities` section. 
+
+It is also possible to use multiple `include` and `exclude` filters,
+simply use both optionally as a list of strings:
+```
+type: custom:flex-table-card
+title: multiple includes and excludes example
+entities:
+  include: 
+    - sensor.*
+  	- binary_sensor.foo
+  exclude:
+    - sensor.unwanted_sensor_id 
+    - sensor.more_unwanted
+```
+In order for an entity to get included, **any** `include` expression has to match. 
+To be excluded from the entity set, only **one** `exclude` expression must match.
+
 
 
 [Return to main README.md](../README.md)
