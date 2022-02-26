@@ -224,6 +224,7 @@ class DataRow {
                 // newest stuff, automatically dispatch to correct data source
                 if (col_type == "auto") {
                     if (col_key == "name") {
+                        // "smart" name determination
                         if ("friendly_name" in this.entity.attributes)
                             raw_content.push(this.entity.attributes.friendly_name);
                         else if ("name" in this.entity)
@@ -233,16 +234,24 @@ class DataRow {
                         else
                             raw_content.push(this.entity.entity_id);
                     } else if (col_key == "object_id") {
+                        // return object ID
                         raw_content.push(this.entity.entity_id.split(".").slice(1).join("."));
+                    } else if (col_key == "_state") {
+                        // '_state' denotes 'attributes.state'
+                        raw_content.push(this.entity.attributes.state);
                     } else if (col_key in this.entity) {
+                        // easy direct member of entity
                         raw_content.push(this.entity[col_key]);
                     } else {
+                        // finally fall back to '.attributes' member
                         raw_content.push(((col_key in this.entity.attributes) ?
                             this.entity.attributes[col_key] : null));
                     }
 
                     // technically all of the above might be handled as list
                     this.has_multiple = Array.isArray(raw_content.slice(-1)[0]);
+
+                    // @todo: undefined undefined undefined
 
 
                 ////////// ALL OF THE FOLLOWING TO BE REMOVED ONCE DEPRECATION IS REALIZED....
@@ -278,8 +287,10 @@ class DataRow {
                 //
                 ////////// ... REMOVAL UNTIL THIS POINT HERE (DUE TO DEPRECATION)
 
-                } else
+                } else {
                     console.error(`no selector found for col: ${col.name} - skipping...`);
+                    //raw_content.push("[failed selecting data]");
+                }
             }
             /* finally concat all raw_contents together using 'col.multi_delimiter' */
             let delim = (col.multi_delimiter) ? col.multi_delimiter : " ";
