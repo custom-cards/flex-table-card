@@ -410,7 +410,7 @@ class FlexTableCard extends HTMLElement {
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
         var css_styles = {
             "table":                    "width: 100%; padding: 16px; ",
-            "thead th":                 "text-align: left; height: 1em;",
+            "thead th":                 "height: 1em;",
             "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; ",
             "th":                       "padding-left: 0.5em; padding-right: 0.5em; ",
             "tr td.left":               "text-align: left; ",
