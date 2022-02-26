@@ -240,8 +240,9 @@ class DataRow {
                         // '_state' denotes 'attributes.state'
                         raw_content.push(this.entity.attributes.state);
                     } else if (col_key === "icon") {
-                        // 'icon' will return the entity's default icon
-                        raw_content.push(`<ha-icon id="icon" icon="${this.entity.attributes.icon}"></ha-icon>`);
+                        // 'icon' will show the entity's default icon
+                        let _icon = this.entity.attributes.icon;
+                        raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
                     } else if (col_key in this.entity) {
                         // easy direct member of entity
                         raw_content.push(this.entity[col_key]);
@@ -250,7 +251,7 @@ class DataRow {
                         raw_content.push(this.entity.attributes[col_key]);
                     } else {
                         // no matching data found, complain:
-                        raw_content.push("[[ no match ]]");
+                        //raw_content.push("[[ no match ]]");
                     }
 
                     // @todo: not really nice to clean `raw_content` up here, why
@@ -334,7 +335,7 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content === "undefined" || typeof content === "undefined" || content === null ||
+            if (content.slice(0, 9) === "undefined" || typeof content === "undefined" || content === null ||
                     content == "null" || (Array.isArray(content) && content.length == 0))
                 return ((this.strict) ? null : "n/a");
 
