@@ -60,14 +60,13 @@ title: multiple includes and excludes example
 entities:
   include: 
     - sensor.*
-  	- binary_sensor.foo
+    - binary_sensor.foo
   exclude:
     - sensor.unwanted_sensor_id 
     - sensor.more_unwanted
 ```
-In order for an entity to get included, **any** `include` expression has to match. 
-To be excluded from the entity set, only **one** `exclude` expression must match.
-
+In order for an entity to get included, **any** `include` expression is sufficient for inclusion. 
+To be excluded from the entity set, only **one** `exclude` expression match is required.
 
 
 [Return to main README.md](../README.md)
