@@ -9,8 +9,14 @@ for the assigned value of `data`:
 
 * `name` = *friendliest name* will be selected
 * `object_id` = full entity *path* without domain
+* `icon` = renders the entity's current icon (`entity.attributes.icon`) into the cell
+* `_state`= is a *hack* to be able to select `entity.attributes.state` as data
 * any `key in this.entity` (e.g., `entity_id`, `state`, ...)
 * otherwise a key within `this.entity.attributes` will be assumed 
+
+If the chosen `data` selector does not resolve to something useful, the
+cell will be marked with an error - collection/rendering should continue w/o any 
+issues. 
 
 **Row expansion from a list** will be automatically applied (by testing the selected data 
 for being an `Array.isArray()`). 
