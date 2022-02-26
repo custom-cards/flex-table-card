@@ -191,7 +191,7 @@ class DataRow {
             // THIS WILL BE BREAKING OLD STUFF, INTRODUCE DEPRECATION WARNINGS!!!!!
             if ("data" in col) {
                 for (let tok of col.data.split(","))
-                    col_getter.push(["auto", tok]);
+                    col_getter.push(["auto", tok.trim()]);
 
             // OLD data source selection: CALL DEPRECATION WARNING HERE!!!
             // start with console.log(), continue with console.warn(), console.error()
