@@ -12,9 +12,6 @@
   i.e., 'attr_as_list', 'prop', 'multi', 'attr' shall **not be used anymore**. Initially only a
 	console.log() warning will be shown, soon this will change to console.warn(), then console.error()
 
-## 0.5.2
-- added `icon` configuration for adding an icon to column headers
-
 ## 0.6
 - added `multi` instead of `attr` or `prop` for column/cell contents
   - `multi` consists of list of string-pairs e.g., ["attr", "node_id"]
@@ -25,6 +22,9 @@
 	- 'multi_delimiter' further allows to descide how the multiple items within
 	  one cell get concatenated, i.e., which delimiter is to be found between the 
 		chunks
+
+## 0.5.2
+- added `icon` configuration for adding an icon to column headers
 
 ## 0.5.1
 - added `css` configuration parameter to allow arbitrary modifications of the used CSS styles.
