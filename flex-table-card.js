@@ -258,9 +258,9 @@ class DataRow {
                     //        putting garbage in it in the 1st place? Need to check
                     //        if this is ever executed, since the data-collection
                     //        improvements...
-                    raw_content = raw_content.filter(
+                    /*raw_content = raw_content.filter(
                         (item) => item !== undefined && item.slice(0, 9) !== 'undefined'
-                    );
+                    );*/
 
                     // technically all of the above might be handled as list
                     this.has_multiple = Array.isArray(raw_content.slice(-1)[0]);
