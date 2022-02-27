@@ -111,29 +111,41 @@ class DataTable {
     get_rows() {
         // sorting is allowed asc/desc for one column
         if (this.cfg.sort_by) {
-            let sort_col = this.cfg.sort_by;
-            let sort_dir = 1;
-            if (sort_col) {
+            let sort_cols = listify(this.cfg.sort_by);
+            
+            let sort_conf = sort_cols.map((sort_col) => {
+                let out = { dir: 1, col: sort_col, idx: null };
                 if (["-", "+"].includes(sort_col.slice(-1))) {
                     // "-" => descending, "+" => ascending
-                    sort_dir = ((sort_col.slice(-1)) == "-") ? -1 : +1;
-                    sort_col = sort_col.slice(0, -1);
+                    out.dir = (((sort_col.slice(-1)) == "-") ? -1 : +1);
+                    out.col = sort_col.slice(0, -1);
                 }
+                // DEPRECATION CHANGES ALSO TO BE DONE HERE:
+                // determine col-by-idx to be sorted with...
+                out.idx = this.cols.findIndex((col) =>
+                    ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
+                        attr in col && out.col == col[attr]));
+                return out;
+            });
+
+            // sort conf checks
+            sort_conf = sort_conf.filter((conf) => conf.idx !== -1 && conf.idx !== null);
+            if (sort_conf.length > 0) {
+                
+                this.rows.sort((x, y) => 
+                    sort_conf.reduce((out, conf) => 
+                        out || conf.dir * compare(
+                            x.data[conf.idx] && x.data[conf.idx].content,
+                            y.data[conf.idx] && y.data[conf.idx].content),
+                        false
+                    )
+                );
+
+            } else {
+                console.error("cannot sort, no applicable columns found");
             }
 
-            // DEPRECATION CHANGES ALSO TO BE DONE HERE:
-            // determine col-by-idx to be sorted with...
-            var sort_idx = this.cols.findIndex((col) =>
-                ["id", "attr", "prop", "attr_as_list", "data"].some(attr =>
-                    attr in col && sort_col == col[attr]));
 
-            // if applicable sort according to config
-            if (sort_idx > -1)
-                this.rows.sort((x, y) => sort_dir * compare(
-                    x.data[sort_idx] && x.data[sort_idx].content,
-                    y.data[sort_idx] && y.data[sort_idx].content));
-            else
-                console.error(`config.sort_by: ${this.cfg.sort_by}, but column not found!`);
         }
         // mark rows to be hidden due to 'strict' property
         this.rows = this.rows.filter(row => !row.hidden);
