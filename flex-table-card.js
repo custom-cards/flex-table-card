@@ -252,6 +252,7 @@ class DataRow {
                     } else {
                         // no matching data found, complain:
                         //raw_content.push("[[ no match ]]");
+                        raw_content.push(null);
                     }
 
                     // @todo: not really nice to clean `raw_content` up here, why
@@ -335,7 +336,7 @@ class DataRow {
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
-            if (content.slice(0, 9) === "undefined" || typeof content === "undefined" || content === null ||
+            if (content === "undefined" || typeof content === "undefined" || content === null ||
                     content == "null" || (Array.isArray(content) && content.length == 0))
                 return ((this.strict) ? null : "n/a");
 
