@@ -42,7 +42,4 @@ formatting options, even with `modify`.  Formatting a cell using `align`,
 or `strict`.  Whilst 'modify' *will* actually alter the cell contents
 **before** `sort_by` or `strict` are processed.
 
-Another detail worth mentioning is that `align` does *also* affect the column's
-header and not only the contents, if your needs differ, please use `css` instead.
-
 [Return to main README.md](../README.md)
