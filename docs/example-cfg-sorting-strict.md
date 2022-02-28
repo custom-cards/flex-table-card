@@ -33,4 +33,17 @@ columns:
     data: battery_level
 ```
 
+Furthermore it is possible to use `sort_by` with multiple columns, by passing a list of columns 
+like this:
+
+```
+sort_by: [battery+, name-]
+```
+alternatively using the line-wise list notation:
+```
+sort_by:
+  - battery+
+  - name-
+```
+
 [Return to main README.md](../README.md)
