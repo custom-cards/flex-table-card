@@ -19,42 +19,16 @@ entities:
 columns:
   - data: name
     name: NodeID
+
   - name: Battery Level (%)
     data: state
-    fmt: number
+    fmt: number           <----- convinient text to number conversion
     suffix: '%'
     align: right
+
   - data: last_updated
     name: Hours Passed
-    fmt: hours_passed
-
-
-# make every cell/row 'clickable': show entity-popup for more entity details
-clickable: true   
-
-entities:
-  exclude:
-    - zwave.unknown_device_*
-    - zstick_gen5
-  include: zwave.*
-
-columns:
-  # 1st + 2nd column are <NodeID> + <NodeName>, remember to set 'name' for a 
-  # human-readable / fancy header content
-  - name: NodeID
-  	data: node_id
-  - name: Name
-    data: name
-
-  # 'receivedTS' and 'sentTS' are strings like: '2020-12-24 00:40:57:758'
-  # using 'modify' and a JavaScript expression the strings can be converted to
-  # hours using 'Date.parse' and friends
-  - data: receivedTS
-    modify: Math.round((Date.now() - Date.parse(x)) / 36000.) / 100.
-    name: Recv. Age (h)
-  - data: sentTS
-    modify: Math.round((Date.now() - Date.parse(x)) / 36000.) / 100.
-    name: Sent Age (h)
+    fmt: hours_passed     <----- how many hours have passed
 ```
 
 
