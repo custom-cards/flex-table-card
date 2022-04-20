@@ -68,10 +68,18 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `prefix`               | string   |   optional    | to be applied _before_ all cell contents 
 | `suffix`               | string   |   optional    | to be appended _after_ all cell contents
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
+| `fmt`                  | string   |   optional    | format using predefined 'formatters'
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
 *Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.* 
 Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
+
+
+Currently the available formatters are: `full_datetime`, `hours_passed`, `hours_mins_passed`, `number`. Feel free to contribute, just share your best `modify` line to allow others to use them, too.
+
+
+
+
 
 [Return to main README.md](../README.md)
