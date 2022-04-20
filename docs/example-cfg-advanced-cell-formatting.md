@@ -1,5 +1,7 @@
 ## Examples - Advanced Cell Content Formatting & Modification
 
+## Choosing one of the available formatting helpers
+
 Om top of the in following described method there is also now the option
 to choose from predefined format styles for each cell in a column. This
 is simply done by addin the `fmt` property to your column and choosing 
@@ -32,6 +34,7 @@ columns:
 ```
 
 
+## Take full control about you cells'
 
 **Monitoring and identifying nodes, which are not communicating anymore** with
 the Z-Wave controller, can be extracted and also sorted according to their last
