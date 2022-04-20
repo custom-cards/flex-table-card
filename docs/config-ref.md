@@ -76,10 +76,13 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
 
-Currently the available formatters are: `full_datetime`, `hours_passed`, `hours_mins_passed`, `number`. Feel free to contribute, just share your best `modify` line to allow others to use them, too.
+### Currently the available *formatters are: 
+* `full_datetime`
+* `hours_passed` 
+* `hours_mins_passed`
+* `number`
 
-
-
+Feel free to contribute, just share your best `modify` line to allow others to use them, too.
 
 
 [Return to main README.md](../README.md)

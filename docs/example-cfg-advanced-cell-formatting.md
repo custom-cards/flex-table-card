@@ -10,6 +10,9 @@ these are essentially hidden `modify:` scripts I have some hopes that people
 will share their coolest formattings - making it available to everyone
 through `flex-table-card` .
 
+A list of all formatters can be found at the 
+[configuration reference])(https://github.com/custom-cards/flex-table-card/blob/master/docs/config-ref.md).
+
 ``` yaml
 type: custom:flex-table-card
 title: Battery Levels (Top 10)
@@ -34,7 +37,7 @@ columns:
 ```
 
 
-## Take full control about you cells'
+## Take full control about your cells'
 
 **Monitoring and identifying nodes, which are not communicating anymore** with
 the Z-Wave controller, can be extracted and also sorted according to their last
