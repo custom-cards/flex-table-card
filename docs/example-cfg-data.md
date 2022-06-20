@@ -23,7 +23,7 @@ for being an `Array.isArray()`).
 
 **Multiple, different selectors can be used** for a single column data selection by just separating 
 each one using a comma `,`. If multiple selectors are used the resulting data is concatenated using 
-`multi_delimitier`, which defaults to a whitespace ' '.
+`multi_delimiter`, which defaults to a whitespace ' '.
 
 ### Migration from versions < 0.7
 Since version 0.7 the old selectors (`attr`, `prop`, `attr_as_list`, `multi`) are all replaced by
