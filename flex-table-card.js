@@ -73,7 +73,7 @@ class CellFormatters {
         const minr = Math.floor(minutes);
         return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
-        duration(data) {
+    duration(data) {
         let h = (data > 3600) ? Math.floor(data / 3600).toString() + ':' : '';
         let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
         let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
