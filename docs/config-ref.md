@@ -81,6 +81,8 @@ Apart from that `modify` is very powerful, see [advanced cell formatting](https:
 * `hours_passed` 
 * `hours_mins_passed`
 * `number`
+* `duration`
+* `duration_h`
 
 Feel free to contribute, just share your best `modify` line to allow others to use them, too.
 

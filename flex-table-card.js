@@ -73,7 +73,24 @@ class CellFormatters {
         const minr = Math.floor(minutes);
         return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
-    
+    duration(data) {
+        let h = (data > 3600) ? Math.floor(data / 3600).toString() + ':' : '';
+        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        if (m) s = s.padStart(2, 0);
+        return h + m + s;
+    }
+    duration_h(data) {
+        let d = (data > 86400) ? Math.floor(data / 86400).toString() + 'd ' : '';
+        let h = (data > 3600) ? Math.floor((data % 86400) / 3600) : ''
+        h = (d) ? h.toString().padStart(2,0) + ':' : ((h) ? h.toString() + ':' : '');
+
+        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        if (m) s = s.padStart(2, 0);
+        return d + h + m + s;
+    }
+
 
 }
 
