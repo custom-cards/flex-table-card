@@ -281,7 +281,28 @@ class DataRow {
                     } else {
                         // no matching data found, complain:
                         //raw_content.push("[[ no match ]]");
-                        raw_content.push(null);
+
+                        let pos = col_key.indexOf('.');
+                        if (pos < 0)
+                        {
+                            raw_content.push(null);
+                        }
+                        else
+                        {
+                            // if the col_key field contains a dotted object (eg: day.monday)
+                            //  then traverse each object to ensure that it exists
+                            //  until the final object value is found.
+                            // if at any point in the traversal, the object is not found
+                            //  then null will be used as the value.
+                            let objs = col_key.split('.');
+                            let value = this.entity.attributes;
+                            if (value) {
+                                for (let idx = 0; value && idx < objs.length; idx++) {
+                                    value = (objs[idx] in value) ? value[objs[idx]] : null;
+                                }
+                            }
+                            raw_content.push(value);
+                        }
                     }
 
                     // @todo: not really nice to clean `raw_content` up here, why

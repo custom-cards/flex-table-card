@@ -14,6 +14,9 @@ for the assigned value of `data`:
 * any `key in this.entity` (e.g., `entity_id`, `state`, ...)
 * otherwise a key within `this.entity.attributes` will be assumed 
 
+When accessing attributes, sometimes an attribute object will itself contain objects.
+In that case, you can access the lower object using dotted notation.  eg: object1.object2.field1
+
 If the chosen `data` selector does not resolve to something useful, the
 cell will be marked with an error - collection/rendering should continue w/o any 
 issues. 
