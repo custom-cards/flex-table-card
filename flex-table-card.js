@@ -534,15 +534,15 @@ class FlexTableCard extends HTMLElement {
 
     _updateContent(element, rows) {
         // callback for updating the cell-contents
-        element.innerHTML = rows.map((row) =>
-            `<tr id="entity_row_${row.entity.entity_id}">${row.data.map(
+        element.innerHTML = rows.map((row, index) =>
+            `<tr id="entity_row_${row.entity.entity_id}_${index}">${row.data.map(
                 (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
 
         // if configured, set clickable row to show entity popup-dialog
-        rows.forEach(row => {
-            const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}`);
+        rows.forEach((row, index) => {
+            const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}_${index}`);
             // bind click()-handler to row (if configured)
             elem.onclick = (this.tbl.cfg.clickable) ? (function(clk_ev) {
                 // create and fire 'details-view' signal
