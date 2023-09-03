@@ -64,5 +64,14 @@ css:
   'thead th:nth-child(2)': 'background-color: #5f3'
 ```
 
+### Allow selecting text inside table cells
+
+```yaml
+
+css:
+  'tbody tr+': 'user-select: text'
+
+```
+
 
 [Return to main README.md](../README.md)
