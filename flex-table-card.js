@@ -422,6 +422,7 @@ class FlexTableCard extends HTMLElement {
 
     // Used to detect changes requiring a table refresh.
     #old_last_updated = "";
+    #old_rowcount = 0;
 
     _getRegEx(pats, invert=false) {
         // compile and convert wildcardish-regex to real RegExp
@@ -572,10 +573,14 @@ class FlexTableCard extends HTMLElement {
 
         // Check for changes requiring a table refresh.
         // Return if no changes detected.
-        let last_updated_arr = entities.map(a => a.last_updated);
-        let max = last_updated_arr.sort().slice(-1)[0];
-        if (max == this.#old_last_updated) return;
-        this.#old_last_updated = max;
+        let rowcount = entities.length;
+        if (rowcount == this.#old_rowcount) {
+            let last_updated_arr = entities.map(a => a.last_updated);
+            let max = last_updated_arr.sort().slice(-1)[0];
+            if (max == this.#old_last_updated) return;
+            this.#old_last_updated = max;
+        }
+        this.#old_rowcount = rowcount;
 
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
