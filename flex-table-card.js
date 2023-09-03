@@ -55,7 +55,7 @@ class CellFormatters {
         this.failed = false;
     }
     number(data) {
-        return parseFloat(data) || null;
+        return parseFloat(data);
     }
     full_datetime(data) {
         return Date.parse(data);
@@ -368,13 +368,7 @@ class DataRow {
                 raw_content = raw_content.map((obj) => String(obj)).join(delim);
             else
                 raw_content = raw_content[0];
-
-            let fmt = new CellFormatters();
-            if (col.fmt) {
-                raw_content = fmt[col.fmt](raw_content);
-                if (fmt.failed)
-                    raw_content = null;
-            }
+            
             return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
         });
         return null;
@@ -386,6 +380,14 @@ class DataRow {
         this.data = this.raw_data.map((raw, idx) => {
             let x = raw;
             let cfg = col_cfgs[idx];
+						
+						let fmt = new CellFormatters();
+            if (cfg.fmt) {
+                x = fmt[cfg.fmt](x);
+                if (fmt.failed)
+                   x = null;
+            }
+
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
