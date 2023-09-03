@@ -268,6 +268,9 @@ class DataRow {
                     } else if (col_key === "_state" && "state" in this.entity.attributes) {
                         // '_state' denotes 'attributes.state'
                         raw_content.push(this.entity.attributes.state);
+                    } else if (col_key === "_name" && "name" in this.entity.attributes) {
+                        // '_name' denotes 'attributes.name'
+                        raw_content.push(this.entity.attributes.name);
                     } else if (col_key === "icon") {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
