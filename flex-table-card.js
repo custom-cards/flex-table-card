@@ -464,6 +464,14 @@ class FlexTableCard extends HTMLElement {
 
     setConfig(config) {
         // get & keep card-config and hass-interface
+        if (!config.entities) {
+            throw new Error('Please provide the "entities" option as a list.');
+        }
+
+        if (!config.columns) {
+            throw new Error('Please provide the "columns" option as a list.');
+        }
+
         const root = this.shadowRoot;
         if (root.lastChild)
             root.removeChild(root.lastChild);
@@ -615,3 +623,10 @@ class FlexTableCard extends HTMLElement {
 
 customElements.define('flex-table-card', FlexTableCard);
 
+
+window.customCards = window.customCards || [];
+window.customCards.push({
+    type: "flex-table-card",
+    name: "Flex Table Card",
+    description: "The Flex Table card gives you the ability to visualize tabular data." // optional
+});
