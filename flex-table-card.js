@@ -669,3 +669,5 @@ window.customCards.push({
     name: "Flex Table Card",
     description: "The Flex Table card gives you the ability to visualize tabular data." // optional
 });
+
+console.info(`%c FLEX-TABLE-CARD %c Version ${VERSION} `, "font-weight: bold; color: #000; background: #aeb", "font-weight: bold; color: #000; background: #ddd");
