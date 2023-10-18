@@ -19,9 +19,9 @@ var compare = function(a, b) {
 			var b1 = b.split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
         return (a1 - b1);
 	}   else if (isNaN(a))
-        return a.toString().localeCompare(b);
+        return a.toString().localeCompare(b, navigator.language);
     else if (isNaN(b))
-        return -1 * b.toString().localeCompare(a);
+        return -1 * b.toString().localeCompare(a, navigator.language);
 	else
         return parseFloat(a) - parseFloat(b);
 }
