@@ -1,3 +1,25 @@
+## 0.7.4
+
+- show name and version in HA console
+- sort by column clickable header
+- some init error checks
+- fix table update on entity deletion
+- move formatting before `modify` operation
+- fix ordering with special chars
+
+## 0.7.3 
+
+- allow dotted object notation, fixes #86
+- allow clicking single row entities #102#
+- allow `_name` similar to `_data`, fixes #95
+- only refresh tables, if needed
+- improve docs
+
+## 0.7.2
+
+- multi-column sorting, fixes #67
+- some doc updates
+
 ## 0.7.1 
 - entity.attributes.state now available through special data: '_state', fixes #51
 - docs: add example for multi include/exclude filtering; fixes #48
