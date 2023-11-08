@@ -108,6 +108,7 @@ class DataTable {
 
         this.headers = this.cols.filter(col => !col.hidden).map(
             (col, idx) => new Object({
+                id: "Col" + idx,
                 name: col.name,
                 icon: col.icon || null
             }));
@@ -540,7 +541,7 @@ class FlexTableCard extends HTMLElement {
 
         // temporary for generated header html stuff
         let my_headers = this.tbl.headers.map((obj, idx) => new Object({
-            th_html_begin: `<th class="${cfg.columns[idx].align || 'left'}" id="${obj.name}">`,
+            th_html_begin: `<th class="${cfg.columns[idx].align || 'left'}" id="${obj.id}">`,
             th_html_end: `${obj.name}</th>`,
             icon_html: ((obj.icon) ? `<ha-icon id='icon' icon='${obj.icon}'></ha-icon>` : "")
         }));
@@ -566,17 +567,17 @@ class FlexTableCard extends HTMLElement {
 
         // add sorting click handler to header elements
         this.tbl.headers.map((obj, idx) => {
-            root.getElementById(obj.name).onclick = (click) => {
+            root.getElementById(obj.id).onclick = (click) => {
                 // remove previous sort by
                 this.tbl.headers.map((obj, idx) => {
-                    root.getElementById(obj.name).classList.remove("headerSortDown");
-                    root.getElementById(obj.name).classList.remove("headerSortUp");
+                    root.getElementById(obj.id).classList.remove("headerSortDown");
+                    root.getElementById(obj.id).classList.remove("headerSortUp");
                 });
                 this.tbl.updateSortBy(idx);
                 if (this.tbl.sort_by.indexOf("+") != -1) {
-                    root.getElementById(obj.name).classList.add("headerSortUp");
+                    root.getElementById(obj.id).classList.add("headerSortUp");
                 } else {
-                    root.getElementById(obj.name).classList.add("headerSortDown");
+                    root.getElementById(obj.id).classList.add("headerSortDown");
                 }
                 this._updateContent(
                     root.getElementById("flextbl"),
