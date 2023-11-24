@@ -1,3 +1,8 @@
+## 0.7.5
+
+- properly set version inside sources
+- fixed #115
+
 ## 0.7.4
 
 - show name and version in HA console

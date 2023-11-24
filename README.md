@@ -1,8 +1,8 @@
 # Flex Table
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration) 
-[![Version](https://img.shields.io/badge/version-0.7.4-green.svg?style=plastic)](#) 
-[![stable-release-0.7.4](https://img.shields.io/badge/stable-release_0.7.4-green.svg?style=plastic)](#)  
+[![Version](https://img.shields.io/badge/version-0.7.5-green.svg?style=plastic)](#) 
+[![stable-release-0.7.5](https://img.shields.io/badge/stable-release_0.7.5-green.svg?style=plastic)](#)  
 <a href="https://www.buymeacoffee.com/daringer" target="_blank"> <img src="https://cdn.buymeacoffee.com/buttons/lato-green.png" alt="Buy Me A Coffee Or Beer" height=18></a>
 
 ## Installation using HACS ([Home Assistant Community Store](https://hacs.xyz))
