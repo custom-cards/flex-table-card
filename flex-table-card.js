@@ -484,6 +484,13 @@ class FlexTableCard extends HTMLElement {
             throw new Error('Please provide the "columns" option as a list.');
         }
 
+        if (config.service) {
+            const service_config = config.service.split('.');
+            if (service_config.length != 2) {
+                throw new Error('Please specify service in "domain.service" format.');
+            }
+        }
+
         const root = this.shadowRoot;
         if (root.lastChild)
             root.removeChild(root.lastChild);
@@ -630,6 +637,41 @@ class FlexTableCard extends HTMLElement {
         }
         this.#old_rowcount = rowcount;
 
+        if (config.service) {
+            // Use service to populate
+            const service_config = config.service.split('.');
+            let domain = service_config[0];
+            let service = service_config[1];
+            let service_data = config.service_data;
+
+            let entity_list = entities.map((entity) =>
+                entity.entity_id
+            );
+
+            hass.callWS({
+                "type": "call_service",
+                "domain": domain,
+                "service": service,
+                "service_data": service_data,
+                "target": { "entity_id": entity_list },
+                "return_response": true,
+            }).then(return_response => {
+                const entities = new Array();
+                Object.keys(return_response.response).forEach((entity_id, idx) => {
+                    const entity_key = (Object.keys(return_response.response))[idx];
+                    const resp_obj = { "entity_id": entity_id, "attributes": return_response.response[entity_key] };
+                    entities.push(resp_obj);
+                })
+                this._fill_card(entities, config, root);
+            });
+        }
+        else {
+            // Use entities to populate
+            this._fill_card(entities, config, root);
+        }
+    }
+
+    _fill_card(entities, config, root) {
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
         // to---if applicable---spawn new DataRow objects for these accordingly
