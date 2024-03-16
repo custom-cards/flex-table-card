@@ -3,9 +3,9 @@ The `flex-table-card` aims for more flexibility for tabular-ish visuallization n
 
 - unlimited columns / rows 
 - various different data-sources may be used in a single table
-- lots of possibilities for configuration: entity selection (include, exclude), (hidden-)column-sorting, js-based content manipulation, row limiting and more...
+- lots of possibilities for configuration: entity selection (include, exclude), service call responses **[NEW]**, (hidden-)column-sorting, js-based content manipulation, row limiting and more...
 
-Flex Table gives you the possibility to visualize any tabular data within Lovelace. Especially overviews with high data densities can be easily realized. Some screenshots:
+Flex Table gives you the possibility to visualize any tabular data within Lovelace. Especially overviews with high data densities can be easily realized.
 
 **Configuration Options**
 
@@ -21,8 +21,11 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
 | `- ...`                | item(s)         |   optional    | 
-| `entities`             | section         | **required**  | Section defining the entities, i.e., *data sources* (see below)
+| `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by a service (see below). If no entities are required for a service, use [] and omit `include/exclude`
 | `- ...`                | item(s)         | **required**  | 
+| `service`              | string          |   optional    | Service to act as *data source* instead of entities. Use `entities` to define entities for the service.
+| `service_data`         | section         |   optional    | Section defining `data` required by the service, if any (see below)
+| `- ...`                | item(s)         |   optional    | 
 | `columns`              | section         | **required**  | Section defining the column(s) and its contents (see below)
 | `- ...`                | item(s)         | **required**  | 
                       
@@ -31,12 +34,20 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 | option               | Type     | Required?     | Description
 | ----                 | ----     | ------------- | -----------
-| `include`            | regexp   | **required**  | Defines the initial entity data source(s) [basics](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-basics.md)
+| `include`            | regexp   | **required**  | Defines the initial entity data source(s), or initial entities for a service (not required if entities not used by service) [basics](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-basics.md)
 | `exclude`            | regexp   |   optional    | Reduces the *included* data sources(s) 
  
 [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) are also supported, see the 
 [examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-autoentities.md).
  
+***`service_data` options (2nd level)***
+
+| option               | Type     | Required?     | Description
+| ----                 | ----     | ------------- | -----------
+| depends on service   | string   |   optional    | Defines any data used by the service. Same format as the `data` section of the service call.
+ 
+[Service call examples](example-cfg-services.md).
+
 ***`css` options (2nd level): [css adaptations](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)***
 
 | option                 | Type     | Required?     | Description
