@@ -658,8 +658,16 @@ class FlexTableCard extends HTMLElement {
             }).then(return_response => {
                 const entities = new Array();
                 Object.keys(return_response.response).forEach((entity_id, idx) => {
-                    const entity_key = (Object.keys(return_response.response))[idx];
-                    const resp_obj = { "entity_id": entity_id, "attributes": return_response.response[entity_key] };
+                    let resp_obj = {};
+                    if (entity_list.length > 0) {
+                        // Return payload(s) below entity key(s).
+                        const entity_key = (Object.keys(return_response.response))[idx];
+                        resp_obj = { "entity_id": entity_id, "attributes": return_response.response[entity_key] };
+                    }
+                    else {
+                        // Return entire response payload.
+                        resp_obj = { "entity_id": entity_id, "attributes": return_response.response };
+                    }
                     entities.push(resp_obj);
                 })
                 this._fill_card(entities, config, root);
