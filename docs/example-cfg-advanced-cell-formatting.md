@@ -2,9 +2,9 @@
 
 ## Choosing one of the available formatting helpers
 
-Om top of the in following described method there is also now the option
+In addition to the following described method there is also now the option
 to choose from predefined format styles for each cell in a column. This
-is simply done by addin the `fmt` property to your column and choosing 
+is simply done by adding the `fmt` property to your column and choosing 
 one of the available formatters. As of now there are not many, but as
 these are essentially hidden `modify:` scripts I have some hopes that people
 will share their coolest formattings - making it available to everyone
@@ -37,7 +37,7 @@ columns:
 ```
 
 
-## Take full control about your cells'
+## Take full control of your cells
 
 **Monitoring and identifying nodes, which are not communicating anymore** with
 the Z-Wave controller, can be extracted and also sorted according to their last

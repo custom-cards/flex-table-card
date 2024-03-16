@@ -1,6 +1,6 @@
 ## Examples - Basics
 
-Configuration of `flex-table` is done by a two step approach:
+Configuration of `flex-table-card` is done by a two step approach:
 
   - first the candidate **rows** have to be *queried* using 
     wildcarding/regular expressions, leading to a set of 
