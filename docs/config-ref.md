@@ -17,6 +17,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `title`                | string          |   optional    | A title for the card
 | `strict`               | boolean         |   optional    | If `true`, each cell must have a match, or row will be hidden [example](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-sorting-strict.md)
 | `sort_by[-\|+]`        | col-id          |   optional    | Sort by given column, '+' (ascending) or '-' (descending) [example](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-sorting-strict.md)
+| `disable_header_sort`  | boolean         |   optional    | Disable manual sorting by column headers (default: `false`)
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
