@@ -572,26 +572,29 @@ class FlexTableCard extends HTMLElement {
         // append card to _root_ node...
         root.appendChild(card);
 
-        // add sorting click handler to header elements
-        this.tbl.headers.map((obj, idx) => {
-            root.getElementById(obj.id).onclick = (click) => {
-                // remove previous sort by
-                this.tbl.headers.map((obj, idx) => {
-                    root.getElementById(obj.id).classList.remove("headerSortDown");
-                    root.getElementById(obj.id).classList.remove("headerSortUp");
-                });
-                this.tbl.updateSortBy(idx);
-                if (this.tbl.sort_by.indexOf("+") != -1) {
-                    root.getElementById(obj.id).classList.add("headerSortUp");
-                } else {
-                    root.getElementById(obj.id).classList.add("headerSortDown");
-                }
-                this._updateContent(
-                    root.getElementById("flextbl"),
-                    this.tbl.get_rows()
-                );
-            };
-        });
+        // add sorting click handler to header elements, if allowed
+        if (!config.disable_header_sort) {
+
+            this.tbl.headers.map((obj, idx) => {
+                root.getElementById(obj.id).onclick = (click) => {
+                    // remove previous sort by
+                    this.tbl.headers.map((obj, idx) => {
+                        root.getElementById(obj.id).classList.remove("headerSortDown");
+                        root.getElementById(obj.id).classList.remove("headerSortUp");
+                    });
+                    this.tbl.updateSortBy(idx);
+                    if (this.tbl.sort_by.indexOf("+") != -1) {
+                        root.getElementById(obj.id).classList.add("headerSortUp");
+                    } else {
+                        root.getElementById(obj.id).classList.add("headerSortDown");
+                    }
+                    this._updateContent(
+                        root.getElementById("flextbl"),
+                        this.tbl.get_rows()
+                    );
+                };
+            });
+        }
 
         this._config = cfg;
     }
