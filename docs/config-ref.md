@@ -20,6 +20,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `disable_header_sort`  | boolean         |   optional    | Disable manual sorting by column headers (default: `false`)
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
+| `auto_format`          | boolean         |   optional    | Format state and attribute data using display precision and unit of measurement, if applicable (default: `false`)
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
 | `- ...`                | item(s)         |   optional    | 
 | `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by a service (see below). If no entities are required for a service, use [] and omit `include/exclude`
@@ -79,6 +80,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `align`                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
 | `prefix`               | string   |   optional    | to be applied _before_ all cell contents 
 | `suffix`               | string   |   optional    | to be appended _after_ all cell contents
+| `no_auto_format`       | boolean  |   optional    | Disable auto formatting for this column when auto_format: true (default: `false`)
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 | `fmt`                  | string   |   optional    | format using predefined 'formatters'
 
