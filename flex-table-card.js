@@ -216,7 +216,7 @@ class DataRow {
     }
 
 
-    get_raw_data(col_cfgs) {
+    get_raw_data(col_cfgs, config, hass) {
         this.raw_data = col_cfgs.map((col) => {
 
             /* collect pairs of 'column_type' and 'column_key' */
@@ -287,12 +287,20 @@ class DataRow {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
                         raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
+                    } else if (col_key === "state" && config.auto_format && !col.no_auto_format) {
+                        // format entity state
+                        raw_content.push(hass.formatEntityState(this.entity));
                     } else if (col_key in this.entity) {
-                        // easy direct member of entity
+                        // easy direct member of entity, unformatted
                         raw_content.push(this.entity[col_key]);
                     } else if (col_key in this.entity.attributes) {
                         // finally fall back to '.attributes' member
-                        raw_content.push(this.entity.attributes[col_key]);
+                        if (config.auto_format && !col.no_auto_format) {
+                            raw_content.push(hass.formatEntityAttributeValue(this.entity, col_key));
+                        }
+                        else {
+                            raw_content.push(this.entity.attributes[col_key]);
+                        }
                     } else {
                         // no matching data found, complain:
                         //raw_content.push("[[ no match ]]");
@@ -673,21 +681,21 @@ class FlexTableCard extends HTMLElement {
                     }
                     entities.push(resp_obj);
                 })
-                this._fill_card(entities, config, root);
+                this._fill_card(entities, config, root, hass);
             });
         }
         else {
             // Use entities to populate
-            this._fill_card(entities, config, root);
+            this._fill_card(entities, config, root, hass);
         }
     }
 
-    _fill_card(entities, config, root) {
+    _fill_card(entities, config, root, hass) {
         // `raw_rows` to be filled with data here, due to 'attr_as_list' it is possible to have
         // multiple data `raw_rows` acquired into one cell(.raw_data), so re-iterate all rows
         // to---if applicable---spawn new DataRow objects for these accordingly
         let raw_rows = entities.map(e => new DataRow(e, config.strict));
-        raw_rows.forEach(e => e.get_raw_data(config.columns))
+        raw_rows.forEach(e => e.get_raw_data(config.columns, config, hass))
 
         // now add() the raw_data rows to the DataTable
         this.tbl.clear_rows();
