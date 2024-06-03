@@ -1,3 +1,9 @@
+## 0.7.7
+
+- service responses
+- disable runtime sort 
+- first auto-format feature
+
 ## 0.7.5
 
 - properly set version inside sources
