@@ -21,6 +21,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
 | `auto_format`          | boolean         |   optional    | Format state and attribute data using display precision and unit of measurement, if applicable (default: `false`)
+| `display_footer`       | boolean         |   optional    | Display additional summary row at end for column totals, averages, etc. (default: `false`, see column options below)
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
 | `- ...`                | item(s)         |   optional    | 
 | `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by a service (see below). If no entities are required for a service, use [] and omit `include/exclude`
@@ -83,11 +84,15 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `no_auto_format`       | boolean  |   optional    | Disable auto formatting for this column when auto_format: true (default: `false`)
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 | `fmt`                  | string   |   optional    | format using predefined 'formatters'
+| `footer_type`          | string   |   optional    | Used with `display_footer`, one of `sum`, `average`, `count`, `max`, `min`, or `header`
+| `footer_text`          | string   |   optional    | Used with `display_footer`, text to be dispayed in this and optionally across several more columns (see `footer_colspan`)
+| `footer_colspan`       | string   |   optional    | Used with `display_footer` and `footer_text`, displays text across specified number of columns
+| `footer_modify`        | string   |   optional*   | Used with `display_footer`, performs same function as `modify` but for summary row only
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
-*Use `modify` with _caution_ and on your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` parameter, *only apply this parameter, if you are 100% sure about the contents and origin of the data.* 
-Apart from that `modify` is very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
+*Use `modify` and `footer_modify` with _caution_ and at your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` or `footer_modify` parameters, *only apply these parameters if you are 100% sure about the contents and origin of the data.* 
+Apart from that `modify` and `footer_modify` are very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
 
 ### Currently the available *formatters are: 
