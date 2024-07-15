@@ -650,19 +650,19 @@ class FlexTableCard extends HTMLElement {
                     if (col.footer_type) {
                         switch (col.footer_type) {
                             case 'sum':
-                                raw = this._sumColumn(rows, colnum);
+                                raw = this._sumColumn(rows, colnum, cfg.prefix);
                                 break;
                             case 'average':
-                                raw = this._avgColumn(rows, colnum);
+                                raw = this._avgColumn(rows, colnum, cfg.prefix);
                                 break;
                             case 'count':
                                 raw = rows.length;
                                 break;
                             case 'max':
-                                raw = this._maxColumn(rows, colnum);
+                                raw = this._maxColumn(rows, colnum, cfg.prefix);
                                 break;
                             case 'min':
-                                raw = this._minColumn(rows, colnum);
+                                raw = this._minColumn(rows, colnum, cfg.prefix);
                                break;
                             case 'header':
                                 raw = col.footer_text;
@@ -689,24 +689,22 @@ class FlexTableCard extends HTMLElement {
 
         innerHTML += '</tr>';
         footer.innerHTML = innerHTML;
-
-//        footer.innerHTML = '<tr><th colspan="6">Total Price</th><td>' + sum + '</td></tr>';
     }
 
-    _sumColumn(rows, colnum) {
+    _sumColumn(rows, colnum, prefix) {
         var sum = 0;
         for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].cells[colnum].innerText);
+            let cellValue = this._findNumber(rows[i].cells[colnum].innerText.replace(prefix, ''));
             if (!Number.isNaN(cellValue)) sum += cellValue;
         }
         return sum;
     }
 
-    _avgColumn(rows, colnum) {
+    _avgColumn(rows, colnum, prefix) {
         var sum = 0;
         var count = 0;
         for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].cells[colnum].innerText);
+            let cellValue = this._findNumber(rows[i].cells[colnum].innerText.replace(prefix, ''));
             if (!Number.isNaN(cellValue)) {
                 sum += cellValue;
                 count++;
@@ -715,10 +713,10 @@ class FlexTableCard extends HTMLElement {
         return sum / count;
     }
 
-    _maxColumn(rows, colnum) {
+    _maxColumn(rows, colnum, prefix) {
         var max = Number.MIN_SAFE_INTEGER;
         for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].cells[colnum].innerText);
+            let cellValue = this._findNumber(rows[i].cells[colnum].innerText.replace(prefix, ''));
             if (!Number.isNaN(cellValue)) {
                 if (cellValue > max) max = cellValue;
             }
@@ -726,10 +724,10 @@ class FlexTableCard extends HTMLElement {
         return max;
     }
 
-    _minColumn(rows, colnum) {
+    _minColumn(rows, colnum, prefix) {
         var min = Number.MAX_SAFE_INTEGER;
         for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].cells[colnum].innerText);
+            let cellValue = this._findNumber(rows[i].cells[colnum].innerText.replace(prefix, ''));
             if (!Number.isNaN(cellValue)) {
                 if (cellValue < min) min = cellValue;
             }

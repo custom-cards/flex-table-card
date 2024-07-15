@@ -30,8 +30,8 @@ For example, to show totals for a column of numbers:
 ### Cells included in summary
 
 Only cells with values that can be interpreted as numbers will be included in the summary when using `sum`, `average`, `max`, or `min`. 
-The number can have leading and trailing spaces, and any number of trailing non-numeric characters, but only _one_ leading non-numberic character, such as a currency sign.
-Otherwise it will be ignored.
+The number can have leading and trailing spaces, and any number of trailing non-numeric characters, but only the column `prefix` plus _one_ leading non-numberic character, 
+such as a currency sign. Otherwise it will be ignored.
 
 ### Formatting values
 
@@ -90,11 +90,11 @@ columns:
     align: right
   - name: Total Value
     data: countries
-    modify: x.value_total
+    modify: ('$' + x.value_total + '.00')
     align: right
-    prefix: $
+    prefix: 'USD '
     footer_type: sum
-    footer_modify: x + '.00'
+    footer_modify: ('$' + x + '.00')
   - name: Average Value
     data: countries
     modify: x.value_avg
