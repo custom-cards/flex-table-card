@@ -83,6 +83,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `no_auto_format`       | boolean  |   optional    | Disable auto formatting for this column when auto_format: true (default: `false`)
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 | `fmt`                  | string   |   optional    | format using predefined 'formatters'
+| `sort_unmodified`      | boolean  |   optional    | Sort using original value before `modify` option, if any, is applied (default: `false`)
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
