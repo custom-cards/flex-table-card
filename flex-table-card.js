@@ -155,8 +155,8 @@ class DataTable {
                 this.rows.sort((x, y) => 
                     sort_conf.reduce((out, conf) => 
                         out || conf.dir * compare(
-                            x.data[conf.idx] && x.data[conf.idx].content,
-                            y.data[conf.idx] && y.data[conf.idx].content),
+                            x.data[conf.idx] && (x.data[conf.idx].sort_raw ? x.data[conf.idx].raw_content : x.data[conf.idx].content),
+                            y.data[conf.idx] && (y.data[conf.idx].sort_raw ? y.data[conf.idx].raw_content : y.data[conf.idx].content)),
                         false
                     )
                 );
@@ -420,7 +420,9 @@ class DataRow {
                 pre: cfg.prefix || "",
                 suf: cfg.suffix || "",
                 css: cfg.align || "left",
-                hide: cfg.hidden
+                hide: cfg.hidden,
+                raw_content: raw,
+                sort_raw: cfg.sort_raw
             });
         });
         this.hidden = this.data.some(data => (data === null));
