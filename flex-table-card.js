@@ -664,7 +664,7 @@ class FlexTableCard extends HTMLElement {
                 "domain": domain,
                 "service": service,
                 "service_data": service_data,
-                "target": { "entity_id": entity_list },
+                "target": entity_list.length ? { "entity_id": entity_list } : undefined,
                 "return_response": true,
             }).then(return_response => {
                 const entities = new Array();
