@@ -10,6 +10,8 @@ for the assigned value of `data`:
 * `name` = *friendliest name* will be selected
 * `object_id` = full entity *path* without domain
 * `icon` = renders the entity's current icon (`entity.attributes.icon`) into the cell
+* `device` = name of the device that the entity belongs to, if available
+* `area` = name of the area that the entity or its device is assigned to, if available
 * `_state`= is a *hack* to be able to select `entity.attributes.state` as data
 * any `key in this.entity` (e.g., `entity_id`, `state`, ...)
 * otherwise a key within `this.entity.attributes` will be assumed 
@@ -27,6 +29,8 @@ for being an `Array.isArray()`).
 **Multiple, different selectors can be used** for a single column data selection by just separating 
 each one using a comma `,`. If multiple selectors are used the resulting data is concatenated using 
 `multi_delimiter`, which defaults to a whitespace ' '.
+
+Note that even if a `device` or an `area` is defined for an `entity`, it may not be available for `flex-table` to display.
 
 ### Migration from versions < 0.7
 Since version 0.7 the old selectors (`attr`, `prop`, `attr_as_list`, `multi`) are all replaced by
