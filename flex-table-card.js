@@ -287,6 +287,12 @@ class DataRow {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
                         raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
+                    } else if (col_key === "area") {
+                        // 'area' will show the entity's or its device's assigned area, if any
+                        raw_content.push(this._get_area_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device") {
+                        // 'device' will show the entity's device name, if any
+                        raw_content.push(this._get_device_name(this.entity.entity_id, hass));
                     } else if (col_key === "state" && config.auto_format && !col.no_auto_format) {
                         // format entity state
                         raw_content.push(hass.formatEntityState(this.entity));
@@ -392,6 +398,26 @@ class DataRow {
             return ([null, undefined].every(x => raw_content !== x)) ? raw_content : new Array();
         });
         return null;
+    }
+
+    _get_device_name(entity_id, hass) {
+        var device_id;
+        if (hass.entities[entity_id] !== undefined) {
+            device_id = hass.entities[entity_id].device_id;
+        }
+        return device_id === undefined ? "-" : hass.devices[device_id].name_by_user || hass.devices[device_id].name;
+    }
+
+    _get_area_name(entity_id, hass) {
+        var area_id;
+        if (hass.entities[entity_id] !== undefined) {
+            area_id = hass.entities[entity_id].area_id;
+            if (area_id === undefined) {
+                let device_id = hass.entities[entity_id].device_id;
+                if (device_id !== undefined) area_id = hass.devices[device_id].area_id;
+            }
+        }
+        return area_id === undefined || hass.areas[area_id] === undefined ? "-" : hass.areas[area_id].name;
     }
 
     render_data(col_cfgs) {
