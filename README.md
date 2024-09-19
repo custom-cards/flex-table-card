@@ -34,5 +34,6 @@ resources:
   * [Formatting with CSS](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-css.md)
   * [Auto Entities](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-autoentities.md)
   * [Loading from Services](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-services.md)
+  * [Adding a Summary Footer](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-footers.md)
 * [Configuration Reference](https://github.com/custom-cards/flex-table-card/tree/master/docs/config-ref.md)
 * [How to Contribute](https://github.com/custom-cards/flex-table-card/tree/master/docs/contribute.md)

@@ -287,6 +287,12 @@ class DataRow {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
                         raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
+                    } else if (col_key === "area") {
+                        // 'area' will show the entity's or its device's assigned area, if any
+                        raw_content.push(this._get_area_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device") {
+                        // 'device' will show the entity's device name, if any
+                        raw_content.push(this._get_device_name(this.entity.entity_id, hass));
                     } else if (col_key === "state" && config.auto_format && !col.no_auto_format) {
                         // format entity state
                         raw_content.push(hass.formatEntityState(this.entity));
@@ -394,14 +400,33 @@ class DataRow {
         return null;
     }
 
+    _get_device_name(entity_id, hass) {
+        var device_id;
+        if (hass.entities[entity_id] !== undefined) {
+            device_id = hass.entities[entity_id].device_id;
+        }
+        return device_id === undefined ? "-" : hass.devices[device_id].name_by_user || hass.devices[device_id].name;
+    }
+
+    _get_area_name(entity_id, hass) {
+        var area_id;
+        if (hass.entities[entity_id] !== undefined) {
+            area_id = hass.entities[entity_id].area_id;
+            if (area_id === undefined) {
+                let device_id = hass.entities[entity_id].device_id;
+                if (device_id !== undefined) area_id = hass.devices[device_id].area_id;
+            }
+        }
+        return area_id === undefined || hass.areas[area_id] === undefined ? "-" : hass.areas[area_id].name;
+    }
+
     render_data(col_cfgs) {
         // apply passed "modify" configuration setting by using eval()
         // assuming the data is available inside the function as "x"
         this.data = this.raw_data.map((raw, idx) => {
             let x = raw;
             let cfg = col_cfgs[idx];
-						
-						let fmt = new CellFormatters();
+			let fmt = new CellFormatters();
             if (cfg.fmt) {
                 x = fmt[cfg.fmt](x);
                 if (fmt.failed)
@@ -535,7 +560,8 @@ class FlexTableCard extends HTMLElement {
                                         "text-decoration: underline; ",
             "tbody tr:nth-child(odd)":  "background-color: var(--table-row-background-color); ",
             "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
-            "th ha-icon":               "height: 1em; vertical-align: top; "
+            "th ha-icon":               "height: 1em; vertical-align: top; ",
+            "tfoot *":                  "border-style: solid none solid none;"
         }
         // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
@@ -564,7 +590,7 @@ class FlexTableCard extends HTMLElement {
         }));
 
 
-        // table skeleton, body identified with: 'flextbl'
+        // table skeleton, body identified with: 'flextbl', footer with 'flexfoot'
         content.innerHTML = `
                 <table>
                     <thead>
@@ -574,6 +600,7 @@ class FlexTableCard extends HTMLElement {
                         </tr>
                     </thead>
                     <tbody id='flextbl'></tbody>
+                    <tfoot id='flexfoot'></tfoot>
                 </table>
                 `;
         // push css-style & table as content into the card's DOM tree
@@ -632,6 +659,118 @@ class FlexTableCard extends HTMLElement {
         });
     }
 
+    _updateFooter(footer, config, rows) {
+        var innerHTML = '<tr>';
+        var colnum = -1;
+        var raw = "";
+        var colspan_remainder = 0
+
+        config.columns.map((col, idx) => {
+            if (!col.hidden) {
+                colnum++;
+                if (colspan_remainder > 0)
+                    // Skip column if previous colspan would overlap it
+                    colspan_remainder--;
+                else {
+                    var cfg = config.columns[idx];
+                    if (col.footer_type) {
+                        switch (col.footer_type) {
+                            case 'sum':
+                                raw = this._sumColumn(rows, colnum);
+                                break;
+                            case 'average':
+                                raw = this._avgColumn(rows, colnum);
+                                break;
+                            case 'count':
+                                raw = rows.length;
+                                break;
+                            case 'max':
+                                raw = this._maxColumn(rows, colnum);
+                                break;
+                            case 'min':
+                                raw = this._minColumn(rows, colnum);
+                                break;
+                            case 'text':
+                                raw = col.footer_text;
+                                break;
+                            default:
+                                console.log("Invalid footer_type: ", col.footer_type);
+                        }
+                        let x = raw;
+                        let value = cfg.footer_modify ? eval(cfg.footer_modify) : x;
+                        if (col.footer_type == 'text') {
+                            let colspan = cfg.footer_colspan ? cfg.footer_colspan : 1;
+                            innerHTML += `<th id="tfootcol${colnum}" colspan=${colspan}>${value}</th>`;
+                            colspan_remainder = colspan - 1;
+                        }
+                        else
+                            innerHTML += `<td id="tfootcol${colnum}" class="${cfg.align || ""}">${cfg.prefix || ""}${value}${cfg.suffix || ""}</td>`;
+                    }
+                    else {
+                        innerHTML += '<td></td>'
+                    }
+                }
+            }
+        });
+
+        innerHTML += '</tr>';
+        footer.innerHTML = innerHTML;
+    }
+
+    _sumColumn(rows, colnum) {
+        var sum = 0;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) sum += cellValue;
+        }
+        return sum;
+    }
+
+    _avgColumn(rows, colnum) {
+        var sum = 0;
+        var count = 0;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                sum += cellValue;
+                count++;
+            }
+        }
+        return sum / count;
+    }
+
+    _maxColumn(rows, colnum) {
+        var max = Number.MIN_VALUE;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                if (cellValue > max) max = cellValue;
+            }
+        }
+        return max == Number.MIN_VALUE ? Number.NaN : max;
+    }
+
+    _minColumn(rows, colnum) {
+        var min = Number.MAX_VALUE;
+        for (var i = 0; i < rows.length; i++) {
+            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
+            if (!Number.isNaN(cellValue)) {
+                if (cellValue < min) min = cellValue;
+            }
+        }
+        return min == Number.MAX_VALUE ? Number.NaN : min;
+    }
+
+    // Trim whitespace and leading non-numeric, but not minus sign
+    _findNumber(val) {
+        if (typeof val === "number") {
+            return val;
+        }
+        else {
+            let value = val.trim();
+            return (Number.isNaN(parseFloat(value[0])) && value[0] !== '-') ? parseFloat(value.substring(1)) : parseFloat(value);
+        }
+    }
     set hass(hass) {
         const config = this._config;
         const root = this.shadowRoot;
@@ -712,7 +851,9 @@ class FlexTableCard extends HTMLElement {
         // finally set card height and insert card
         this._setCardSize(this.tbl.rows.length);
         // all preprocessing / rendering will be done here inside DataTable::get_rows()
-        this._updateContent(root.getElementById('flextbl'), this.tbl.get_rows());
+        let data_rows = this.tbl.get_rows();
+        this._updateContent(root.getElementById('flextbl'), data_rows);
+        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, data_rows);
     }
 
     _setCardSize(num_rows) {
