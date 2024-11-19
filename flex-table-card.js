@@ -447,7 +447,7 @@ class DataRow {
                 suf: cfg.suffix || "",
                 css: cfg.align || "left",
                 hide: cfg.hidden,
-                raw_content: raw,
+                raw_content: Object.values(raw)[0],
                 sort_unmodified: cfg.sort_unmodified
             });
         });
