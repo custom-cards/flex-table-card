@@ -323,14 +323,25 @@ class DataRow {
                             //  until the final object value is found.
                             // if at any point in the traversal, the object is not found
                             //  then null will be used as the value.
+                            // Works for arrays as well as single values.
                             let objs = col_key.split('.');
-                            let value = this.entity.attributes;
-                            if (value) {
-                                for (let idx = 0; value && idx < objs.length; idx++) {
-                                    value = (objs[idx] in value) ? value[objs[idx]] : null;
+                            let struct = this.entity.attributes;
+                            let values = [];
+                            if (struct) {
+                                for (let idx = 0; struct && idx < objs.length; idx++) {
+                                    if (Array.isArray(struct)) {
+                                        struct.forEach(function (item, index) {
+                                            values.push(struct[index][objs[idx]]);
+                                        });
+                                    }
+                                    else {
+                                        struct = (objs[idx] in struct) ? struct[objs[idx]] : null;
+                                    }
                                 }
+                                // If no array found, single value is in struct.
+                                if (values.length == 0) values = struct;
                             }
-                            raw_content.push(value);
+                            raw_content.push(values);
                         }
                     }
 

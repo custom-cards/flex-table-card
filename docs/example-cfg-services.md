@@ -4,6 +4,10 @@
 <!-- [full text section] -->
 ### Demonstration of converting a flex-table-card from using `weather` entity attributes to using a service call response
 
+Home Assistant is moving away from large attribute structures in favor of using service call responses. As a result, you may find yourself needing to convert from using
+attributes to using service calls to populate your `flex-table-card`. Fortunately, the process is usually very simple. Consider this card definition that gets the weather
+forecast from a `weather` entity's attributes.
+
 <!-- [listing section] -->
 ``` yaml
 type: custom:flex-table-card
@@ -11,24 +15,19 @@ title: Weather Forecast Example
 entities:
   - weather.kboi_daynight
 columns:
-  - name: Detailed Forecast
-    data: forecast
-    modify: x.detailed_description
   - name: Time Valid
-    data: forecast
-    modify: new Date(x.datetime).toLocaleString()
+    data: forecast.datetime
+    modify: new Date(x).toLocaleString()
   - name: Temperature
-    data: forecast
-    modify: x.temperature
+    data: forecast.temperature
     suffix: °
-  - name: Humidity
-    data: forecast
-    modify: x.humidity
-    suffix: '%'
+  - name: Precipitation
+    data: forecast.precipitation_probability
+    suffix: "%"
   - name: Wind Speed
-    data: forecast
-    modify: x.wind_speed
-    suffix: mph
+    data: forecast.wind_speed
+    modify: x.toFixed(0)
+    suffix: " mph"
 ```
 
 To convert from using a `weather` entity's attributes to using the `get_forecasts` service call, simply add these lines (adjust `type` as needed):
@@ -39,9 +38,8 @@ service_data:
     type: twice_daily
 ```
 
-This works because the `get_forecasts` service returns information in the same format as the `weather` entity's attributes did. This simple technique may not work with other integrations.
+This will work if the `get_forecasts` service returns information in the same format as the `weather` entity's attributes did. Adjustments must be made if this is not the case.
 
-Whether using attributes or the service call, the result is exactly the same:
 <!-- [example image section] -->
 <img src="../images/WeatherServiceExample.png" alt="Weather service example result" width="500px">
 
@@ -59,17 +57,16 @@ entities:
   - todo.second_list
 columns:
   - name: Summary
-    data: items
-    modify: x.summary
+   data: items.summary
   - name: Description
-    data: items
-    modify: x.description || ""
+    data: items.description
+    modify: x || ""
   - name: Needs Action
     data: items
     modify: if (x.status == "needs_action") {"Yes"} else {"No"}
   - name: Due
-    data: items
-    modify: x.due || ""
+    data: items.due
+    modify: x || ""
 ```
 
 <!-- [example image section] -->
@@ -89,11 +86,9 @@ service: script.test_response
 entities: []
 columns:
   - name: Name
-    data: family
-    modify: x.name
+    data: family.name
   - name: Birth Year
-    data: family
-    modify: x.year
+    data: family.year
 ```
 This is the script:
 

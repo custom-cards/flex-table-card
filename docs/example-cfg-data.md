@@ -74,6 +74,10 @@ columns:
     multi_delimiter: ','
 ```
 
+### Complex attribute examples
+If an attribute or the result of a service call is a complex structure, dotted notation may be used to identify the desired data to display. 
+See [Loading from Services](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-services.md) for examples.
+
 <!-- [example image section] -->
 <!-- use issue #29 for dumping images and link them here -->
 <!-- ![image description](http://url/to/img.png) -->

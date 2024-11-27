@@ -53,7 +53,9 @@ By default, if a column uses the `modify` option, the column will be sorted usin
 In some cases, it is absoutely necessary to use the modified values. For example, in cases where `data` contains a complex structure and `modify` is used to select 
 a subset of that data, the sort operation _must_ use the modified value in order to get a meaningful result. Otherwise, the entire `data` value would be used for the sort.
 
-However, there are cases where the `modify` operation results in values that do not sort correctly. For example, if the modification is used to dynamically create prefixes or suffixes 
+**Note: In releases after v0.7.7, using `modify` as a data selector is discouraged. The `data` option can now be used to walk complex structures where `modify` was once needed.**
+
+There are cases where the `modify` operation results in values that do not sort correctly. For example, if the modification is used to dynamically create prefixes or suffixes 
 such as HTML tags, the entire string including the HTML tags will be used for the sort operation.
 
 Another example is a date formatted in the locale of the user. If a date such as "2024-06-23", which sorts correctly, is converted using `modify` to "6/23/2024" or "23/06/2024",
