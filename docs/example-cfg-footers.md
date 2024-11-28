@@ -77,7 +77,7 @@ The following is a complete example card that demonstrates the use of footer opt
 ``` yaml
 type: custom:flex-table-card
 title: Bottles per Country
-service: wine_cellar.get_countries
+action: wine_cellar.get_countries
 entities:
   include: sensor.member_wine_inventory
 sort_by: Country-
