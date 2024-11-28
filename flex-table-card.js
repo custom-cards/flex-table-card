@@ -530,10 +530,10 @@ class FlexTableCard extends HTMLElement {
             throw new Error('Please provide the "columns" option as a list.');
         }
 
-        if (config.service) {
-            const service_config = config.service.split('.');
-            if (service_config.length != 2) {
-                throw new Error('Please specify service in "domain.service" format.');
+        if (config.action || config.service) {
+            const action_config = config.action ? config.action.split('.') : config.service.split('.');
+            if (action_config.length != 2) {
+                throw new Error('Please specify action in "domain.action" format.');
             }
         }
 
@@ -800,12 +800,12 @@ class FlexTableCard extends HTMLElement {
         }
         this.#old_rowcount = rowcount;
 
-        if (config.service) {
-            // Use service to populate
-            const service_config = config.service.split('.');
-            let domain = service_config[0];
-            let service = service_config[1];
-            let service_data = config.service_data;
+        if (config.action || config.service) {
+            // Use action to populate
+            const action_config = config.action ? config.action.split('.') : config.service.split('.');
+            let domain = action_config[0];
+            let action = action_config[1];
+            let action_data = config.action_data || config.service_data;
 
             let entity_list = entities.map((entity) =>
                 entity.entity_id
@@ -814,8 +814,8 @@ class FlexTableCard extends HTMLElement {
             hass.callWS({
                 "type": "call_service",
                 "domain": domain,
-                "service": service,
-                "service_data": service_data,
+                "service": action,
+                "service_data": action_data,
                 "target": entity_list.length ? { "entity_id": entity_list } : undefined,
                 "return_response": true,
             }).then(return_response => {
