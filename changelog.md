@@ -1,3 +1,12 @@
+## 0.7.8
+
+* Service call target should be empty if no entity is defined (#143)
+* Feature: Optionally sort by unmodified values (#142)
+* Support entity device and area (#144)
+* Feature: Add support for footer row (#152)
+* Fix dot notation with arrays (#155)
+* Feature: Support action option for service calls (#156)
+
 ## 0.7.7
 
 - service responses
