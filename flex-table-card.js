@@ -329,7 +329,7 @@ class DataRow {
                             let values = [];
                             if (struct) {
                                 for (let idx = 0; struct && idx < objs.length; idx++) {
-                                    if (Array.isArray(struct)) {
+                                    if (Array.isArray(struct) && isNaN(objs[idx])) {
                                         struct.forEach(function (item, index) {
                                             values.push(struct[index][objs[idx]]);
                                         });

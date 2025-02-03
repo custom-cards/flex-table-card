@@ -121,4 +121,63 @@ test_response:
 <!-- [example image section] -->
 <img src="../images/ScriptExample.png" alt="Script example result" width="500px">
 
+### Example configuration to select an array element from a list
+
+In this example we will use dot notation to select only the information needed, in this case, the second element from the `inventory` array.
+
+``` yaml
+type: custom:flex-table-card
+title: 2025 Outback
+entities: []
+action: script.select_element
+columns:
+  - name: Color
+    data: inventory.1.color
+  - name: Configuration
+    data: inventory.1.configuration
+  - name: MSRP
+    data: inventory.1.MSRP
+```
+
+This is the script used to supply the data:
+
+``` yaml
+select_element:
+  alias: Select Element
+  variables:
+    cars: >
+        {% set available_cars = { "inventory": [
+          {
+            "name" : "Forester",
+            "year" : 2024,
+            "color" : ["blue", "red", "black"],
+            "configuration" : ["Base", "Premium", "Touring"],
+            "MSRP" : ["$32,557", "$34,288", "$42,707"]
+          },
+          {
+            "name" : "Outback",
+            "year" : 2025,
+            "color" : ["white", "gray", "maroon"],
+            "configuration" : ["Premium", "Limited", "Touring"],
+            "MSRP" : ["$36,482", "$40,299", "$42,789"]
+          },
+          {
+            "name" : "Impreza",
+            "year" : 2024,
+            "color" : ["orange", "red", "yellow"],
+            "configuration" : ["Base", "Premium", "Touring"],
+            "MSRP" : ["$32,557", "$34,288", "$42,707"]
+          }
+        ] }
+        %}
+        {{ available_cars }}
+  sequence:
+    - stop: All Done
+      response_variable: cars
+```
+
+<img src="../images/Outback.png" alt="Select array element example result" width="500px">
+
+This technique can be used multiple times in the same `data` statement if there are multiple arrays in the path.
+
 [Return to main README.md](../README.md)
