@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "0.7.8";
+var VERSION = "0.8.0";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -458,13 +458,52 @@ class DataRow {
                 css: cfg.align || "left",
                 hide: cfg.hidden,
                 raw_content: raw,
-                sort_unmodified: cfg.sort_unmodified
+                sort_unmodified: cfg.sort_unmodified,
+                tap_action: cfg.tap_action,
+                double_tap_action: cfg.double_tap_action,
+                hold_action: cfg.hold_action,
+                edit_action: cfg.edit_action,
             });
         });
         this.hidden = this.data.some(data => (data === null));
         return this;
     };
 }
+
+// Replace cell references with actual data.
+function getRefs(source, row_data, row_cells) {
+    function _replace_col(match, p1) {
+        return row_data[p1].content;
+    }
+    function _replace_cell(match, p1) {
+        return row_cells[p1].innerText;
+    }
+    function _replace_text(value) {
+        const regex_col = /col\[(\d+)\]/gm;
+        const regex_cell = /cell\[(\d+)\]/gm;
+        value = String(value);
+        let modify = value.replace(regex_col, _replace_col);
+        modify = modify.replace(regex_cell, _replace_cell);
+        return modify;
+    }
+
+    // Search for col and cell references (e.g. "col[3]", "cell[2]") and replace with actual data values.
+    if (source) {
+        if (typeof source === "object") {
+            return JSON.parse(_replace_text(JSON.stringify(source)));
+        }
+        else {
+            // Process simple string.
+            return _replace_text(source);
+        }
+    }
+    else {
+        return "";
+    }
+}
+
+// Used for feedback during mouse/touch hold
+var holdDiskDiam = 98;
 
 
 /** The HTMLElement, which is used as a base for the Lovelace custom card */
@@ -501,7 +540,7 @@ class FlexTableCard extends HTMLElement {
         }
 
         if (!incl && !excl && entities) {
-                       entities = entities.map(format_entities);
+            entities = entities.map(format_entities);
             return entities.map(e => hass.states[e.entity]);
         }
 
@@ -553,9 +592,11 @@ class FlexTableCard extends HTMLElement {
 
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
         var css_styles = {
-            "table":                    "width: 100%; padding: 16px; ",
+            ".type-custom-flex-table-card":
+                                        "min-width: fit-content;",
+            "table":                    `width: 100%; padding: 16px; ${cfg.selectable ? "user-select: text;" : ""} `,
             "thead th":                 "height: 1em;",
-            "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; ",
+            "tr td":                    "padding-left: 0.5em; padding-right: 0.5em; position: relative; overflow: hidden; ",
             "th":                       "padding-left: 0.5em; padding-right: 0.5em; ",
             "tr td.left":               "text-align: left; ",
             "th.left":                  "text-align: left; ",
@@ -572,7 +613,12 @@ class FlexTableCard extends HTMLElement {
             "tbody tr:nth-child(odd)":  "background-color: var(--table-row-background-color); ",
             "tbody tr:nth-child(even)": "background-color: var(--table-row-alternative-background-color); ",
             "th ha-icon":               "height: 1em; vertical-align: top; ",
-            "tfoot *":                  "border-style: solid none solid none;"
+            "tfoot *":                  "border-style: solid none solid none;",
+            "td.enable-hover:hover":    "background-color: rgba(var(--rgb-secondary-text-color), 0.2); ",
+            ".mouseheld::after":        `content: ''; opacity: 0.7; z-index: 999; position: absolute; display: inline-block; animation: disc 200ms linear; top: var(--after-top, 0); left: var(--after-left, 0); width: ${holdDiskDiam}px; height: ${holdDiskDiam}px; border-radius: 50%; background-color: rgba(var(--rgb-primary-color), 0.285); `,
+            "@keyframes disc":          "0% { transform: scale(0); opacity: 0; } 100% {transform: scale(1); opacity: 0.7; }",
+            "span.ripple":              "position: absolute; border-radius: 50 %; transform: scale(0); animation: ripple 600ms linear; background-color: rgba(127, 127, 127, 0.7); ",
+            "@keyframes ripple":        "to { transform: scale(4); opacity: 0; } ",
         }
         // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
@@ -647,17 +693,336 @@ class FlexTableCard extends HTMLElement {
         this._config = cfg;
     }
 
+    _setup_cell_for_editing(elem, row, col, index) {
+                function _handle_lost_focus(e) {
+            // Check if user changed text.
+            if (this.textContent != this.dataset.original) {
+                const actionConfig = {
+                    tap_action: {
+                        action: "perform-action",
+                        perform_action: col.edit_action.perform_action,
+                        data: getRefs(col.edit_action.data, row.data, elem.cells),
+                        target: col.edit_action.target ?? { entity_id: row.entity.entity_id },
+                        confirmation: getRefs(col.edit_action.confirmation, row.data, elem.cells)
+                    },
+                };
+
+                let ev = new Event("hass-action", {
+                    bubbles: true, cancelable: false, composed: true
+                });
+                ev.detail = {
+                    config: actionConfig,
+                    action: "tap",
+                };
+
+                this.dispatchEvent(ev);
+                this.dataset.original = this.textContent;
+            }
+        }
+
+        function _handle_keydown(e) {
+            // Discard edit on Escape pressed
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                this.textContent = this.dataset.original;
+            }
+            else if (e.key === 'Enter' || e.keyCode === 13) {
+                // Accept edit on Enter pressed (lose focus)
+                this.blur();
+                e.preventDefault();
+            }
+        }
+
+        let cell = elem.cells[index];
+        cell.classList.add("enable-hover");
+        cell.addEventListener("blur", _handle_lost_focus);
+        cell.addEventListener("keydown", _handle_keydown);
+    }
+
+    _get_html_for_editable_cell(cell) {
+        if (cell.edit_action) {
+            return 'contenteditable="true" data-original="' + cell.pre + cell.content + cell.suf + '"'
+        }
+        else {
+            return "";
+        }
+    }
+
     _updateContent(element, rows) {
         // callback for updating the cell-contents
         element.innerHTML = rows.map((row, index) =>
             `<tr id="entity_row_${row.entity.entity_id}_${index}">${row.data.map(
                 (cell) => ((!cell.hide) ?
-                    `<td class="${cell.css}">${cell.pre}${cell.content}${cell.suf}</td>` : "")
+                    `<td class="${cell.css}" ${this._get_html_for_editable_cell(cell)}>${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
 
-        // if configured, set clickable row to show entity popup-dialog
+        function _fireEvent(obj, action_type, actionConfig) {
+            let ev = new Event("hass-action", {
+                bubbles: true, cancelable: false, composed: true
+            });
+
+            let atype = action_type.replace("_action", "");
+            ev.detail = {
+                config: actionConfig,
+                action: atype,
+            };
+            obj.dispatchEvent(ev);
+        }
+
+        // Define handlers for cell actions.
+        function _handle_more_info(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "more-info",
+                    entity: row.entity.entity_id,
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+
+        function _handle_toggle(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "toggle",
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+                entity: row.entity.entity_id,
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+
+        function _handle_perform_action(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "perform-action",
+                    perform_action: col[action_type].perform_action,
+                    data: getRefs(col[action_type].data, row.data, elem.cells),
+                    target: col[action_type].target ?? { entity_id: row.entity.entity_id },
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+
+        function _handle_navigate(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "navigate",
+                    navigation_path: getRefs(col[action_type].navigation_path ?? col.content, row.data, elem.cells),
+                    navigation_replace: col[action_type].navigation_replace,
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+
+        function _handle_url(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "url",
+                    url_path: getRefs(col[action_type].url_path ??
+                        col.content, row.data, elem.cells)
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+
+        function _handle_assist(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: {
+                    action: "assist",
+                    start_listening: col[action_type].start_listening,
+                    pipeline_id: col[action_type].pipeline_id,
+                    confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
+                },
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
+        function _handle_action(obj, action_type, elem, row, col) {
+            let action;
+            switch (action_type) {
+                case "tap_action":
+                    action = col.tap_action;
+                    break;
+                case "double_tap_action":
+                    action = col.double_tap_action;
+                    break;
+                case "hold_action":
+                    action = col.hold_action;
+                    break;
+                default:
+                    throw new Error(`Expected one of tap_action, double_tap_action, hold_action, but received: ${action_type}`)
+            }
+
+            switch (action["action"]) {
+                case "more-info":
+                    _handle_more_info(obj, action_type, elem, row, col);
+                    break;
+                case "toggle":
+                    _handle_toggle(obj, action_type, elem, row, col);
+                    break;
+                case "perform-action":
+                    _handle_perform_action(obj, action_type, elem, row, col);
+                    break;
+                case "navigate":
+                    _handle_navigate(obj, action_type, elem, row, col);
+                    break;
+                case "url":
+                    _handle_url(obj, action_type, elem, row, col);
+                    break;
+                case "assist":
+                    _handle_assist(obj, action_type, elem, row, col);
+                    break;
+                case "edit":
+                    _handle_edit(obj, action_type, elem, row, col);
+                    break;
+                case "none":
+                    break;
+                default:
+                    throw new Error(`Expected one of none, toggle, more-info, perform-action, url, navigate, assist, but received: ${action["action"]}`)
+            }
+        }
+
         rows.forEach((row, index) => {
             const elem = this.shadowRoot.getElementById(`entity_row_${row.entity.entity_id}_${index}`);
+            let colindex = -1;
+
+            function _do_ripple(target) {
+                const circle = document.createElement("span");
+                const diameter = Math.max(target.clientWidth, target.clientHeight);
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = "0px";
+                circle.style.top = "0px";
+                circle.classList.add("ripple");
+                const ripple = target.getElementsByClassName("ripple")[0];
+                if (ripple) ripple.remove();
+                target.appendChild(circle);
+            }
+
+            // Setup any actionable columns
+            row.data.forEach((col) => {
+                if (!col.hide) {
+                    colindex++;
+                    let cell = elem.cells[colindex];
+                    let clickTimer = 0;
+                    let holdTimer = 0;
+                    let isHolding = false;
+
+                    if (col.tap_action) {
+                        const clickWait = col.double_tap_action? 300 : 0;
+                        function handleClick(e) {
+                            let event = e;
+                            if (clickTimer == 0 && holdTimer == 0) {
+                                // Set timer to perform action after waiting for possible double click
+                                clickTimer = setTimeout(() => {
+                                    _do_ripple(this);
+                                    _handle_action(this, "tap_action", elem, row, col);
+                                    clickTimer = 0;
+                                }, clickWait);
+                            }
+                            // Double click or hold happening instead of click
+                            else {
+                                clearTimeout(clickTimer);
+                                clickTimer = 0;
+                            }
+                        }
+                        cell.classList.add("enable-hover");
+                        cell.addEventListener("click", handleClick);
+                    };
+
+                    if (col.double_tap_action) {
+                        function handleDoubleClick(e) {
+                            clearTimeout(clickTimer);
+                            clickTimer = 0;
+                            _do_ripple(e.target);
+                            _handle_action(this, "double_tap_action", elem, row, col);
+                        }
+                        cell.classList.add("enable-hover");
+                        cell.addEventListener("dblclick", handleDoubleClick);
+                    };
+
+                    if (col.hold_action) {
+                        const holdDuration = 500;
+                        var targetRect;
+
+                        function handleMouseDown(e) {
+                            isHolding = false;
+                            targetRect = e.target.getBoundingClientRect();
+                            var xpt;
+                            var ypt;
+                            if (e instanceof MouseEvent) {
+                                xpt = e.clientX;
+                                ypt = e.clientY;
+                            }
+                            else {
+                                xpt = e.targetTouches[0].clientX;
+                                ypt = e.targetTouches[0].clientY;
+                            }
+                            var x = xpt - targetRect.left - (holdDiskDiam/2);
+                            var y = ypt - targetRect.top - (holdDiskDiam / 2);
+                            holdTimer = setTimeout(() => {
+                                isHolding = true;
+                                cell.style.setProperty('--after-left', `${x}px`);
+                                cell.style.setProperty('--after-top', `${y}px`);
+                                cell.style.setProperty('overflow', 'visible');
+                                cell.classList.add("mouseheld");
+                            }, holdDuration);
+                        }
+
+                        function handleMouseUp(e) {
+                            if (isHolding) {
+                                isHolding = false;
+                                _do_ripple(e.target);
+                                _handle_action(this, "hold_action", elem, row, col);
+                                e.preventDefault();
+                            }
+                            else {
+                                clearTimeout(holdTimer);
+                                holdTimer = 0;
+                            }
+                        }
+
+                        function handleCancel(e) {
+                            if (e instanceof TouchEvent && e.targetTouches.length > 0 && targetRect) {
+                                var xpt = e.targetTouches[0].clientX;
+                                var ypt = e.targetTouches[0].clientY;
+                                // If touch within original target, do nothing.
+                                if ((targetRect.left <= xpt && xpt <= targetRect.right) &&
+                                    (targetRect.top <= ypt && ypt <= targetRect.bottom)) {
+                                    return;
+                                }
+                            }
+                            cell.style.setProperty('overflow', 'hidden');
+                            cell.classList.remove("mouseheld");
+                            isHolding = false;
+                        }
+
+                        // Add event listeners
+                        cell.classList.add("enable-hover");
+                        cell.addEventListener('mousedown', handleMouseDown);
+                        cell.addEventListener('touchstart', handleMouseDown);
+                        cell.addEventListener('mouseup', handleMouseUp);
+                        cell.addEventListener('touchend', handleMouseUp);
+                        window.addEventListener('mouseup', handleCancel);
+                        cell.addEventListener('touchend', handleCancel);
+                        window.addEventListener('touchmove', handleCancel);
+                    };
+
+                    if (col.edit_action) {
+                        this._setup_cell_for_editing(elem, row, col, colindex);
+                    }
+                }
+            });
+
+            // if configured, set clickable row to show entity popup-dialog
             // bind click()-handler to row (if configured)
             elem.onclick = (this.tbl.cfg.clickable) ? (function(clk_ev) {
                 // create and fire 'details-view' signal

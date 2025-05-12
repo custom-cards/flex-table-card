@@ -4,6 +4,7 @@ The `flex-table-card` aims for more flexibility for tabular-ish visuallization n
 - unlimited columns / rows 
 - various different data-sources may be used in a single table
 - lots of possibilities for configuration: entity selection (include, exclude), action (formerly service) call responses, (hidden-)column-sorting, js-based content manipulation, row limiting and more...
+- the ability to edit data and trigger actions
 
 Flex Table gives you the possibility to visualize any tabular data within Lovelace. Especially overviews with high data densities can be easily realized.
 
@@ -20,19 +21,20 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `disable_header_sort`  | boolean         |   optional    | Disable manual sorting by column headers (default: `false`)
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog
+| `selectable`           | boolean         |   optional    | Allows text to be selected and copied
 | `auto_format`          | boolean         |   optional    | Format state and attribute data using display precision and unit of measurement, if applicable (default: `false`)
 | `display_footer`       | boolean         |   optional    | Display additional summary row at end for column totals, averages, etc. (default: `false`, see column options below)
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
 | `- ...`                | item(s)         |   optional    | 
 | `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by an action (see below). If no entities are required for an action, use [] and omit `include/exclude`
 | `- ...`                | item(s)         | **required**  | 
-| `action`               | string          |   optional    | Action* to act as *data source* instead of entities. Use `entities` to define entities for the action.
+| `action`               | string          |   optional    | Action to act as *data source* instead of entities. Use `entities` to define entities for the action.<a href="#fn1"><sup>[1]</sup></a>
 | `action_data`          | section         |   optional    | Section defining `data` required by the action, if any (see below)
 | `- ...`                | item(s)         |   optional    | 
 | `columns`              | section         | **required**  | Section defining the column(s) and its contents (see below)
 | `- ...`                | item(s)         | **required**  | 
 
-* `Actions` were formerly called `Services`. For backward compatibility, `service` and `service_data` options will continue to be supported for several releases.
+<a name="fn1">1.</a>`Actions` were formerly called `Services`. For backward compatibility, `service` and `service_data` options will continue to be supported for several releases.
                       
 ***`entities` options (2nd level): selection / querying / filtering***
 
@@ -78,27 +80,27 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `data`                 | string   | **required**  | selector for data to be shown, see [column data examples](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-data.md)
 | `hidden`               | bool     |   optional    | `true` to avoid showing the column (e.g., for sorting)
 | `icon`                 | string   |   optional    | use `icon` inside header (left of `name`), typical `mdi:something` ([cheatsheet](https://cdn.materialdesignicons.com/4.5.95/))
-| `modify`               | string   |   optional*   | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`
+| `modify`               | string   |   optional    | apply java-script code, `x` is data, i.e., `(x) => eval(<modfiy>)`<a href="#fn2"><sup>[2]</sup></a>
 | `align`                | enum     |   optional    | text alignment, one of: `left`, `center`, `right` (default: `left`)
 | `prefix`               | string   |   optional    | to be applied _before_ all cell contents 
 | `suffix`               | string   |   optional    | to be appended _after_ all cell contents
 | `no_auto_format`       | boolean  |   optional    | Disable auto formatting for this column when auto_format: true (default: `false`)
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
-| `fmt`                  | string   |   optional    | format using predefined 'formatters'
+| `fmt`                  | string   |   optional    | format using predefined 'formatters'<a href="#fn3"><sup>[3]</sup></a>
 | `sort_unmodified`      | boolean  |   optional    | Sort using original value before `modify` option, if any, is applied (default: `false`)
 | `footer_type`          | string   |   optional    | Used with `display_footer`, one of `sum`, `average`, `count`, `max`, `min`, or `text`
 | `footer_text`          | string   |   optional    | Used with `display_footer`, text to be dispayed in this and optionally across several more columns (see `footer_colspan`)
 | `footer_colspan`       | string   |   optional    | Used with `display_footer` and `footer_text`, displays text across specified number of columns
-| `footer_modify`        | string   |   optional*   | Used with `display_footer`, performs same function as `modify` but for summary row only
+| `footer_modify`        | string   |   optional    | Used with `display_footer`, performs same function as `modify` but for summary row only<a href="#fn2"><sup>[2]</sup></a>
 
 <!--|&nbsp;&lt;content&gt; |          | **required**  | see in `column contents` below, one of those must exist! -->
 
-*Use `modify` and `footer_modify` with _caution_ and at your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` or `footer_modify` parameters, *only apply these parameters if you are 100% sure about the contents and origin of the data.* 
+<a name="fn2">2.</a> Use `modify` and `footer_modify` with _caution_ and at your own risk only. This will directly execute code using `eval()`, which is by definition a safety risk. Especially avoid processing any third party APIs / contents with `flex-table-card` using the `modify` or `footer_modify` parameters, *only apply these parameters if you are 100% sure about the contents and origin of the data.* 
 Apart from that `modify` and `footer_modify` are very powerful, see [advanced cell formatting](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-advanced-cell-formatting.md).
 
 **Note: In releases after v0.7.7, using `modify` as a data selector is discouraged. The `data` option can now be used to walk complex structures where `modify` was once needed.**
 
-### Currently the available *formatters are: 
+<a name="fn3">3.</a> Currently the available formatters are:
 * `full_datetime`
 * `hours_passed` 
 * `hours_mins_passed`
@@ -106,7 +108,46 @@ Apart from that `modify` and `footer_modify` are very powerful, see [advanced ce
 * `duration`
 * `duration_h`
 
-Feel free to contribute, just share your best `modify` line to allow others to use them, too.
+Feel free to contribute formatters. Just share your best `modify` line to allow others to use them, too.
+
+
+***`columns` options (2nd level): [editing and calling actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions.md)***
+
+| option                 | Type     | Required?     | Description
+| ----                   | ----     | ------------- | -----------
+| `tap_action`           | string   |   optional    | Action taken on cell tap. See [Using Tap Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions#using-tap-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action).
+| `hold_action`          | string   |   optional    | Action taken on tap-and-hold. See [Using Tap Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions#using-tap-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#hold-action).
+| `double__tap_action`   | string   |   optional    | Action taken on double tap. See [Using Tap Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions#using-tap-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#double-tap-action).
+| `edit_action`          | string   |   optional    | Enables editing and defines action taken to commit edit. See [Using Edit Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions.md#using-edit-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action).
+
+The tap acions above allow the use of references to data in other columns in the current row on many of their parameters.
+
+Column references take the form of `cell[n]` and `col[n]`, where `n` is the column index number, beginning at zero. The difference 
+between them is that `cell` can only reference visible columns, whereas `col` can also reference hidden columns, and for that reason 
+may use a different index for subsequent columns after a hidden one. Also, during editing operations with `edit_action`, `cell` 
+references will always reflect the latest value (what is visible in the cell), whereas the `col` reference will contain the value 
+from the last card refresh.
+
+Action parameters that may contain cell references are:
+
+| Action         | Parameter 
+| ------         | ---------
+| perform-action | data
+| navigate       | navigation_path
+| url            | url_path
+| All Actions    | confirmation
+
+
+In some Actions, the entity used for the action can be either the row entity or explicitly stated with a `target` parameter.
+
+| Action         | Entity Used
+| ------         | -----------
+| more-info      | row entity
+| toggle         | row entity
+| perform-action | `target` if specified, otherwise row entity
+| navigate       | N/A
+| url            | N/A
+| assist         | N/A
 
 
 [Return to main README.md](../README.md)
