@@ -61,7 +61,7 @@ such as HTML tags, the entire string including the HTML tags will be used for th
 Another example is a date formatted in the locale of the user. If a date such as "2024-06-23", which sorts correctly, is converted using `modify` to "6/23/2024" or "23/06/2024",
 it will no longer sort as desired.
 
-Therefore, to sort using the original value before the `modify` option was applied, use the `sort_unmodified = true` option in the column configuration.
+Therefore, to sort using the original value before the `modify` option was applied, use the `sort_unmodified: true` option in the column configuration.
 
 Here is an example of the date formatting issue:
 
