@@ -476,7 +476,7 @@ function getRefs(source, row_data, row_cells) {
         return row_data[p1].content;
     }
     function _replace_cell(match, p1) {
-        return row_cells[p1].innerText;
+        return row_cells[p1].innerText == "\n" ? "" : row_cells[p1].innerText; // empty cell contains <br>
     }
     function _replace_text(value) {
         const regex_col = /col\[(\d+)\]/gm;
@@ -694,7 +694,7 @@ class FlexTableCard extends HTMLElement {
     }
 
     _setup_cell_for_editing(elem, row, col, index) {
-                function _handle_lost_focus(e) {
+        function _handle_lost_focus(e) {
             // Check if user changed text.
             if (this.textContent != this.dataset.original) {
                 const actionConfig = {
