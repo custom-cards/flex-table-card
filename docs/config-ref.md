@@ -149,5 +149,13 @@ In some Actions, the entity used for the action can be either the row entity or 
 | url            | N/A
 | assist         | N/A
 
+Note: When using `perform-action`, some actions will not need or allow an entity_id.
+To prevent the entity_id from being passed, you can add the line:
+
+```yaml
+target: {}
+```
+
+at the same indent level as `perform_action` and `data`.
 
 [Return to main README.md](../README.md)

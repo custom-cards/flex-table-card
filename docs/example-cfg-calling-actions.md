@@ -123,6 +123,30 @@ Note that entities specified with the `target` parameter would be used rather th
 from all rows in the table.
 
 
+### Example: Calling the `perform-action` Action without an entity_id
+
+When using `perform-action`, some actions will not need (or tolerate) having an entity_id passed. If you receive the error:
+
+> Failed to perform the action … extra keys not allowed @ data[‘entity_id’]
+
+you can prevent the entity_id from being passed by using an empty `target`, as shown in this example.
+
+```yaml
+type: custom:flex-table-card
+entities:
+  include: light.*
+columns:
+  - name: Light
+    data: friendly_name
+    tap_action:
+      action: perform-action
+      perform_action: persistent_notification.create
+      data:
+        message: cell[0] clicked
+      target: {}
+```
+
+
 ### Example: Calling the `navigate` Action using a col[n] reference to a hidden column
 
 In this example, a user can click on an area and be taken to the view for that area. The example
