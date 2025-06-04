@@ -1,8 +1,8 @@
 # Flex Table
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration) 
-[![Version](https://img.shields.io/badge/version-0.7.8-green.svg?style=plastic)](#)
-[![stable-release-0.7.8](https://img.shields.io/badge/stable-release_0.7.8-green.svg?style=plastic)](#)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg?style=plastic)](#)
+[![stable-release-1.0.0](https://img.shields.io/badge/stable-release_1.0.0-green.svg?style=plastic)](#)
 
 ## Installation using HACS ([Home Assistant Community Store](https://hacs.xyz))
 
