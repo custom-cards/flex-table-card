@@ -1,3 +1,12 @@
+## 1.0.0
+
+* Docs: Explain calling action without entity_id
+
+## 0.7.9
+
+* Fix: Better support of dot notation to select array element
+* Feature: Support calling actions and editing
+
 ## 0.7.8
 
 * Service call target should be empty if no entity is defined (#143)
