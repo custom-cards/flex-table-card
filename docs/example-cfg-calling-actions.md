@@ -4,7 +4,7 @@
 
 The `flex-table-card` supports the same tap actions as many other Home Assistant cards: `tap_action`, 
 `hold_action`, and `double_tap_action`. The use of actions is described in the 
-[Home Assistat Actions documentation](https://www.home-assistant.io/dashboards/actions/).
+[Home Assistant Actions documentation](https://www.home-assistant.io/dashboards/actions/).
 
 In addition, `flex-table-card` supports the `edit_action` which will be covered below.
 
