@@ -36,6 +36,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 
 
 <a name="fn1">1.</a>When `clickable` is used with column actions double actions will occur, which is probably not desirable.
+
 <a name="fn2">2.</a>`Actions` were formerly called `Services`. For backward compatibility, `service` and `service_data` options will continue to be supported for several releases.
                       
 ***`entities` options (2nd level): selection / querying / filtering***
