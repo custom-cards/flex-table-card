@@ -846,6 +846,14 @@ class FlexTableCard extends HTMLElement {
 
             _fireEvent(obj, action_type, actionConfig);
         }
+
+        function _handle_fire_dom_event(obj, action_type, elem, row, col) {
+            const actionConfig = {
+                [action_type]: getRefs(col[action_type], row.data, elem.cells)
+            };
+
+            _fireEvent(obj, action_type, actionConfig);
+        }
         function _handle_action(obj, action_type, elem, row, col) {
             let action;
             switch (action_type) {
@@ -881,13 +889,16 @@ class FlexTableCard extends HTMLElement {
                 case "assist":
                     _handle_assist(obj, action_type, elem, row, col);
                     break;
+                case "fire-dom-event":
+                    _handle_fire_dom_event(obj, action_type, elem, row, col);
+                    break;
                 case "edit":
                     _handle_edit(obj, action_type, elem, row, col);
                     break;
                 case "none":
                     break;
                 default:
-                    throw new Error(`Expected one of none, toggle, more-info, perform-action, url, navigate, assist, but received: ${action["action"]}`)
+                    throw new Error(`Expected one of none, toggle, more-info, perform-action, url, navigate, assist, fire-dom-event, but received: ${action["action"]}`);
             }
         }
 

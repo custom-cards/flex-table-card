@@ -123,6 +123,11 @@ Feel free to contribute formatters. Just share your best `modify` line to allow 
 | `double__tap_action`   | string   |   optional    | Action taken on double tap. See [Using Tap Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions#using-tap-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#double-tap-action).
 | `edit_action`          | string   |   optional    | Enables editing and defines action taken to commit edit. See [Using Edit Actions](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-calling-actions.md#using-edit-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action).
 
+In addition to the `action` types described in the [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action)
+(`more-info`, `toggle`, etc.), the undocumented `action` type `fire-dom-event` is also supported. This is typically used by third-party
+integrations such as [`browser_mod`](https://github.com/thomasloven/hass-browser_mod). See
+[Using Tap Actions](example-cfg-calling-actions#using-tap-actions) for an example of its use.
+
 The tap acions above allow the use of references to data in other columns in the current row on many of their parameters.
 
 Column references take the form of `cell[n]` and `col[n]`, where `n` is the column index number, beginning at zero. The difference 
