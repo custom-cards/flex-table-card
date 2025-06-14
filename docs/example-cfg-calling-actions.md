@@ -295,6 +295,30 @@ user must be logged in to their account on `cellartracker.com` as no authenticat
 <img src="../images/WineConfirmation.png" alt="Wine inventory confirmation example" width="100%"/><br>__This example demonstrates the use of advanced formatting, buttons to perform actions, and a confirmation dialog.__
 
 
+### Example: Calling the `fire-dom-event` Action with Browser Mod
+
+When using third-party integrations such as [`Browser Mod`](https://github.com/thomasloven/hass-browser_mod), you may need to use
+the `fire-dom-event` to trigger a browser-side service call. Follow the [`Browser Mod`](https://github.com/thomasloven/hass-browser_mod)
+documenation for values to place under `browser_mod:`. For example:
+
+```yaml
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: script.print_clicking_browser
+    data:
+      browser_id: THIS
+```
+with the script:
+```yaml
+script:
+  print_clicking_browser:
+    sequence:
+      - service: system_log.write
+        data:
+          message: "Button was clicked in {{browser_id}}"```
+
+
 ## Using Edit Actions
 
 ### Example: Editing a cell using `edit_action`
