@@ -316,7 +316,8 @@ script:
     sequence:
       - service: system_log.write
         data:
-          message: "Button was clicked in {{browser_id}}"```
+          message: "Button was clicked in {{browser_id}}"
+```
 
 
 ## Using Edit Actions
