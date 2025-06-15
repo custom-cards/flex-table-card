@@ -138,24 +138,26 @@ from the last card refresh.
 
 Action parameters that may contain cell references are:
 
-| Action         | Parameter 
-| ------         | ---------
-| perform-action | data
-| navigate       | navigation_path
-| url            | url_path
-| All Actions    | confirmation
+| Action           | Parameter
+| ------           | ---------
+| `perform-action` | `data`
+| `navigate`       | `navigation_path`
+| `url`            | `url_path`
+| `fire-dom-event` | entire custom block
+| All Actions      | `confirmation`
 
 
 In some Actions, the entity used for the action can be either the row entity or explicitly stated with a `target` parameter.
 
-| Action         | Entity Used
-| ------         | -----------
-| more-info      | row entity
-| toggle         | row entity
-| perform-action | `target` if specified, otherwise row entity<a href="#fn5"><sup>[5]</sup></a>
-| navigate       | N/A
-| url            | N/A
-| assist         | N/A
+| Action           | Entity Used
+| ------           | -----------
+| `more-info`      | row entity
+| `toggle`         | row entity
+| `perform-action` | `target` if specified, otherwise row entity<a href="#fn5"><sup>[5]</sup></a>
+| `navigate`       | N/A
+| `url`            | N/A
+| `assist`         | N/A
+| `fire-dom-event` | N/A
 
 <a name="fn5">5.</a>When using `perform-action`, some actions will not need or allow an entity_id.
 To prevent the entity_id from being passed, you can add the line:
@@ -167,6 +169,6 @@ target: {}
 at the same indent level as `perform_action` and `data`.
 
 Note:  Legacy terms `call-service`, `service`, and `service_data` are not supported for column actions. Use only terms documented in
-[Home Assistant Actions documentation](https://www.home-assistant.io/dashboards/actions/).
+[Home Assistant Actions documentation](https://www.home-assistant.io/dashboards/actions/) and the above-mentioned `fire-dom-event` action.
 
 [Return to main README.md](../README.md)
