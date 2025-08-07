@@ -4,7 +4,7 @@
 <!-- [full text section] -->
 ### Demonstration of using the Command line integration to load a CSV file into the flex-table-card
 
-While the `flex-table-card` cannot natively load data from a file, as is often the case, an entity can be
+While the `flex-table-card` cannot natively load data from a file, as is often the case an entity can be
 created which can be used as an intermediate step to populate the card. In this case, we will use the
 `Command line` integration to create a `sensor` entity to load a CSV file. 
 
@@ -18,7 +18,7 @@ Start Time,Start Volume (L),End Volume (L),Liters Delivered,Duration (s)
 ```
 We would like to display this data in a `flex-table-card`:
 
-<img src="../images/WaterTank.png" alt="Water Tank Example" width="500px">
+<img src="../images/WaterTank.png" alt="Water Tank Example">
 
 The configuration for the `sensor` entity in configuration.yaml is as follows:
 
@@ -33,7 +33,7 @@ command_line:
       scan_interval: 3600
 ```
 
-Note that we are using the `[jq language](https://jqlang.org/)` to parse the CSV data into a JSON format 
+Note that we are using the [jq language](https://jqlang.org/) to parse the CSV data into a JSON format 
 that the `flex-table-card` can understand. The `curl` command fetches the CSV file from the `config/www` 
 folder on the Home Assistant server, and `jq` processes it to create a JSON object with an array of refill logs.
 
@@ -41,7 +41,7 @@ There are several important things to note about the `jq` syntax used here.
 
 1. The `split("\r\n")` function splits the CSV data into an array of lines. You may need to adjust this if your CSV uses a different line ending (e.g., `\n` for Unix-style line endings).
 2. The `[1:]` filter skips the header line. Remove this filter if the file does not have a header.
-3. The headings "startTime", "startVolume", "endVolume", "litersDelivered", and "duration" are used to create the keys in the JSON object. You will need to adjust these to match the headings in your CSV file.
+3. The headings "startTime", "startVolume", "endVolume", "litersDelivered", and "duration" are used to create the keys in the JSON object. You will want to adjust these to match the columns in your CSV file.
 4. The string `refill_logs` will be the name of the attribute of the sensor. You should change it in both places in the example.
 
 Restart Home Assistant to apply the changes. After that, you should see a new sensor entity called `sensor.water_tank_refill_logs`.
@@ -69,6 +69,6 @@ columns:
     data: refill_logs.duration
 ```
 
-The date has been modified to be more human-readable.
+The date has been modified using Javascript to be more human-readable.
 
 [Return to main README.md](../README.md)
