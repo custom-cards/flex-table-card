@@ -32,6 +32,8 @@ command_line:
         - refill_logs
       scan_interval: 3600
 ```
+Set the `scan_interval` to a value that suits your needs. The example above will update the sensor every hour.
+If you need to trigger the update manually, you can use the `homeassistant.update_entity` service.
 
 Note that we are using the [jq language](https://jqlang.org/) to parse the CSV data into a JSON format 
 that the `flex-table-card` can understand. The `curl` command fetches the CSV file from the `config/www` 
