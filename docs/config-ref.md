@@ -22,6 +22,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `max_rows`             | int             |   optional    | Restrict the number of (shown) rows to this maximum number
 | `clickable`            | boolean         |   optional    | Activates the entities' on-click popup dialog.<a href="#fn1"><sup>[1]</sup></a>
 | `selectable`           | boolean         |   optional    | Allows text to be selected and copied
+| `enable_search`        | boolean         |   optional    | Enables search bar at top of table to filter rows by text (default: `false`)
 | `auto_format`          | boolean         |   optional    | Format state and attribute data using display precision and unit of measurement, if applicable (default: `false`)
 | `display_footer`       | boolean         |   optional    | Display additional summary row at end for column totals, averages, etc. (default: `false`, see column options below)
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)

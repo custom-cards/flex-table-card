@@ -504,6 +504,7 @@ function getRefs(source, row_data, row_cells) {
 
 // Used for feedback during mouse/touch hold
 var holdDiskDiam = 98;
+var rippleDuration = 600; // in ms
 
 
 /** The HTMLElement, which is used as a base for the Lovelace custom card */
@@ -617,8 +618,19 @@ class FlexTableCard extends HTMLElement {
             "td.enable-hover:hover":    "background-color: rgba(var(--rgb-secondary-text-color), 0.2); ",
             ".mouseheld::after":        `content: ''; opacity: 0.7; z-index: 999; position: absolute; display: inline-block; animation: disc 200ms linear; top: var(--after-top, 0); left: var(--after-left, 0); width: ${holdDiskDiam}px; height: ${holdDiskDiam}px; border-radius: 50%; background-color: rgba(var(--rgb-primary-color), 0.285); `,
             "@keyframes disc":          "0% { transform: scale(0); opacity: 0; } 100% {transform: scale(1); opacity: 0.7; }",
-            "span.ripple":              "position: absolute; border-radius: 50 %; transform: scale(0); animation: ripple 600ms linear; background-color: rgba(127, 127, 127, 0.7); ",
+            "span.ripple":              `position: absolute; border-radius: 50%; transform: scale(0); animation: ripple ${rippleDuration}ms linear; background-color: rgba(127, 127, 127, 0.7); `,
             "@keyframes ripple":        "to { transform: scale(4); opacity: 0; } ",
+            ".search-box":              "align-items: center; padding: 14px; border-bottom: 1px solid var(--divider-color); background-color: var(--primary-background-color); ",
+            ".input-wrapper":           "display: flex; border: 1px solid var(--outline-color); height: 30px; border-radius: 10px; cursor: text; background-color: var(--card-background-color); ",
+            ".input-wrapper:hover":     "border: 1px solid var(--outline-hover-color); ",
+            ".input-wrapper:focus-within":
+                                        "border: 1px solid var(--primary-color); ",
+            ".input":                   "border: none; width: -webkit-fill-available; background-color: var(--card-background-color); ",
+            "input:focus":              "outline: none; ",
+            ".icon":                    "padding: 6px; fill: var(--primary-text-color); ",
+            ".icon.trailing":           "cursor: pointer; position: relative; overflow: hidden; visibility: hidden; width: 12px; height: 12px; margin-right: 2px; padding-right: 16px; padding-bottom: 12px; padding-left: 4px;  ",
+            ".icon.trailing:hover":     "background-color: var(--primary-background-color); border-radius: 50%; ",
+            ".svg-trailing":            "margin-left: 2px; ",
         }
         // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
@@ -646,9 +658,32 @@ class FlexTableCard extends HTMLElement {
             icon_html: ((obj.icon) ? `<ha-icon id='icon' icon='${obj.icon}'></ha-icon>` : "")
         }));
 
+        // search filter box, if configured
+        const search_box = `
+                    <div class="search-box">
+                      <div id="search-wrapper" class="input-wrapper">
+                        <div class="icon leading">
+                          <svg width="18"; height="18"; focusable="false" role="img" viewBox="0 0 24 24">
+                            <g>
+                              <path class="primary-path" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path>
+                            </g>
+                          </svg>
+                        </div>
+                        <input id="search-input" class="input" placeholder="Search..." type="text" autocomplete="off">
+                        <div id="clear-input" class="icon trailing">
+                          <svg class="svg-trailing" width="18"; height="18"; focusable="false" role="img" viewBox="0 0 24 24">
+                            <g>
+                              <path class="primary-path" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path>
+                            </g>
+                          </svg>
+                        </div>
+                      </div>
+                    </div >
+        `;
 
         // table skeleton, body identified with: 'flextbl', footer with 'flexfoot'
         content.innerHTML = `
+                ${cfg.enable_search ? search_box : ""}
                 <table>
                     <thead>
                         <tr>
@@ -688,8 +723,52 @@ class FlexTableCard extends HTMLElement {
                     );
                 };
             });
-        }
 
+            // Add event listeners for Search feature
+            if (config.enable_search) {
+                const inputText = this.shadowRoot.getElementById('search-input');
+                const clearButton = this.shadowRoot.getElementById('clear-input');
+                const table = this.shadowRoot.getElementById('flextbl');
+
+                inputText.addEventListener("input", () => _filterRows(this, inputText, clearButton, table));
+                clearButton.addEventListener("click", () => _clearSearch(inputText));
+                inputText.addEventListener('keydown', (event) => {
+                    _handle_keydown(event, inputText);
+                });
+            }
+
+            function _filterRows(flex_table_card, inputText, clearButton, table) {
+                // Update visibility of clear button based on existence of text
+                clearButton.style.visibility = inputText.value.length > 0 ? 'visible' : 'hidden';
+
+                // Filter table rows based on search text
+                const table_rows = table.querySelectorAll('tbody tr');
+                const filter = inputText.value.trim().toLowerCase();
+                table_rows.forEach((row) => {
+                    const rowText = row.textContent.toLowerCase();
+                    row.hidden = !rowText.includes(filter);
+                });
+
+                // Update footer with only unfiltered rows
+                if (cfg.display_footer) {
+                    const footer = root.getElementById('flexfoot');
+                    const data_rows = flex_table_card.tbl.get_rows();
+                    flex_table_card._updateFooter(footer, cfg, table_rows, data_rows);
+                }
+            }
+
+            function _clearSearch(inputText) {
+                inputText.value = "";
+                inputText.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+            }
+
+            function _handle_keydown(e, inputText) {
+                // Clear search text on Escape pressed
+                if (e.key === 'Escape' || e.keyCode === 27) {
+                    _clearSearch(inputText);
+                }
+            }
+        }
         this._config = cfg;
     }
 
@@ -747,9 +826,9 @@ class FlexTableCard extends HTMLElement {
         }
     }
 
-    _updateContent(element, rows) {
+    _updateContent(table, rows) {
         // callback for updating the cell-contents
-        element.innerHTML = rows.map((row, index) =>
+        table.innerHTML = rows.map((row, index) =>
             `<tr id="entity_row_${row.entity.entity_id}_${index}">${row.data.map(
                 (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}" ${this._get_html_for_editable_cell(cell)}>${cell.pre}${cell.content}${cell.suf}</td>` : "")
@@ -913,9 +992,10 @@ class FlexTableCard extends HTMLElement {
                 circle.style.left = "0px";
                 circle.style.top = "0px";
                 circle.classList.add("ripple");
-                const ripple = target.getElementsByClassName("ripple")[0];
-                if (ripple) ripple.remove();
                 target.appendChild(circle);
+                const timerId = setTimeout(() => {
+                    circle.remove();
+                }, rippleDuration);
             }
 
             // Setup any actionable columns
@@ -1044,9 +1124,15 @@ class FlexTableCard extends HTMLElement {
                 this.dispatchEvent(ev);
             }) : null;
         });
+
+        // If search enabled, may need to re-hide rows. Simulate text entry in search box.
+        if (this.tbl.cfg.enable_search) {
+            const inputText = this.shadowRoot.getElementById('search-input');
+            inputText.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+        }
     }
 
-    _updateFooter(footer, config, rows) {
+    _updateFooter(footer, config, table_rows, data_rows) {
         var innerHTML = '<tr>';
         var colnum = -1;
         var raw = "";
@@ -1063,19 +1149,19 @@ class FlexTableCard extends HTMLElement {
                     if (col.footer_type) {
                         switch (col.footer_type) {
                             case 'sum':
-                                raw = this._sumColumn(rows, colnum);
+                                raw = this._sumColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'average':
-                                raw = this._avgColumn(rows, colnum);
+                                raw = this._avgColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'count':
-                                raw = rows.length;
+                                raw = Array.from(table_rows).filter(row => !row.hidden).length;
                                 break;
                             case 'max':
-                                raw = this._maxColumn(rows, colnum);
+                                raw = this._maxColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'min':
-                                raw = this._minColumn(rows, colnum);
+                                raw = this._minColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'text':
                                 raw = col.footer_text;
@@ -1104,45 +1190,53 @@ class FlexTableCard extends HTMLElement {
         footer.innerHTML = innerHTML;
     }
 
-    _sumColumn(rows, colnum) {
+    _sumColumn(table_rows, data_rows, colnum) {
         var sum = 0;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) sum += cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) sum += cellValue;
+            }
         }
         return sum;
     }
 
-    _avgColumn(rows, colnum) {
+    _avgColumn(table_rows, data_rows, colnum) {
         var sum = 0;
         var count = 0;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                sum += cellValue;
-                count++;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    sum += cellValue;
+                    count++;
+                }
             }
         }
         return sum / count;
     }
 
-    _maxColumn(rows, colnum) {
+    _maxColumn(table_rows, data_rows, colnum) {
         var max = Number.MIN_VALUE;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                if (cellValue > max) max = cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    if (cellValue > max) max = cellValue;
+                }
             }
         }
         return max == Number.MIN_VALUE ? Number.NaN : max;
     }
 
-    _minColumn(rows, colnum) {
+    _minColumn(table_rows, data_rows, colnum) {
         var min = Number.MAX_VALUE;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                if (cellValue < min) min = cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    if (cellValue < min) min = cellValue;
+                }
             }
         }
         return min == Number.MAX_VALUE ? Number.NaN : min;
@@ -1238,9 +1332,11 @@ class FlexTableCard extends HTMLElement {
         // finally set card height and insert card
         this._setCardSize(this.tbl.rows.length);
         // all preprocessing / rendering will be done here inside DataTable::get_rows()
-        let data_rows = this.tbl.get_rows();
-        this._updateContent(root.getElementById('flextbl'), data_rows);
-        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, data_rows);
+        const data_rows = this.tbl.get_rows();
+        const table = root.getElementById('flextbl');
+        this._updateContent(table, data_rows);
+        const table_rows = table.querySelectorAll('tbody tr');
+        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, table_rows, data_rows);
     }
 
     _setCardSize(num_rows) {
