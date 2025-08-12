@@ -730,21 +730,31 @@ class FlexTableCard extends HTMLElement {
                 const clearButton = this.shadowRoot.getElementById('clear-input');
                 const table = this.shadowRoot.getElementById('flextbl');
 
-                inputText.addEventListener("input", () => _filterRows(inputText, table, clearButton));
+                inputText.addEventListener("input", () => _filterRows(this, inputText, clearButton, table));
                 clearButton.addEventListener("click", () => _clearSearch(inputText));
                 inputText.addEventListener('keydown', (event) => {
                     _handle_keydown(event, inputText);
                 });
             }
 
-            function _filterRows(inputText, table, clearButton) {
+            function _filterRows(flex_table_card, inputText, clearButton, table) {
+                // Update visibility of clear button based on existence of text
                 clearButton.style.visibility = inputText.value.length > 0 ? 'visible' : 'hidden';
-                const rows = table.querySelectorAll('tbody tr');
-                const filter = inputText.value.toLowerCase();
-                rows.forEach((row) => {
+
+                // Filter table rows based on search text
+                const table_rows = table.querySelectorAll('tbody tr');
+                const filter = inputText.value.trim().toLowerCase();
+                table_rows.forEach((row) => {
                     const rowText = row.textContent.toLowerCase();
                     row.hidden = !rowText.includes(filter);
                 });
+
+                // Update footer with only unfiltered rows
+                if (cfg.display_footer) {
+                    const footer = root.getElementById('flexfoot');
+                    const data_rows = flex_table_card.tbl.get_rows();
+                    flex_table_card._updateFooter(footer, cfg, table_rows, data_rows);
+                }
             }
 
             function _clearSearch(inputText) {
@@ -816,9 +826,9 @@ class FlexTableCard extends HTMLElement {
         }
     }
 
-    _updateContent(element, rows) {
+    _updateContent(table, rows) {
         // callback for updating the cell-contents
-        element.innerHTML = rows.map((row, index) =>
+        table.innerHTML = rows.map((row, index) =>
             `<tr id="entity_row_${row.entity.entity_id}_${index}">${row.data.map(
                 (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}" ${this._get_html_for_editable_cell(cell)}>${cell.pre}${cell.content}${cell.suf}</td>` : "")
@@ -1122,7 +1132,7 @@ class FlexTableCard extends HTMLElement {
         }
     }
 
-    _updateFooter(footer, config, rows) {
+    _updateFooter(footer, config, table_rows, data_rows) {
         var innerHTML = '<tr>';
         var colnum = -1;
         var raw = "";
@@ -1139,19 +1149,19 @@ class FlexTableCard extends HTMLElement {
                     if (col.footer_type) {
                         switch (col.footer_type) {
                             case 'sum':
-                                raw = this._sumColumn(rows, colnum);
+                                raw = this._sumColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'average':
-                                raw = this._avgColumn(rows, colnum);
+                                raw = this._avgColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'count':
-                                raw = rows.length;
+                                raw = Array.from(table_rows).filter(row => !row.hidden).length;
                                 break;
                             case 'max':
-                                raw = this._maxColumn(rows, colnum);
+                                raw = this._maxColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'min':
-                                raw = this._minColumn(rows, colnum);
+                                raw = this._minColumn(table_rows, data_rows, colnum);
                                 break;
                             case 'text':
                                 raw = col.footer_text;
@@ -1180,45 +1190,53 @@ class FlexTableCard extends HTMLElement {
         footer.innerHTML = innerHTML;
     }
 
-    _sumColumn(rows, colnum) {
+    _sumColumn(table_rows, data_rows, colnum) {
         var sum = 0;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) sum += cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) sum += cellValue;
+            }
         }
         return sum;
     }
 
-    _avgColumn(rows, colnum) {
+    _avgColumn(table_rows, data_rows, colnum) {
         var sum = 0;
         var count = 0;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                sum += cellValue;
-                count++;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    sum += cellValue;
+                    count++;
+                }
             }
         }
         return sum / count;
     }
 
-    _maxColumn(rows, colnum) {
+    _maxColumn(table_rows, data_rows, colnum) {
         var max = Number.MIN_VALUE;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                if (cellValue > max) max = cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    if (cellValue > max) max = cellValue;
+                }
             }
         }
         return max == Number.MIN_VALUE ? Number.NaN : max;
     }
 
-    _minColumn(rows, colnum) {
+    _minColumn(table_rows, data_rows, colnum) {
         var min = Number.MAX_VALUE;
-        for (var i = 0; i < rows.length; i++) {
-            let cellValue = this._findNumber(rows[i].data[colnum].sort_unmodified ? rows[i].data[colnum].raw_content : rows[i].data[colnum].content);
-            if (!Number.isNaN(cellValue)) {
-                if (cellValue < min) min = cellValue;
+        for (var i = 0; i < data_rows.length; i++) {
+            if (!table_rows[i].hidden) {
+                let cellValue = this._findNumber(data_rows[i].data[colnum].sort_unmodified ? data_rows[i].data[colnum].raw_content : data_rows[i].data[colnum].content);
+                if (!Number.isNaN(cellValue)) {
+                    if (cellValue < min) min = cellValue;
+                }
             }
         }
         return min == Number.MAX_VALUE ? Number.NaN : min;
@@ -1314,9 +1332,11 @@ class FlexTableCard extends HTMLElement {
         // finally set card height and insert card
         this._setCardSize(this.tbl.rows.length);
         // all preprocessing / rendering will be done here inside DataTable::get_rows()
-        let data_rows = this.tbl.get_rows();
-        this._updateContent(root.getElementById('flextbl'), data_rows);
-        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, data_rows);
+        const data_rows = this.tbl.get_rows();
+        const table = root.getElementById('flextbl');
+        this._updateContent(table, data_rows);
+        const table_rows = table.querySelectorAll('tbody tr');
+        if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, table_rows, data_rows);
     }
 
     _setCardSize(num_rows) {
