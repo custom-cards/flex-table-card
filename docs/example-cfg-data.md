@@ -10,14 +10,25 @@ for the assigned value of `data`:
 * `name` = *friendliest name* will be selected
 * `object_id` = full entity *path* without domain
 * `icon` = renders the entity's current icon (`entity.attributes.icon`) into the cell
-* `device` = name of the device that the entity belongs to, if available
-* `area` = name of the area that the entity or its device is assigned to, if available
 * `_state`= is a *hack* to be able to select `entity.attributes.state` as data
 * any `key in this.entity` (e.g., `entity_id`, `state`, ...)
-* otherwise a key within `this.entity.attributes` will be assumed 
+* a matching key within `this.entity.attributes`
+* `area` = name of the area that the entity or its device is assigned to, if available
+* `floor` = name of the floor that the entity's area is assigned to, if available
+* `platform` = name of the domain that the entity belongs to (e.g., `sensor`, `light`, ...)
+* `device` = name of the device that the entity belongs to, if available
+* `device_via_device` = name of the parent device of the entity's device, if available
+* `device_hw_version` = hardware version of the device that the entity belongs to, if available
+* `device_sw_version` = software version of the device that the entity belongs to, if available
+* `device_manufacturer` = manufacturer of the device that the entity belongs to, if available
+* `device_model` = model of the device that the entity belongs to, if available
+* `device_serial_number` = serial number of the device that the entity belongs to, if available
 
 When accessing attributes, sometimes an attribute object will itself contain objects.
 In that case, you can access the lower object using dotted notation.  eg: object1.object2.field1
+
+If there is a conflict between an attribute name and one of the special names above
+(from "area" to the end of the list), the attribute name takes precedence.
 
 If the chosen `data` selector does not resolve to something useful, the
 cell will be marked with an error - collection/rendering should continue w/o any 
