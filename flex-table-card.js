@@ -287,12 +287,6 @@ class DataRow {
                         // 'icon' will show the entity's default icon
                         let _icon = this.entity.attributes.icon;
                         raw_content.push(`<ha-icon id="icon" icon="${_icon}"></ha-icon>`);
-                    } else if (col_key === "area") {
-                        // 'area' will show the entity's or its device's assigned area, if any
-                        raw_content.push(this._get_area_name(this.entity.entity_id, hass));
-                    } else if (col_key === "device") {
-                        // 'device' will show the entity's device name, if any
-                        raw_content.push(this._get_device_name(this.entity.entity_id, hass));
                     } else if (col_key === "state" && config.auto_format && !col.no_auto_format) {
                         // format entity state
                         raw_content.push(hass.formatEntityState(this.entity));
@@ -307,6 +301,36 @@ class DataRow {
                         else {
                             raw_content.push(this.entity.attributes[col_key]);
                         }
+                    } else if (col_key === "area") {
+                        // 'area' will show the entity's or its device's assigned area, if any
+                        raw_content.push(this._get_area_name(this.entity.entity_id, hass));
+                    } else if (col_key === "floor") {
+                        // 'floor' will show the entity's area's floor, if any
+                        raw_content.push(this._get_floor_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device") {
+                        // 'device' will show the entity's device name, if any
+                        raw_content.push(this._get_device_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device_hw_version") {
+                        // 'device_hw_version' will show the entity's device hardware version, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "hw_version"));
+                    } else if (col_key === "device_manufacturer") {
+                        // 'device_manufacturer' will show the entity's device manufacturer, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "manufacturer"));
+                    } else if (col_key === "device_model") {
+                        // 'device_model' will show the entity's device model, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "model"));
+                    } else if (col_key === "device_serial_number") {
+                        // 'device_serial_number' will show the entity's device serial number, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "serial_number"));
+                    } else if (col_key === "device_sw_version") {
+                        // 'device_sw_version' will show the entity's device software version, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "sw_version"));
+                    } else if (col_key === "device_via_device") {
+                        // 'device_via_device' will show the entity's device via name, if any
+                        raw_content.push(this._get_device_via(this.entity.entity_id, hass));
+                    } else if (col_key === "platform") {
+                        // 'platform' will show the entity's platform (domain), if any
+                        raw_content.push(this._get_platform(this.entity.entity_id, hass));
                     } else {
                         // no matching data found, complain:
                         //raw_content.push("[[ no match ]]");
@@ -413,22 +437,62 @@ class DataRow {
 
     _get_device_name(entity_id, hass) {
         var device_id;
-        if (hass.entities[entity_id] !== undefined) {
+        if (hass.entities[entity_id] != null) {
             device_id = hass.entities[entity_id].device_id;
         }
-        return device_id === undefined ? "-" : hass.devices[device_id].name_by_user || hass.devices[device_id].name;
+        return device_id == null ? "-" : hass.devices[device_id].name_by_user || hass.devices[device_id].name;
+    }
+
+    _get_device_via(entity_id, hass) {
+        var device_id;
+        var via_device_id;
+        if (hass.entities[entity_id] != null) {
+            device_id = hass.entities[entity_id].device_id;
+        }
+        if (device_id != null) {
+            via_device_id = hass.devices[device_id].via_device_id
+        }
+        return via_device_id == null ? "-" : hass.devices[via_device_id].name_by_user || hass.devices[via_device_id].name;
+    }
+
+    _get_device_value(entity_id, hass, parameter) {
+        var device_id;
+        if (hass.entities[entity_id] != null) {
+            device_id = hass.entities[entity_id].device_id;
+        }
+        return device_id == null || hass.devices[device_id][parameter] == null ? "-" :
+            hass.devices[device_id][parameter];
     }
 
     _get_area_name(entity_id, hass) {
         var area_id;
-        if (hass.entities[entity_id] !== undefined) {
+        if (hass.entities[entity_id] != null) {
             area_id = hass.entities[entity_id].area_id;
-            if (area_id === undefined) {
+            if (area_id == null) {
                 let device_id = hass.entities[entity_id].device_id;
-                if (device_id !== undefined) area_id = hass.devices[device_id].area_id;
+                if (device_id != null) area_id = hass.devices[device_id].area_id;
             }
         }
-        return area_id === undefined || hass.areas[area_id] === undefined ? "-" : hass.areas[area_id].name;
+        return area_id == null || hass.areas[area_id] == null ? "-" : hass.areas[area_id].name;
+    }
+
+    _get_floor_name(entity_id, hass) {
+        var area_id;
+        var floor_id;
+        if (hass.entities[entity_id] != null) {
+            area_id = hass.entities[entity_id].area_id;
+            if (area_id == null) {
+                let device_id = hass.entities[entity_id].device_id;
+                if (device_id != null) area_id = hass.devices[device_id].area_id;
+            }
+            if (area_id != null) floor_id = hass.areas[area_id].floor_id;
+        }
+        return floor_id == null || hass.floors[floor_id] == null ? "-" : hass.floors[floor_id].name;
+    }
+
+    _get_platform(entity_id, hass) {
+        var entity = hass.entities[entity_id]
+        return entity == null || entity.platform == null ? "-" : entity.platform;
     }
 
     render_data(col_cfgs) {
