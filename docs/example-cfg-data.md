@@ -10,14 +10,29 @@ for the assigned value of `data`:
 * `name` = *friendliest name* will be selected
 * `object_id` = full entity *path* without domain
 * `icon` = renders the entity's current icon (`entity.attributes.icon`) into the cell
-* `device` = name of the device that the entity belongs to, if available
-* `area` = name of the area that the entity or its device is assigned to, if available
 * `_state`= is a *hack* to be able to select `entity.attributes.state` as data
 * any `key in this.entity` (e.g., `entity_id`, `state`, ...)
-* otherwise a key within `this.entity.attributes` will be assumed 
+* a matching key within `this.entity.attributes`
 
 When accessing attributes, sometimes an attribute object will itself contain objects.
 In that case, you can access the lower object using dotted notation.  eg: object1.object2.field1
+
+In addition to the above references, the following keywords are supported for entities:
+
+* `area` = name of the area that the entity or its device is assigned to, if available
+* `floor` = name of the floor that the entity's area is assigned to, if available
+* `device` = name of the device that the entity belongs to, if available
+* `device_via_device` = name of the parent device of the entity's device, if available
+* `device_hw_version` = hardware version of the device that the entity belongs to, if available
+* `device_sw_version` = software version of the device that the entity belongs to, if available
+* `device_manufacturer` = manufacturer of the device that the entity belongs to, if available
+* `device_model` = model of the device that the entity belongs to, if available
+* `device_serial_number` = serial number of the device that the entity belongs to, if available
+* `platform` = name of the domain that the entity belongs to (e.g., `sensor`, `light`, ...)
+
+If there is a conflict between an attribute name and one of these special keywords,
+the attribute name takes precedence. Note that even if a `device` or an `area` is defined for an `entity`,
+the information may not be available for `flex-table` to display.
 
 If the chosen `data` selector does not resolve to something useful, the
 cell will be marked with an error - collection/rendering should continue w/o any 
@@ -29,8 +44,6 @@ for being an `Array.isArray()`).
 **Multiple, different selectors can be used** for a single column data selection by just separating 
 each one using a comma `,`. If multiple selectors are used the resulting data is concatenated using 
 `multi_delimiter`, which defaults to a whitespace ' '.
-
-Note that even if a `device` or an `area` is defined for an `entity`, it may not be available for `flex-table` to display.
 
 ### Migration from versions < 0.7
 Since version 0.7 the old selectors (`attr`, `prop`, `attr_as_list`, `multi`) are all replaced by
