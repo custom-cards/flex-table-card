@@ -1,3 +1,9 @@
+## 1.1.0
+
+* add new data fields
+* many documentation updates
+* possibility to add search header to filter data
+
 ## 1.0.0
 
 * Docs: Explain calling action without entity_id
