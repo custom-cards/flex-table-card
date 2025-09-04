@@ -29,7 +29,7 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `- ...`                | item(s)         |   optional    | 
 | `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by an action (see below). If no entities are required for an action, use [] and omit `include/exclude`
 | `- ...`                | item(s)         | **required**  | 
-| `action`               | string          |   optional    | Action to act as *data source* instead of entities. Use `entities` to define entities for the action.<a href="#fn2"><sup>[2]</sup></a>
+| `action`               | string          |   optional    | Action to act as *data source* instead of entities. Use `entities` to define entities for the action.<a href="#fn2"><sup>[2]</sup></a> See [Examples - Loading from Actions and Scripts](example-cfg-services.md#examples---loading-from-actions-and-scripts)
 | `action_data`          | section         |   optional    | Section defining `data` required by the action, if any (see below)
 | `- ...`                | item(s)         |   optional    | 
 | `columns`              | section         | **required**  | Section defining the column(s) and its contents (see below)
