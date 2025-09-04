@@ -33,7 +33,7 @@ resources:
   * [Advanced Cell Formatting](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-advanced-cell-formatting.md)
   * [Formatting with CSS](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-css.md)
   * [Auto Entities](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-autoentities.md)
-  * [Loading from Services](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-services.md)
+  * [Loading from Actions and Scripts](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-services.md)
   * [Loading from Files](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-files.md)
   * [Editing and Calling Actions](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-calling-actions.md)
   * [Adding a Summary Footer](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-footers.md)
