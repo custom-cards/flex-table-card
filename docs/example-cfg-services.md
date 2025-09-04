@@ -253,11 +253,11 @@ todo.second_list:
 
 Notice the top level keys, the entities to which the data belongs.
 
-When using a custom script to return data to a `flex-table-card`:
+**IMPORTANT:** When using a custom script to return data to a `flex-table-card`:
 * If one or more entities are specified in the definition, the top level key of the returned
 JSON for each entity MUST be the entity_id.
 * If entities are NOT specified (`entities: []`), the top level MUST be the key of the list of rows,
-such as `items` in the above example (`items` would only occur once).
+such as `items` in the above example (`items` would only occur once in this case).
 
 The entity returned in the response does not need to be the same as the one(s) in the card definition. In fact,
 it doesn't even have to be a valid entity...what is important is its position in the JSON. However, this
