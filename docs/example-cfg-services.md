@@ -253,11 +253,11 @@ todo.second_list:
 
 Notice the top level keys, the entities to which the data belongs.
 
-**When using a custom script to return data to a `flex-table-card`:
-* If one or more entities are specified in the definition, the top level of the returned
+When using a custom script to return data to a `flex-table-card`:
+* If one or more entities are specified in the definition, the top level key of the returned
 JSON for each entity MUST be the entity_id.
-* If entities are NOT specified (`entities: []`), the top level
-MUST be the key of the list of rows, such as `items` in the above example.**
+* If entities are NOT specified (`entities: []`), the top level MUST be the key of the list of rows,
+such as `items` in the above example (`items` would only occur once).
 
 The entity returned in the response does not need to be the same as the one(s) in the card definition. In fact,
 it doesn't even have to be a valid entity...what is important is its position in the JSON. However, this
@@ -304,6 +304,6 @@ JSON hierarchy, with `entity_id[0]` as the key to this new top level. (`entity_i
 entities specified in the card. However, this simple example only works for a single entity.)
 
 When the state of the light entity changes, the script is refreshed. Clicking on the row invokes the
-more-info dialog, or could call an action using the entity.
+more-info dialog for the entity, or you could use tap-actions to call an action using the entity.
 
 [Return to main README.md](../README.md)
