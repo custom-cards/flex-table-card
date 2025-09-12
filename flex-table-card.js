@@ -507,6 +507,7 @@ class DataRow {
                 if (fmt.failed)
                    x = null;
             }
+
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
@@ -568,6 +569,7 @@ function getRefs(source, row_data, row_cells) {
 // Used for feedback during mouse/touch hold
 var holdDiskDiam = 98;
 var rippleDuration = 600; // in ms
+
 
 /** The HTMLElement, which is used as a base for the Lovelace custom card */
 class FlexTableCard extends HTMLElement {
