@@ -26,12 +26,14 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | `auto_format`          | boolean         |   optional    | Format state and attribute data using display precision and unit of measurement, if applicable (default: `false`)
 | `display_footer`       | boolean         |   optional    | Display additional summary row at end for column totals, averages, etc. (default: `false`, see column options below)
 | `css`                  | section         |   optional    | Modify the CSS-style of this flex-table instance [(css example)](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)
-| `- ...`                | item(s)         |   optional    | 
-| `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by an action (see below). If no entities are required for an action, use [] and omit `include/exclude`
-| `- ...`                | item(s)         | **required**  | 
+| `...`                  | item(s)         |   optional    | CSS rules, one per line (no hyphen in front of the line)
+| `entities`             | section         | **required**  | Section defining the entities, either as the *data sources* or for use by an action (see below). If no entities are required for an action or if using `static_data`, use [] and omit `include/exclude`
+| `- ...`                | item(s)         | **required**  | List of entities, one per line if not using `include`/`exclude`
 | `action`               | string          |   optional    | Action to act as *data source* instead of entities. Use `entities` to define entities for the action.<a href="#fn2"><sup>[2]</sup></a> See [Examples - Loading from Actions and Scripts](example-cfg-services.md#examples---loading-from-actions-and-scripts)
 | `action_data`          | section         |   optional    | Section defining `data` required by the action, if any (see below)
-| `- ...`                | item(s)         |   optional    | 
+| `...`                  | item(s)         |   optional    | Data items for action, if needed, one per line (no hyphen in front of the line)
+| `static_data`          | section         |   optional    | Section to provide *data source* instead of entities or actions. See [Examples - Displaying Static Data](example-cfg-static-data.md#examples---displaying-static-data)
+| `...`                  | dict            |   optional    | Dictionary defining static data (see below)
 | `columns`              | section         | **required**  | Section defining the column(s) and its contents (see below)
 | `- ...`                | item(s)         | **required**  | 
 
@@ -57,6 +59,15 @@ Flex Table gives you the possibility to visualize any tabular data within Lovela
 | depends on action    | string   |   optional    | Defines any data used by the action. Same format as the `data` section of the action call.
  
 [Action call examples](example-cfg-services.md).
+
+***`static_data` options (2nd level)***
+
+| option       | Type     | Required?       | Description
+| ------       | ----     | -------------   | -----------
+| group key    | string   | **required**    | Top-level dictionary key for the static data array, referenced in `data` selectors of columns.
+| data array   | array    | **required**    | Array of dictionaries defining the static data rows, the keys in each dictionary matching the `data` selectors of columns.
+ 
+[Static data examples](example-cfg-static-data.md).
 
 ***`css` options (2nd level): [css adaptations](https://github.com/custom-cards/flex-table-card/blob/master/docs/example-cfg-css.md)***
 

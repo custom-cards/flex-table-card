@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "1.1.0";
+var VERSION = "1.2.0";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -507,7 +507,6 @@ class DataRow {
                 if (fmt.failed)
                    x = null;
             }
-
             let content = (cfg.modify) ? eval(cfg.modify) : x;
 
             // check for undefined/null values and omit if strict set
@@ -570,7 +569,6 @@ function getRefs(source, row_data, row_cells) {
 var holdDiskDiam = 98;
 var rippleDuration = 600; // in ms
 
-
 /** The HTMLElement, which is used as a base for the Lovelace custom card */
 class FlexTableCard extends HTMLElement {
     constructor() {
@@ -585,6 +583,7 @@ class FlexTableCard extends HTMLElement {
     // Used to detect changes requiring a table refresh.
     #old_last_updated = "";
     #old_rowcount = 0;
+    #last_config = null;
 
     _getRegEx(pats, invert=false) {
         // compile and convert wildcardish-regex to real RegExp
@@ -1320,6 +1319,17 @@ class FlexTableCard extends HTMLElement {
         const config = this._config;
         const root = this.shadowRoot;
 
+        if (config.static_data) {
+            // Use static data to populate
+            if (config !== this.#last_config) {
+                this.#last_config = config;
+                let entities = new Array();
+                let static_data = { "entity_id": "None", "attributes": config.static_data };
+                entities.push(static_data);
+                this._fill_card(entities, config, root, hass);
+            }
+            return;
+        }
         // get "data sources / origins" i.e, entities
         let entities = this._getEntities(hass, config.entities, config.entities.include, config.entities.exclude);
 
