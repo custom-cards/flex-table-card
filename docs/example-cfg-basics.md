@@ -68,5 +68,9 @@ entities:
 In order for an entity to get included, **any** `include` expression is sufficient for inclusion. 
 To be excluded from the entity set, only **one** `exclude` expression match is required.
 
+In addition to entities, actions (including scripts) can be used to load data,
+as can static data defined within the card configuration. See
+[Examples - Loading from Actions and Scripts](example-cfg-services.md) and
+[Examples - Displaying Static Data](example-cfg-static-data.md) for details.
 
 [Return to main README.md](../README.md)
