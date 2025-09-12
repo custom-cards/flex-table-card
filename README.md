@@ -35,6 +35,7 @@ resources:
   * [Auto Entities](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-autoentities.md)
   * [Loading from Actions and Scripts](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-services.md)
   * [Loading from Files](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-files.md)
+  * [Displaying Static Data](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-static-data.md)
   * [Editing and Calling Actions](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-calling-actions.md)
   * [Adding a Summary Footer](https://github.com/custom-cards/flex-table-card/tree/master/docs/example-cfg-footers.md)
 * [Configuration Reference](https://github.com/custom-cards/flex-table-card/tree/master/docs/config-ref.md)
