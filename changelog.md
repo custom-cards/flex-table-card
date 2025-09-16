@@ -1,3 +1,8 @@
+## 1.2.0
+
+* introduce `static_data` for columns
+* various docs improvements
+
 ## 1.1.0
 
 * add new data fields
