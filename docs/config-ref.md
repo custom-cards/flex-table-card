@@ -136,11 +136,11 @@ Feel free to contribute formatters. Just share your best `modify` line to allow 
 | `edit_action`          | string   |   optional    | Enables editing and defines action taken to commit edit. See [Using Edit Actions](example-cfg-calling-actions.md#using-edit-actions) and [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action).
 
 In addition to the `action` types described in the [action documentation](https://www.home-assistant.io/dashboards/actions/#tap-action)
-(`more-info`, `toggle`, etc.), the undocumented `action` type `fire-dom-event` is also supported. This is typically used by third-party
+(`more-info`, `toggle`, etc.), the undocumented `action` type `fire-dom-event` is also supported. This is typically used with third-party
 integrations such as [`browser_mod`](https://github.com/thomasloven/hass-browser_mod). See
 [Using Tap Actions](example-cfg-calling-actions.md#using-tap-actions) for an example of its use.
 
-The tap acions above allow the use of references to data in other columns in the current row on many of their parameters.
+The tap actions above allow the use of references to data in other columns in the current row on many of their parameters.
 
 Column references take the form of `cell[n]` and `col[n]`, where `n` is the column index number, beginning at zero. The difference 
 between them is that `cell` can only reference visible columns, whereas `col` can also reference hidden columns, and for that reason 
@@ -152,19 +152,22 @@ Action parameters that may contain cell references are:
 
 | Action           | Parameter
 | ------           | ---------
-| `perform-action` | `data`
+| `more-info`      | `entity`
+| `toggle`         | `entity`
+| `perform-action` | `data`, `target`
 | `navigate`       | `navigation_path`
 | `url`            | `url_path`
 | `fire-dom-event` | entire custom block
 | All Actions      | `confirmation`
 
 
-In some Actions, the entity used for the action can be either the row entity or explicitly stated with a `target` parameter.
+In some Actions, the entity or entities used for the action can be either the row entity 
+or explicitly stated with the `entity` or `target` parameter.
 
 | Action           | Entity Used
 | ------           | -----------
-| `more-info`      | row entity
-| `toggle`         | row entity
+| `more-info`      | `entity` if specified, otherwise row entity
+| `toggle`         | `entity` if specified, otherwise row entity
 | `perform-action` | `target` if specified, otherwise row entity<a href="#fn5"><sup>[5]</sup></a>
 | `navigate`       | N/A
 | `url`            | N/A
