@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "1.2.0";
+var VERSION = "1.2.1";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -917,7 +917,7 @@ class FlexTableCard extends HTMLElement {
             const actionConfig = {
                 [action_type]: {
                     action: "more-info",
-                    entity: row.entity.entity_id,
+                    entity: getRefs(col[action_type].entity, row.data, elem.cells) || row.entity.entity_id,
                     confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
                 },
             };
@@ -931,7 +931,7 @@ class FlexTableCard extends HTMLElement {
                     action: "toggle",
                     confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
                 },
-                entity: row.entity.entity_id,
+                entity: getRefs(col[action_type].entity, row.data, elem.cells) || row.entity.entity_id
             };
 
             _fireEvent(obj, action_type, actionConfig);
@@ -943,7 +943,8 @@ class FlexTableCard extends HTMLElement {
                     action: "perform-action",
                     perform_action: col[action_type].perform_action,
                     data: getRefs(col[action_type].data, row.data, elem.cells),
-                    target: col[action_type].target ?? { entity_id: row.entity.entity_id },
+                    target: getRefs(col[action_type].target, row.data, elem.cells) ||
+                        { entity_id: row.entity.entity_id },
                     confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
                 },
             };
@@ -955,7 +956,8 @@ class FlexTableCard extends HTMLElement {
             const actionConfig = {
                 [action_type]: {
                     action: "navigate",
-                    navigation_path: getRefs(col[action_type].navigation_path ?? col.content, row.data, elem.cells),
+                    navigation_path: getRefs(col[action_type].navigation_path ||
+                        col.content, row.data, elem.cells),
                     navigation_replace: col[action_type].navigation_replace,
                     confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
                 },
@@ -968,7 +970,7 @@ class FlexTableCard extends HTMLElement {
             const actionConfig = {
                 [action_type]: {
                     action: "url",
-                    url_path: getRefs(col[action_type].url_path ??
+                    url_path: getRefs(col[action_type].url_path ||
                         col.content, row.data, elem.cells)
                         .normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
                     confirmation: getRefs(col[action_type].confirmation, row.data, elem.cells)
