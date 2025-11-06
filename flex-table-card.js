@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "1.2.1";
+var VERSION = "1.2.2";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -89,6 +89,9 @@ class CellFormatters {
         let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
         if (m) s = s.padStart(2, 0);
         return d + h + m + s;
+    }
+    icon(data) {
+        return `<ha-icon icon="${data}"></ha-icon>`;
     }
 
 
@@ -696,7 +699,21 @@ class FlexTableCard extends HTMLElement {
             ".icon.trailing":           "cursor: pointer; position: relative; overflow: hidden; visibility: hidden; width: 12px; height: 12px; margin-right: 2px; padding-right: 16px; padding-bottom: 12px; padding-left: 4px;  ",
             ".icon.trailing:hover":     "background-color: var(--primary-background-color); border-radius: 50%; ",
             ".svg-trailing":            "margin-left: 2px; ",
+            // NEW: Scroll container style
+            ".tbl-scroll":              "overflow-x: auto; overflow-y: auto; width: 100%;",
         }
+
+        // NEW: FREEZE ROW LOGIC START
+        // If freeze_row is defined (0 or greater):
+        // 1. Fix the Header (sticky).
+        // 2. Add max-height to container (for scrolling).
+        if (cfg.freeze_row !== undefined && cfg.freeze_row !== null) {
+             css_styles["thead th"] += "position: sticky; top: 0; z-index: 1; background-color: var(--card-background-color); box-shadow: 0 1px 0 var(--divider-color);";
+             // Default max-height 400px, user can override via css .tbl-scroll
+             css_styles[".tbl-scroll"] += "max-height: 92vh;";
+        }
+        // NEW: FREEZE ROW LOGIC END
+
         // apply CSS-styles from configuration
         // ("+" suffix to key means "append" instead of replace)
         if ("css" in cfg) {
@@ -747,8 +764,10 @@ class FlexTableCard extends HTMLElement {
         `;
 
         // table skeleton, body identified with: 'flextbl', footer with 'flexfoot'
+        // NEW: Table structure updated to include .tbl-scroll div
         content.innerHTML = `
                 ${cfg.enable_search ? search_box : ""}
+                <div class="tbl-scroll">
                 <table>
                     <thead>
                         <tr>
@@ -759,6 +778,7 @@ class FlexTableCard extends HTMLElement {
                     <tbody id='flextbl'></tbody>
                     <tfoot id='flexfoot'></tfoot>
                 </table>
+                </div>
                 `;
         // push css-style & table as content into the card's DOM tree
         card.appendChild(style);
@@ -898,6 +918,31 @@ class FlexTableCard extends HTMLElement {
                 (cell) => ((!cell.hide) ?
                     `<td class="${cell.css}" ${this._get_html_for_editable_cell(cell)}>${cell.pre}${cell.content}${cell.suf}</td>` : "")
             ).join("")}</tr>`).join("");
+
+        // NEW: FREEZE ROW CALCULATION LOGIC START
+        if (this._config.freeze_row && this._config.freeze_row > 0) {
+            setTimeout(() => {
+                const thead = this.shadowRoot.querySelector('thead');
+                const trs = table.querySelectorAll('tr');
+                
+                let offset = thead ? thead.offsetHeight : 0;
+
+                for(let i = 0; i < this._config.freeze_row; i++) {
+                    if(trs[i]) {
+                        let tds = trs[i].querySelectorAll('td');
+                        tds.forEach(td => {
+                            td.style.position = 'sticky';
+                            td.style.top = offset + 'px'; 
+                            td.style.zIndex = '5'; 
+                            td.style.backgroundColor = 'var(--card-background-color)'; 
+                            td.style.boxShadow = '0 1px 0 var(--divider-color)'; 
+                        });
+                        offset += trs[i].offsetHeight;
+                    }
+                }
+            }, 0);
+        }
+        // NEW: FREEZE ROW CALCULATION LOGIC END
 
         function _fireEvent(obj, action_type, actionConfig) {
             let ev = new Event("hass-action", {
