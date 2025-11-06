@@ -90,6 +90,9 @@ class CellFormatters {
         if (m) s = s.padStart(2, 0);
         return d + h + m + s;
     }
+    icon(data) {
+        return `<ha-icon icon="${data}"></ha-icon>`;
+    }
 
 
 }
