@@ -122,6 +122,7 @@ Apart from that `modify` and `footer_modify` are very powerful, see [advanced ce
 * `number`
 * `duration`
 * `duration_h`
+* `icon`
 
 Feel free to contribute formatters. Just share your best `modify` line to allow others to use them, too.
 
