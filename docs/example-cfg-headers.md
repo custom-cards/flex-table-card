@@ -27,7 +27,7 @@ type: custom:flex-table-card
 max_rows: 10
 entities:
   include: zwave.*
-
+freeze_row: 0 #Header will be freezed during scrolling down to table. 0 means header row but any row can be freezed eg. freeze_row: 8. 
 columns:
   # add explicit column header: 'Aha Column'
   - name: Aha Column
