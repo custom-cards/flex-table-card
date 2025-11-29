@@ -708,7 +708,7 @@ class FlexTableCard extends HTMLElement {
         // 1. Fix the Header (sticky).
         // 2. Add max-height to container (for scrolling).
         if (cfg.freeze_row !== undefined && cfg.freeze_row !== null) {
-             css_styles["thead th"] += "position: sticky; top: 0; z-index: 10; background-color: var(--card-background-color); box-shadow: 0 1px 0 var(--divider-color);";
+             css_styles["thead th"] += "position: sticky; top: 0; z-index: 1; background-color: var(--card-background-color); box-shadow: 0 1px 0 var(--divider-color);";
              // Default max-height 400px, user can override via css .tbl-scroll
              css_styles[".tbl-scroll"] += "max-height: 92vh;";
         }
