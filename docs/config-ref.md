@@ -116,13 +116,20 @@ Apart from that `modify` and `footer_modify` are very powerful, see [advanced ce
 **Note: In releases after v0.7.7, using `modify` as a data selector is discouraged. The `data` option can now be used to walk complex structures where `modify` was once needed.**
 
 <a name="fn4">4.</a> Currently the available formatters are:
-* `full_datetime`
-* `hours_passed` 
-* `hours_mins_passed`
-* `number`
-* `duration`
-* `duration_h`
-* `icon`
+
+| Name                     | Example Input            | Result              | Description
+| ----                     | -------------            | ------              | -----------
+| `full_datetime`          | 2025-08-02T07:20:00      | 1754140800000       | Convert a string representation of date into timestamp.
+| `hours_passed`           | 2025-12-14T04:32:47.123Z | 13.89               | Provide hours passed since date/time
+| `hours_mins_passed`      | 2025-12-14T04:32:47.123Z | 13 hours 53 minutes | Provide hours and minutes passed since date/time
+| `number`                 | 250 (modify: x+1): 2501  | 251                 | Convert to Float datatype
+| `duration`               | 1000                     | 16:40               | Convert seconds to [[h:]m:]s format
+| `duration_h`             | 86461                    | 1d 00:01:01         | Convert seconds to [[[d ]h:]m:]s format
+| `icon`                   | mdi:light-switch         | Icon is displayed   | Wrap icon name in `ha-icon` tag
+| `device_connections`     | [["mac","64:...:5f"]]    | MAC: 64:...:5F      | Format array of device connections, one per line
+| `device_connections_bt`  | [["bluetooth","64:..."]] | 64:...              | Extract and format only Bluetooth addresses from device connections array, one per line
+| `device_connections_mac` | [["mac","D0:..."]]       | D0:...              | Extract and format only MAC addresses from device connections array, one per line
+| `device_identifiers`     | [["waqi","76.."]]        | waqi: 76..          | Format array of device identifiers, one per line
 
 Feel free to contribute formatters. Just share your best `modify` line to allow others to use them, too.
 

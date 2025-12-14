@@ -74,27 +74,84 @@ class CellFormatters {
         return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
     duration(data) {
-        let h = (data > 3600) ? Math.floor(data / 3600).toString() + ':' : '';
-        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
-        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        let h = (data >= 3600) ? Math.floor(data / 3600).toString() + ':' : '';
+        let m = (data >= 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data >= 0) ? Math.floor((data % 3600) % 60).toString() : '';
         if (m) s = s.padStart(2, 0);
         return h + m + s;
     }
     duration_h(data) {
-        let d = (data > 86400) ? Math.floor(data / 86400).toString() + 'd ' : '';
-        let h = (data > 3600) ? Math.floor((data % 86400) / 3600) : ''
+        let d = (data >= 86400) ? Math.floor(data / 86400).toString() + 'd ' : '';
+        let h = (data >= 3600) ? Math.floor((data % 86400) / 3600) : ''
         h = (d) ? h.toString().padStart(2,0) + ':' : ((h) ? h.toString() + ':' : '');
 
-        let m = (data > 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
-        let s = (data > 0) ? Math.floor((data % 3600) % 60).toString() : '';
+        let m = (data >= 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
+        let s = (data >= 0) ? Math.floor((data % 3600) % 60).toString() : '';
         if (m) s = s.padStart(2, 0);
         return d + h + m + s;
     }
     icon(data) {
         return `<ha-icon icon="${data}"></ha-icon>`;
     }
-
-
+    device_connections(data) {
+        // Used to format device connections such as Bluetooth and MAC addresses
+        if (data == "-") return data;
+        let parsed = JSON.parse(data);
+        let formatted = [];
+        for (const connection of parsed) {
+            switch (connection[0]) {
+                case "bluetooth":
+                    formatted.push("Bluetooth: " + connection[1]);
+                    break;
+                case "mac":
+                    formatted.push("MAC: " + connection[1].toUpperCase());
+                    break;
+                default:
+                    formatted.push(connection);
+            }
+        }
+        return formatted.join("<br>");
+    }
+    device_connections_bt(data) {
+    // Used to format Bluetooth address of device connections
+        if (data == "-") return data;
+        let parsed = JSON.parse(data);
+        let formatted = [];
+        for (const connection of parsed) {
+            switch (connection[0]) {
+                case "bluetooth":
+                    formatted.push(connection[1]);
+                    break;
+                default:
+            }
+        }
+        return formatted.join("<br>") || "-";
+    }
+    device_connections_mac(data) {
+    // Used to format MAC address of device connections
+        if (data == "-") return data;
+        let parsed = JSON.parse(data);
+        let formatted = [];
+        for (const connection of parsed) {
+            switch (connection[0]) {
+                case "mac":
+                    formatted.push(connection[1].toUpperCase());
+                    break;
+                default:
+            }
+        }
+        return formatted.join("<br>") || "-";
+    }
+    device_identifiers(data) {
+    // Used to format device identifiers
+        if (data == "-") return data;
+        let parsed = JSON.parse(data);
+        let formatted = [];
+        for (const identifier of parsed) {
+            formatted.push(identifier[0] + ": " + identifier[1]);
+        }
+        return formatted.join("<br>");
+    }
 }
 
 
@@ -313,9 +370,20 @@ class DataRow {
                     } else if (col_key === "device") {
                         // 'device' will show the entity's device name, if any
                         raw_content.push(this._get_device_name(this.entity.entity_id, hass));
+                    } else if (col_key === "device_configuration_url") {
+                        // 'device_configuration_url' will show the entity's device configuration URL, if any
+                        raw_content.push(this._get_device_value(this.entity.entity_id, hass, "configuration_url"));
+                    } else if (col_key === "device_connections") {
+                        // 'device_connections' will show the entity's device connections, if any
+                        let _dc = this._get_device_value(this.entity.entity_id, hass, "connections");
+                        raw_content.push(Array.isArray(_dc) ? JSON.stringify(_dc) : _dc);
                     } else if (col_key === "device_hw_version") {
                         // 'device_hw_version' will show the entity's device hardware version, if any
                         raw_content.push(this._get_device_value(this.entity.entity_id, hass, "hw_version"));
+                    } else if (col_key === "device_identifiers") {
+                        // 'device_identifiers' will show the entity's device identifiers, if any
+                        let _di = this._get_device_value(this.entity.entity_id, hass, "identifiers");
+                        raw_content.push(Array.isArray(_di) ? JSON.stringify(_di) : _di);
                     } else if (col_key === "device_manufacturer") {
                         // 'device_manufacturer' will show the entity's device manufacturer, if any
                         raw_content.push(this._get_device_value(this.entity.entity_id, hass, "manufacturer"));
@@ -460,11 +528,16 @@ class DataRow {
 
     _get_device_value(entity_id, hass, parameter) {
         var device_id;
+        var device_parameter;
         if (hass.entities[entity_id] != null) {
             device_id = hass.entities[entity_id].device_id;
         }
-        return device_id == null || hass.devices[device_id][parameter] == null ? "-" :
-            hass.devices[device_id][parameter];
+        if (device_id != null) {
+          device_parameter = hass.devices[device_id][parameter];
+        }
+        return device_id == null || device_parameter == null ||
+            (Array.isArray(device_parameter) && device_parameter.length == 0) ? "-" :
+              hass.devices[device_id][parameter];
     }
 
     _get_area_name(entity_id, hass) {
