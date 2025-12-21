@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "1.2.1";
+var VERSION = "1.3.0";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
