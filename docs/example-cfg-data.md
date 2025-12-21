@@ -28,11 +28,17 @@ In addition to the above references, the following keywords are supported for en
 * `device_manufacturer` = manufacturer of the device that the entity belongs to, if available
 * `device_model` = model of the device that the entity belongs to, if available
 * `device_serial_number` = serial number of the device that the entity belongs to, if available
+* `device_configuration_url` = URL on which the device or service can be configured, if available
+* `device_connections` = set of (connection_type, connection identifier) tuples of the device that the entity belongs to, if available
+* `device_identifiers` = set of (DOMAIN, identifier) tuples that identify the device, e.g. a serial number, that the entity belongs to, if available
 * `platform` = name of the domain that the entity belongs to (e.g., `sensor`, `light`, ...)
 
 If there is a conflict between an attribute name and one of these special keywords,
 the attribute name takes precedence. Note that even if a `device` or an `area` is defined for an `entity`,
 the information may not be available for `flex-table` to display.
+
+Both `device_connections` and `device_identifiers` return complex arrays that are best displayed using the
+`fmt` column option with one of the [predefined device formatters](https://github.com/custom-cards/flex-table-card/blob/master/docs/config-ref.md#fn4).
 
 If the chosen `data` selector does not resolve to something useful, the
 cell will be marked with an error - collection/rendering should continue w/o any 
