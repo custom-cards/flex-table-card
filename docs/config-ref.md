@@ -102,7 +102,7 @@ definition. Apart from `sort_by` no other option requires referencing of this id
 | `no_auto_format`       | boolean  |   optional    | Disable auto formatting for this column when auto_format: true (default: `false`)
 | `multi_delimiter`      | string   |   optional    | defaults to ' ', concat multiple selector-data using this string
 | `fmt`                  | string   |   optional    | format using predefined 'formatters'<a href="#fn4"><sup>[4]</sup></a>
-| `sort_unmodified`      | boolean  |   optional    | Sort using original value before `modify` option, if any, is applied (default: `false`)
+| `sort_unmodified`      | boolean  |   optional    | Sort using original value before `modify` option, if any, is applied (default: `false`). Also affects footer row operations `sum`, `average`, `max`, and `min`.
 | `footer_type`          | string   |   optional    | Used with `display_footer`, one of `sum`, `average`, `count`, `max`, `min`, or `text`
 | `footer_text`          | string   |   optional    | Used with `display_footer`, text to be dispayed in this and optionally across several more columns (see `footer_colspan`)
 | `footer_colspan`       | string   |   optional    | Used with `display_footer` and `footer_text`, displays text across specified number of columns
