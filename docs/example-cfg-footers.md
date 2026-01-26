@@ -32,6 +32,12 @@ Only cells with values that can be interpreted as numbers will be included in th
 The number can have leading and trailing spaces, and any number of trailing non-numeric characters, but only the column `prefix` plus _one_ leading non-numeric character, 
 such as a currency sign. Otherwise it will be ignored.
 
+### Raw vs. modified values
+
+By default, the summary calculations are performed on the modified data values retrieved for the column, after any `modify` function is applied.
+To use the raw data values instead, set `sort_unmodified: true` for the column. This can be useful when the `modify` function produces non-numeric 
+values for display, such as time values with colons as separators.
+
 ### Formatting values
 
 The formatting options `align`, `prefix`, and `suffix` (but not `modify`) will also apply to the summary row.
