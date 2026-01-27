@@ -73,7 +73,47 @@ class CellFormatters {
         const minr = Math.floor(minutes);
         return (!isNaN(hours) && !isNaN(minr)) ? hours + " hours " + minr + " minutes" : null;
     }
-    duration(data) {
+    time_passed(data) {
+        const diffMs = Date.now() - Date.parse(data);
+        if (isNaN(diffMs)) return null;
+
+        // Convert to seconds.
+        let remaining = Math.floor(diffMs / 1000);
+
+        const weeks = Math.floor(remaining / 604800);
+        remaining -= weeks * 604800;
+
+        const days = Math.floor(remaining / 86400);
+        remaining -= days * 86400;
+
+        const hours = Math.floor(remaining / 3600);
+        remaining -= hours * 3600;
+
+        const minutes = Math.floor(remaining / 60);
+        remaining -= minutes * 60;
+
+        const seconds = remaining;
+
+        const units = [
+            { value: weeks, name: 'week' },
+            { value: days, name: 'day' },
+            { value: hours, name: 'hour' },
+            { value: minutes, name: 'minute' },
+            { value: seconds, name: 'second' }
+        ];
+
+        const parts = [];
+        for (const unit of units) {
+            if (unit.value > 0) {
+                const unitName = unit.value === 1 ? unit.name : unit.name + 's';
+                parts.push(unit.value + ' ' + unitName);
+                if (parts.length === 2) break;
+            }
+        }
+
+        return parts.length > 0 ? parts.join(' ') : '0 second';
+    }
+	duration(data) {
         let h = (data >= 3600) ? Math.floor(data / 3600).toString() + ':' : '';
         let m = (data >= 60) ? Math.floor((data % 3600) / 60).toString().padStart(2, 0) + ':' : '';
         let s = (data >= 0) ? Math.floor((data % 3600) % 60).toString() : '';
