@@ -122,6 +122,7 @@ Apart from that `modify` and `footer_modify` are very powerful, see [advanced ce
 | `full_datetime`          | 2025-08-02T07:20:00      | 1754140800000       | Convert a string representation of date into timestamp.
 | `hours_passed`           | 2025-12-14T04:32:47.123Z | 13.89               | Provide hours passed since date/time
 | `hours_mins_passed`      | 2025-12-14T04:32:47.123Z | 13 hours 53 minutes | Provide hours and minutes passed since date/time
+| `time_passed`            | 2025-11-26T04:32:47.123Z | 2 weeks 4 days      | Provide time passed with granularity of 2 units from seconds, minutes, hours, days, weeks
 | `number`                 | 250 (modify: x+1): 2501  | 251                 | Convert to Float datatype
 | `duration`               | 1000                     | 16:40               | Convert seconds to [[h:]m:]s format
 | `duration_h`             | 86461                    | 1d 00:01:01         | Convert seconds to [[[d ]h:]m:]s format
