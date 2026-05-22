@@ -1,7 +1,7 @@
 "use strict";
 
 // VERSION info
-var VERSION = "1.4.0";
+var VERSION = "1.4.0-custom (sticky_search + freeze_row)";
 
 // typical [[1,2,3], [6,7,8]] to [[1, 6], [2, 7], [3, 8]] converter
 var transpose = m => m[0].map((x, i) => m.map(x => x[i]));
@@ -770,6 +770,19 @@ class FlexTableCard extends HTMLElement {
         const content = document.createElement('div');
         const style = document.createElement('style');
 
+        // Constrain card height so the table scrolls *inside* the card (instead
+        // of pushing the whole page down). Required for sticky elements
+        // (search box, frozen rows) to actually be sticky — otherwise the
+        // card grows to fit content and there's no scroll relative to which
+        // sticky positioning has any meaning.
+        //   max_height explicitly set        → use it
+        //   freeze_row >= 1  or  enable_search → default to 70vh
+        if (cfg.max_height || (cfg.freeze_row && cfg.freeze_row >= 1) || cfg.enable_search) {
+            card.style.maxHeight = cfg.max_height || '70vh';
+            card.style.overflow = 'auto';
+            card.style.display = 'block';
+        }
+
         this.tbl = new DataTable(cfg);
 
         // CSS styles as assoc-data to allow seperate updates by key, i.e., css-selector
@@ -801,8 +814,8 @@ class FlexTableCard extends HTMLElement {
             "@keyframes disc":          "0% { transform: scale(0); opacity: 0; } 100% {transform: scale(1); opacity: 0.7; }",
             "span.ripple":              `position: absolute; border-radius: 50%; transform: scale(0); animation: ripple ${rippleDuration}ms linear; background-color: rgba(127, 127, 127, 0.7); `,
             "@keyframes ripple":        "to { transform: scale(4); opacity: 0; } ",
-            ".search-box":              "align-items: center; padding: 14px; border-bottom: 1px solid var(--divider-color); background-color: var(--primary-background-color); ",
-            ".input-wrapper":           "display: flex; border: 1px solid var(--outline-color); height: 30px; border-radius: 10px; cursor: text; background-color: var(--card-background-color); ",
+            ".search-box":              "display: flex; align-items: center; gap: 8px; padding: 14px; border-bottom: 1px solid var(--divider-color); background-color: var(--primary-background-color); position: sticky; top: 0; z-index: 4; ",
+            ".input-wrapper":           "flex: 1; display: flex; border: 1px solid var(--outline-color); height: 30px; border-radius: 10px; cursor: text; background-color: var(--card-background-color); ",
             ".input-wrapper:hover":     "border: 1px solid var(--outline-hover-color); ",
             ".input-wrapper:focus-within":
                                         "border: 1px solid var(--primary-color); ",
@@ -826,6 +839,11 @@ class FlexTableCard extends HTMLElement {
             }
         }
 
+        // freeze_row: N → first N rows stick to top while scrolling. All
+        // sticky positioning (including the header) is done in JS via
+        // _applyFrozenRows() because the header's top offset depends on the
+        // (optional) search box height, which we only know after layout.
+
         // assemble final CSS style data, every item within `css_styles` will be translated to:
         // <key> { <any-string-value> }
         style.textContent = "";
@@ -839,7 +857,8 @@ class FlexTableCard extends HTMLElement {
             icon_html: ((obj.icon) ? `<ha-icon id='icon' icon='${obj.icon}'></ha-icon>` : "")
         }));
 
-        // search filter box, if configured
+        // search filter box, if configured. Sticky-positioned via CSS so it
+        // stays pinned at the top of the scrolling card.
         const search_box = `
                     <div class="search-box">
                       <div id="search-wrapper" class="input-wrapper">
@@ -859,7 +878,7 @@ class FlexTableCard extends HTMLElement {
                           </svg>
                         </div>
                       </div>
-                    </div >
+                    </div>
         `;
 
         // table skeleton, body identified with: 'flextbl', footer with 'flexfoot'
@@ -902,6 +921,7 @@ class FlexTableCard extends HTMLElement {
                         root.getElementById("flextbl"),
                         this.tbl.get_rows()
                     );
+                    this._applyFrozenRows();
                 };
             });
 
@@ -1531,6 +1551,83 @@ class FlexTableCard extends HTMLElement {
         this._updateContent(table, data_rows);
         const table_rows = table.querySelectorAll('tbody tr');
         if (config.display_footer) this._updateFooter(root.getElementById("flexfoot"), config, table_rows, data_rows);
+        this._applyFrozenRows();
+    }
+
+    // freeze_row: N → header plus first (N-1) tbody rows pin to the top of
+    // the scroll container. Computed in JS because each sticky element's
+    // top offset depends on the height of the (optional) sticky search box
+    // and the actual row heights, which we only know after layout.
+    //
+    //   freeze_row: 0 → no row sticky (search box still sticky if enabled)
+    //   freeze_row: 1 → header sticky below search box
+    //   freeze_row: N → header + first (N-1) tbody rows sticky
+    _applyFrozenRows() {
+        const cfg = this._config;
+        if (!cfg) return;
+
+        const root = this.shadowRoot;
+        const searchBox = root.querySelector('.search-box');
+        const thead = root.querySelector('thead');
+        const tbody = root.getElementById('flextbl');
+        if (!thead || !tbody) return;
+
+        const freezeRow = cfg.freeze_row || 0;
+
+        // Wait for layout so offsetHeight is accurate
+        requestAnimationFrame(() => {
+            const searchHeight = searchBox ? searchBox.offsetHeight : 0;
+
+            // Header — sticky just below the search box (if any) when freeze_row >= 1
+            thead.querySelectorAll('th').forEach(th => {
+                if (freezeRow >= 1) {
+                    th.style.position = 'sticky';
+                    th.style.top = searchHeight + 'px';
+                    th.style.zIndex = '3';
+                    // Header cells need a solid background; user CSS usually
+                    // sets one in `card_mod`, so only set a fallback.
+                    if (!th.style.backgroundColor) {
+                        th.style.backgroundColor = 'var(--card-background-color)';
+                    }
+                } else {
+                    // Clean up if freeze_row was previously >= 1 and is now 0
+                    th.style.position = '';
+                    th.style.top = '';
+                    th.style.zIndex = '';
+                }
+            });
+
+            // Data rows — first (freeze_row - 1) rows pin below the header
+            const rows = tbody.querySelectorAll('tr');
+            const stickyCount = Math.max(0, freezeRow - 1);
+            const headerHeight = thead.offsetHeight;
+            let top = searchHeight + headerHeight;
+
+            rows.forEach((row, i) => {
+                const cells = row.querySelectorAll('td');
+                if (i < stickyCount) {
+                    cells.forEach(cell => {
+                        cell.style.position = 'sticky';
+                        cell.style.top = top + 'px';
+                        cell.style.zIndex = '2';
+                        cell.style.backgroundColor = (i % 2 === 0)
+                            ? 'var(--table-row-background-color, var(--card-background-color))'
+                            : 'var(--table-row-alternative-background-color, var(--card-background-color))';
+                    });
+                    top += row.offsetHeight;
+                } else {
+                    // Clean up any stale sticky styles from previous renders
+                    cells.forEach(cell => {
+                        if (cell.style.position === 'sticky') {
+                            cell.style.position = '';
+                            cell.style.top = '';
+                            cell.style.zIndex = '';
+                            cell.style.backgroundColor = '';
+                        }
+                    });
+                }
+            });
+        });
     }
 
     _setCardSize(num_rows) {
