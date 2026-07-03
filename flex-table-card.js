@@ -990,8 +990,10 @@ class FlexTableCard extends HTMLElement {
                 this.blur();
                 e.preventDefault();
             }
+            else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                e.stopPropagation();
+            }
         }
-
         let cell = elem.cells[index];
         cell.classList.add("enable-hover");
         cell.addEventListener("blur", _handle_lost_focus);
