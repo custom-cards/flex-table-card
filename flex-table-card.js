@@ -1287,7 +1287,7 @@ class FlexTableCard extends HTMLElement {
                         }
 
                         function handleCancel(e) {
-                            if (e instanceof TouchEvent && e.targetTouches.length > 0 && targetRect) {
+                            if (typeof TouchEvent !== "undefined" && e instanceof TouchEvent && e.targetTouches.length > 0 && targetRect) {
                                 var xpt = e.targetTouches[0].clientX;
                                 var ypt = e.targetTouches[0].clientY;
                                 // If touch within original target, do nothing.
