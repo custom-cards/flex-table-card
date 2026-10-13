@@ -77,8 +77,11 @@ class CellFormatters {
         const diffMs = Date.now() - Date.parse(data);
         if (isNaN(diffMs)) return null;
 
+        // Timestamps in the future are shown with a leading minus sign.
+        const sign = diffMs < 0 ? '-' : '';
+
         // Convert to seconds.
-        let remaining = Math.floor(diffMs / 1000);
+        let remaining = Math.floor(Math.abs(diffMs) / 1000);
 
         const weeks = Math.floor(remaining / 604800);
         remaining -= weeks * 604800;
@@ -111,7 +114,7 @@ class CellFormatters {
             }
         }
 
-        return parts.length > 0 ? parts.join(' ') : '0 second';
+        return parts.length > 0 ? sign + parts.join(' ') : '0 seconds';
     }
 	duration(data) {
         let h = (data >= 3600) ? Math.floor(data / 3600).toString() + ':' : '';
